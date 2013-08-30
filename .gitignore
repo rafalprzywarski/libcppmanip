@@ -1,0 +1,5 @@
+/build
+*~
+.*
+!.gitignore
+ci_test_results

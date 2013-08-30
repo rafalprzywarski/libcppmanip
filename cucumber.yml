@@ -1,0 +1,5 @@
+default: --tag @done -f pretty
+wip: --tag @wip -f pretty
+all: -f pretty
+acceptance_tests: --tag @done -f progress
+ci_acceptance_tests: -f junit --out ci_test_results --tag @done
