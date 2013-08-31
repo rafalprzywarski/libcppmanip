@@ -15,88 +15,118 @@ using namespace llvm;
 std::ostringstream output;
 
 template <typename Node>
-unsigned extraChars(const Node&) { return 0; }
+unsigned extraCharsHack(const Node&) { return 0; }
 
 template <>
-unsigned extraChars<Stmt>(const Stmt&) { return 2; }
+unsigned extraCharsHack<Stmt>(const Stmt&) { return 2; }
 
-template <typename T>
-std::pair<SourceLocation, unsigned> getSourceLocationAndLength(const SourceManager &SourceManager, const T &Node)
+class SourceExtractor
 {
-  clang::SourceLocation StartSpellingLocatino =
-      SourceManager.getSpellingLoc(Node.getSourceRange().getBegin());
-  clang::SourceLocation EndSpellingLocation =
-      SourceManager.getSpellingLoc(Node.getSourceRange().getEnd());
-  if (!StartSpellingLocatino.isValid() || !EndSpellingLocation.isValid()) {
-    throw std::runtime_error("!StartSpellingLocatino.isValid() || !EndSpellingLocation.isValid()");
-  }
-  bool Invalid = true;
-  std::pair<clang::FileID, unsigned> Start =
-      SourceManager.getDecomposedLoc(StartSpellingLocatino);
-  std::pair<clang::FileID, unsigned> End =
-      SourceManager.getDecomposedLoc(clang::Lexer::getLocForEndOfToken(
-          EndSpellingLocation, 0, SourceManager, clang::LangOptions()));
-  if (End.second < Start.second) {
-    // Shuffling text with macros may cause this.
-    throw std::runtime_error("End.second < Start.second");
-  }
-  unsigned sourceLength = End.second - Start.second + extraChars(Node);
-  return std::make_pair(StartSpellingLocatino, sourceLength);
-}
+public:
+    SourceExtractor(clang::SourceManager& sourceManager) : sourceManager(sourceManager) { }
+    
+    template <typename Node>
+    clang::SourceRange getCorrectSourceRange(const Node& node)
+    {
+        auto spelling = getSpellingRange(node);
+        auto sourceLength = getSourceLength(spelling, node);
+        return SourceRange(spelling.getBegin(), spelling.getBegin().getLocWithOffset(sourceLength));
+    }
 
-std::string GetText(const clang::SourceManager &SourceManager, std::pair<SourceLocation, unsigned> loc) {
-  bool Invalid = true;
-  const char *Text =
-      SourceManager.getCharacterData(loc.first, &Invalid);
-  if (Invalid) {
-    return std::string();
-  }
-  return std::string(Text, loc.second);
-}
+    std::string getSource(SourceRange range)
+    {
+        return std::string(getText(range.getBegin()), rangeLength(range));
+    }
 
-std::string GetTextWithReplace(const clang::SourceManager &SourceManager, std::pair<SourceLocation, unsigned> loc, std::pair<SourceLocation, unsigned> without, std::string replace) {
-  bool Invalid = true;
-  const char *Text =
-      SourceManager.getCharacterData(loc.first, &Invalid);
-  if (Invalid) {
-    return std::string();
-  }
-  const char *Text2 =
-      SourceManager.getCharacterData(without.first, &Invalid);
-  if (Invalid) {
-    return std::string();
-  }
-  return std::string(Text, Text2) + replace + std::string(Text2 + without.second, loc.second - without.second - (Text2 - Text));
-}
+private:
+    clang::SourceManager& sourceManager;
+    
+    template <typename Node>
+    clang::SourceRange getSpellingRange(const Node& n)
+    {
+        auto r = SourceRange(
+            sourceManager.getSpellingLoc(n.getSourceRange().getBegin()),
+            sourceManager.getSpellingLoc(n.getSourceRange().getEnd()));
+        if (r.isInvalid())
+            throw std::runtime_error("cannot get spelling range");
+        return r;
+    }
+
+    template <typename Node>
+    unsigned getSourceLength(clang::SourceRange spelling, const Node& node)
+    {
+        auto start = locOffset(spelling.getBegin());
+        auto end = sourceManager.getDecomposedLoc(
+            clang::Lexer::getLocForEndOfToken(spelling.getEnd(), 0, sourceManager, clang::LangOptions())).second;
+        if (end < start)
+            throw std::runtime_error("invalid decomposed range, probably because of macros");
+        return end - start + extraCharsHack(node);
+    }
+
+    unsigned locOffset(SourceLocation loc)
+    {
+        return sourceManager.getFileOffset(loc);
+    }
+    
+    unsigned locDistance(SourceLocation from, SourceLocation to)
+    {
+        return locOffset(to) - locOffset(from);
+    }
+    
+    unsigned rangeLength(SourceRange r)
+    {
+        return locDistance(r.getBegin(), r.getEnd());
+    }
+    
+    const char *getText(SourceLocation loc)
+    {
+        auto invalid = true;
+        auto text = sourceManager.getCharacterData(loc, &invalid);
+        if (invalid)
+            throw std::runtime_error("cannot get characted data");
+        return text;
+    }
+};
 
 class MethodExtractor : public RecursiveASTVisitor<MethodExtractor>
 {
     ASTContext& ctx;
+    SourceExtractor sourceExtractor{ctx.getSourceManager()};
 public:
     MethodExtractor(ASTContext& ctx) : ctx(ctx) { }
     bool VisitFunctionDecl(FunctionDecl* decl)
     {
         if (!ctx.getSourceManager().isFromMainFile(decl->getLocation()))
             return true;
-        Stmt::child_iterator it = decl->getBody()->child_begin();
-        ++it;
-        Stmt& stmt = **it;
-        printExtractedFunction(stmt);
-        printOriginalFunctionWithExtractedFunctionCall(*decl, stmt);
+        auto& stmt = findStatement(*decl);
+        printExtractedFunction("runLoop", stmt);
+        printOriginalFunctionWithExtractedFunctionCall("runLoop", *decl, stmt);
         return false;
     }
 private:
-    void printExtractedFunction(Stmt& stmt)
+    const clang::Stmt& findStatement(const FunctionDecl& func)
     {
-        output << "void runLoop()\n{\n    " << GetText(ctx.getSourceManager(), getSourceLocationAndLength(ctx.getSourceManager(), stmt)) << "}\n";
+        Stmt::child_iterator it = func.getBody()->child_begin();
+        ++it;
+        return **it;
     }
-    void printOriginalFunctionWithExtractedFunctionCall(FunctionDecl& decl, Stmt& stmt)
+    void printExtractedFunction(const std::string& name, const Stmt& stmt)
     {
+        output << "void " << name << "()\n{\n    " << sourceExtractor.getSource(sourceExtractor.getCorrectSourceRange(stmt)) << "}\n";
+    }
+    void printOriginalFunctionWithExtractedFunctionCall(const std::string& name, FunctionDecl& decl, const Stmt& stmt)
+    {decl.getSourceRange();
         output << GetTextWithReplace(
-            ctx.getSourceManager(),
-            getSourceLocationAndLength(ctx.getSourceManager(), decl),
-            getSourceLocationAndLength(ctx.getSourceManager(), stmt),
-            "runLoop();\n");
+            sourceExtractor.getCorrectSourceRange(decl),
+            sourceExtractor.getCorrectSourceRange(stmt),
+            name + "();\n");
+    }
+    std::string GetTextWithReplace(SourceRange range, SourceRange without, std::string replace)
+    {
+        return
+            sourceExtractor.getSource(SourceRange(range.getBegin(), without.getBegin())) +
+            replace +
+            sourceExtractor.getSource(SourceRange(without.getEnd(), range.getEnd()));
     }
 };
 
