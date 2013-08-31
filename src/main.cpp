@@ -116,12 +116,12 @@ private:
     }
     void printOriginalFunctionWithExtractedFunctionCall(const std::string& name, FunctionDecl& decl, const Stmt& stmt)
     {
-        output << GetTextWithReplace(
+        output << getTextWithReplace(
             sourceExtractor.getCorrectSourceRange(decl),
             sourceExtractor.getCorrectSourceRange(stmt),
             name + "();");
     }
-    std::string GetTextWithReplace(SourceRange range, SourceRange without, std::string replace)
+    std::string getTextWithReplace(SourceRange range, SourceRange without, std::string replace)
     {
         return
             sourceExtractor.getSource(SourceRange(range.getBegin(), without.getBegin())) +
