@@ -14,6 +14,11 @@ using namespace llvm;
 
 std::ostringstream output;
 
+// TODO: semicolon hack
+// TODO: extracted method name passing
+// TODO: source location passing
+// TODO: finding statements
+
 template <typename Node>
 unsigned extraCharsHack(const Node&) { return 0; }
 
