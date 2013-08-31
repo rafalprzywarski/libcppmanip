@@ -18,7 +18,7 @@ template <typename Node>
 unsigned extraCharsHack(const Node&) { return 0; }
 
 template <>
-unsigned extraCharsHack<Stmt>(const Stmt&) { return 2; }
+unsigned extraCharsHack<Stmt>(const Stmt&) { return 1; } // semicolon
 
 class SourceExtractor
 {
@@ -112,14 +112,14 @@ private:
     }
     void printExtractedFunction(const std::string& name, const Stmt& stmt)
     {
-        output << "void " << name << "()\n{\n    " << sourceExtractor.getSource(sourceExtractor.getCorrectSourceRange(stmt)) << "}\n";
+        output << "void " << name << "()\n{\n    " << sourceExtractor.getSource(sourceExtractor.getCorrectSourceRange(stmt)) << "\n}\n";
     }
     void printOriginalFunctionWithExtractedFunctionCall(const std::string& name, FunctionDecl& decl, const Stmt& stmt)
-    {decl.getSourceRange();
+    {
         output << GetTextWithReplace(
             sourceExtractor.getCorrectSourceRange(decl),
             sourceExtractor.getCorrectSourceRange(stmt),
-            name + "();\n");
+            name + "();");
     }
     std::string GetTextWithReplace(SourceRange range, SourceRange without, std::string replace)
     {
