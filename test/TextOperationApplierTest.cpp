@@ -32,3 +32,17 @@ TEST_F(TextOperationApplierTest, should_perform_insertions_in_given_order)
     applier.insertTextAt("c", 0);
     ASSERT_EQ("abc", applier.apply(""));
 }
+
+TEST_F(TextOperationApplierTest, should_remove_text_at_given_range)
+{
+    applier.removeTextInRange(3, 11);
+    ASSERT_EQ("it works", applier.apply("it bla bla works"));
+}
+
+TEST_F(TextOperationApplierTest, should_perform_multiple_removals_at_ranges_given_in_any_order)
+{
+    applier.removeTextInRange(0, 4);
+    applier.removeTextInRange(7, 10);
+    applier.removeTextInRange(4, 7);
+    ASSERT_EQ("", applier.apply("just empty"));
+}
