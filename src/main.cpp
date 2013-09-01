@@ -13,9 +13,9 @@ using namespace clang::tooling;
 using namespace llvm;
 
 std::ostringstream output;
+std::string extractedMethodName;
 
 // TODO: semicolon hack
-// TODO: extracted method name passing
 // TODO: source location passing
 // TODO: finding statements
 
@@ -97,15 +97,17 @@ class MethodExtractor : public RecursiveASTVisitor<MethodExtractor>
 {
     ASTContext& ctx;
     SourceExtractor sourceExtractor{ctx.getSourceManager()};
+    std::string extractedMethodName;
 public:
-    MethodExtractor(ASTContext& ctx) : ctx(ctx) { }
+    MethodExtractor(ASTContext& ctx, const std::string& extractedMethodName)
+        : ctx(ctx), extractedMethodName(extractedMethodName) { }
     bool VisitFunctionDecl(FunctionDecl* decl)
     {
-        if (!ctx.getSourceManager().isFromMainFile(decl->getLocation()))
+        if (!ctx.getSourceManager().isFromMainFile(decl->getLocation()) || !decl->hasBody())
             return true;
         auto& stmt = findStatement(*decl);
-        printExtractedFunction("runLoop", stmt);
-        printOriginalFunctionWithExtractedFunctionCall("runLoop", *decl, stmt);
+        printExtractedFunction(extractedMethodName, stmt);
+        printOriginalFunctionWithExtractedFunctionCall(extractedMethodName, *decl, stmt);
         return false;
     }
 private:
@@ -141,7 +143,7 @@ public:
     MethodExtractorUnitHandler() { }
     virtual void HandleTranslationUnit(ASTContext& ctx)
     {
-        MethodExtractor(ctx).TraverseDecl(ctx.getTranslationUnitDecl());
+        MethodExtractor(ctx, extractedMethodName).TraverseDecl(ctx.getTranslationUnitDecl());
     }
 };
 
@@ -160,6 +162,8 @@ int main(int argc, const char** argv)
     const char *fakeArgv[] = { argv[0], argv[1], "--" };
     CommonOptionsParser parser(fakeArgc, fakeArgv);
     ClangTool tool(parser.GetCompilations(), parser.GetSourcePathList());
+ 
+    extractedMethodName = argv[3];
     
     tool.run(newFrontendActionFactory<MethodExtractorFactory>());
     
