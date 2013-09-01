@@ -102,3 +102,9 @@ TEST_F(TextOperationApplierTest, should_fail_trying_to_remove_ranges_overlapping
     applier.insertTextAt("x", 4);
     shouldFailTryingToRemove(3, 5);
 }
+
+TEST_F(TextOperationApplierTest, should_fail_trying_to_insert_text_into_a_removal_range)
+{
+    applier.removeTextInRange(2, 5);
+    ASSERT_THROW(applier.insertTextAt("a", 3), std::invalid_argument);
+}

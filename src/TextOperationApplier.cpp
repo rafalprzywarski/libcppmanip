@@ -12,6 +12,7 @@ std::string TextOperationApplier::apply(const std::string& text)
 
 void TextOperationApplier::insertTextAt(const std::string& text, unsigned offset)
 {
+    verifyNoOverlappingRangesExist(OffsetRange(offset, offset));
     replacements[offset].appendInsertionText(text);
 }
 
