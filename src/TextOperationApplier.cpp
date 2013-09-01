@@ -1,5 +1,6 @@
 #include "TextOperationApplier.hpp"
 #include <stdexcept>
+#include <cassert>
 
 TextOperationApplier::Range::Range(unsigned int from, unsigned int to)
     : from(from), to(to)
@@ -15,35 +16,31 @@ bool TextOperationApplier::Range::overlapsWith(const TextOperationApplier::Range
 
 std::string TextOperationApplier::apply(const std::string& text)
 {
-    auto copy = text;
-    for (auto const& ins : insertions)
+    auto current = text;
+    for (auto const& it : replacements)
     {
-        unsigned insertionOffset = ins.first;
-        auto textToInsert = ins.second;
-        copy = copy.substr(0, insertionOffset) + textToInsert + copy.substr(insertionOffset);
+        unsigned offset = it.first;
+        auto const& op = it.second;
+        current = current.substr(0, op.removal.from) + current.substr(op.removal.to);
+        current = current.substr(0, offset) + op.insertion + current.substr(offset);
     }
-    for (auto const& rem : removals)
-    {
-        auto removal = rem.second;
-        copy = copy.substr(0, removal.from) + copy.substr(removal.to);
-    }
-    return copy;
+    return current;
 }
 
 void TextOperationApplier::insertTextAt(const std::string& text, unsigned offset)
 {
-    insertions[offset] += text;
+    replacements[offset].insertion += text;
 }
 
 void TextOperationApplier::removeTextInRange(unsigned int from, unsigned int to) 
 {
     Range range{from, to};
     verifyNoOverlappingRangesExist(range);
-    removals[from] = range;
+    replacements[from].removal = range;
 }
 void TextOperationApplier::verifyNoOverlappingRangesExist(const TextOperationApplier::Range& r)
 {
-    for (auto const& rem : removals)
-        if (rem.second.overlapsWith(r))
+    for (auto const& rem : replacements)
+        if (rem.second.removal.overlapsWith(r))
             throw std::invalid_argument("TextOperationApplier: overlapping range");
 }

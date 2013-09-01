@@ -88,3 +88,11 @@ TEST_F(TextOperationApplierTest, should_ignore_an_empty_range)
     ASSERT_NO_THROW(applier.removeTextInRange(2, 2));
     ASSERT_NO_THROW(applier.removeTextInRange(1, 3));
 }
+
+TEST_F(TextOperationApplierTest, should_perform_simultaneous_removals_and_insertions)
+{
+    applier.insertTextAt("burnt ", 5);
+    applier.removeTextInRange(13, 18);
+    applier.insertTextAt("black", 13);
+    ASSERT_EQ("this burnt cake is black", applier.apply("this cake is tasty"));
+}

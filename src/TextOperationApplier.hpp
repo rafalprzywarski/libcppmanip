@@ -17,8 +17,12 @@ private:
         Range(unsigned from, unsigned to);
         bool overlapsWith(const Range& r) const;
     };
-    std::map<unsigned, std::string, std::greater<unsigned> > insertions;
-    std::map<unsigned, Range, std::greater<unsigned> > removals;
+    struct Replacement
+    {
+        Range removal;
+        std::string insertion;
+    };
+    std::map<unsigned, Replacement, std::greater<unsigned> > replacements;
     
     void verifyNoOverlappingRangesExist(const Range& r);
 };
