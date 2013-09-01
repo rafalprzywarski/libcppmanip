@@ -1,12 +1,15 @@
 #ifndef OFFSETRANGE_HPP
 #define OFFSETRANGE_HPP
 
+/**
+ * A left-closed right-open range
+ */
 class OffsetRange
 {
 public:
     OffsetRange() { }
     OffsetRange(unsigned, unsigned) { }
-    bool empty() const { return true; }
+    bool degenerate() const { return true; }
     unsigned length() const { return 0; }
     bool overlapsWith(const OffsetRange& ) { }
 };

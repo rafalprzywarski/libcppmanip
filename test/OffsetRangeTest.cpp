@@ -10,9 +10,9 @@ struct OffsetRangeTest : testing::Test
     }
 };
 
-TEST_F(OffsetRangeTest, should_be_empty_by_default)
+TEST_F(OffsetRangeTest, should_be_degenerate_by_default)
 {
-    ASSERT_TRUE(OffsetRange().empty());
+    ASSERT_TRUE(OffsetRange().degenerate());
 }
 
 TEST_F(OffsetRangeTest, should_have_zero_length_by_default)
