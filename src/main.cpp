@@ -7,7 +7,9 @@
 #include <sstream>
 #include <fstream>
 #include <stdexcept>
+#include <iostream>
 #include <TextOperationApplier.hpp>
+#include "OffsetRange.hpp"
 
 using namespace clang;
 using namespace clang::tooling;
@@ -16,19 +18,7 @@ using namespace llvm;
 TextOperationApplier sourceOperations;
 std::string extractedMethodName;
 
-struct RowColumn
-{
-    unsigned row, column;
-    RowColumn() : row(0), column(0) { }
-    RowColumn(unsigned row, unsigned column) : row(row), column(column) { }
-};
-
-struct UserSourceSelection
-{
-    RowColumn from, to;
-};
-
-UserSourceSelection extractMethodSelection;
+OffsetRange extractMethodSelection;
 
 // TODO: semicolon hack
 
@@ -111,9 +101,9 @@ class MethodExtractor : public RecursiveASTVisitor<MethodExtractor>
     ASTContext& ctx;
     SourceExtractor sourceExtractor{ctx.getSourceManager()};
     std::string extractedMethodName;
-    UserSourceSelection selection;
+    OffsetRange selection;
 public:
-    MethodExtractor(ASTContext& ctx, const std::string& extractedMethodName, UserSourceSelection selection)
+    MethodExtractor(ASTContext& ctx, const std::string& extractedMethodName, OffsetRange selection)
         : ctx(ctx), extractedMethodName(extractedMethodName), selection(selection) { }
     bool VisitFunctionDecl(FunctionDecl* decl)
     {
@@ -125,18 +115,13 @@ public:
         return false;
     }
 private:
-    bool overlaps(clang::SourceRange r, UserSourceSelection s)
+    bool overlaps(clang::SourceRange r, OffsetRange s)
     {
-        auto begin = ctx.getSourceManager().getPresumedLoc(r.getBegin());
-        auto end = ctx.getSourceManager().getPresumedLoc(r.getEnd());
-        if (s.to.row < begin.getLine()) return false;
-        if (s.from.row > end.getLine()) return false;
-        if (s.from.row < end.getLine()) return true;
-        if (s.to.row > begin.getLine()) return true;
-        
-        return true;
+        auto begin = ctx.getSourceManager().getFileOffset(r.getBegin());
+        auto end = ctx.getSourceManager().getFileOffset(r.getEnd());
+        return s.overlapsWith({begin, end});
     }
-    bool overlaps(clang::Stmt *stmt, UserSourceSelection s)
+    bool overlaps(clang::Stmt *stmt, OffsetRange s)
     {
         return overlaps(sourceExtractor.getCorrectSourceRange(*stmt), s);
     }
@@ -148,7 +133,7 @@ private:
             r.setEnd(sourceExtractor.getCorrectSourceRange(*s).getEnd());
         return r;
     }
-    clang::Stmt::const_child_range findStatements(const FunctionDecl& func, UserSourceSelection selection)
+    clang::Stmt::const_child_range findStatements(const FunctionDecl& func, OffsetRange selection)
     {
         auto body = func.getBody();
         auto begin =
@@ -212,19 +197,31 @@ std::string loadFile(const std::string& filename)
 
 int main(int argc, const char** argv)
 {
-    int fakeArgc = 3;
-    const char *fakeArgv[] = { argv[0], argv[1], "--" };
-    CommonOptionsParser parser(fakeArgc, fakeArgv);
-    ClangTool tool(parser.GetCompilations(), parser.GetSourcePathList());
- 
-    extractedMethodName = argv[3];
-    extractMethodSelection.from = RowColumn{ to_u(argv[4]), to_u(argv[5]) };
-    extractMethodSelection.to = RowColumn{ to_u(argv[6]), to_u(argv[7]) };
+    try
+    {
+        int fakeArgc = 3;
+        const char *fakeArgv[] = { argv[0], argv[1], "--" };
+        CommonOptionsParser parser(fakeArgc, fakeArgv);
+        ClangTool tool(parser.GetCompilations(), parser.GetSourcePathList());
     
-    tool.run(newFrontendActionFactory<MethodExtractorFactory>());
-    
-    std::string source = loadFile(argv[1]);
-    std::string modifiedSource = sourceOperations.apply(source);
-    std::ofstream f(argv[1]);
-    f << modifiedSource;
+        extractedMethodName = argv[3];
+        extractMethodSelection = OffsetRange(to_u(argv[4]), to_u(argv[5]));
+        
+        tool.run(newFrontendActionFactory<MethodExtractorFactory>());
+        
+        std::string source = loadFile(argv[1]);
+        std::string modifiedSource = sourceOperations.apply(source);
+        std::ofstream f(argv[1]);
+        f << modifiedSource;
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << "Internal error: " << e.what() << std::endl;
+        return 1;
+    }
+    catch (...)
+    {
+        std::cerr << "Unknown internal error" << std::endl;
+        return 1;
+    }
 }
