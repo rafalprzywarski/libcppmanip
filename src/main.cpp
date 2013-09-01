@@ -12,97 +12,11 @@
 #include "OffsetRange.hpp"
 #include "CommandLineParser.hpp"
 #include "TextFileOps.hpp"
+#include "SourceExtractor.hpp"
 
 TextOperationApplier sourceOperations;
 std::string extractedMethodName;
-
 OffsetRange extractMethodSelection;
-
-// TODO: semicolon hack
-
-template <typename Node>
-unsigned extraCharsHack(const Node&) { return 0; }
-
-template <>
-unsigned extraCharsHack<clang::Stmt>(const clang::Stmt&) { return 1; } // semicolon
-
-class SourceExtractor
-{
-public:
-    SourceExtractor(clang::SourceManager& sourceManager) : sourceManager(sourceManager) { }
-    
-    template <typename Node>
-    clang::SourceRange getCorrectSourceRange(const Node& node)
-    {
-        auto spelling = getSpellingRange(node);
-        auto sourceLength = getSourceLength(spelling, node);
-        return {spelling.getBegin(), spelling.getBegin().getLocWithOffset(sourceLength)};
-    }
-
-    clang::SourceRange getCorrectSourceRange(clang::ConstStmtRange stmts)
-    {
-        clang::SourceRange r;
-        r.setBegin(getCorrectSourceRange(**stmts).getBegin());
-        for (auto s : stmts)
-            r.setEnd(getCorrectSourceRange(*s).getEnd());
-        return r;
-    }
-
-    std::string getSource(clang::ConstStmtRange stmts)
-    {
-        auto range = getCorrectSourceRange(stmts);
-        return std::string(getText(range.getBegin()), rangeLength(range));
-    }
-
-private:
-    clang::SourceManager& sourceManager;
-    
-    template <typename Node>
-    clang::SourceRange getSpellingRange(const Node& n)
-    {
-        auto r = clang::SourceRange(
-            sourceManager.getSpellingLoc(n.getSourceRange().getBegin()),
-            sourceManager.getSpellingLoc(n.getSourceRange().getEnd()));
-        if (r.isInvalid())
-            throw std::runtime_error("cannot get spelling range");
-        return r;
-    }
-
-    template <typename Node>
-    unsigned getSourceLength(clang::SourceRange spelling, const Node& node)
-    {
-        auto start = locOffset(spelling.getBegin());
-        auto end = sourceManager.getDecomposedLoc(
-            clang::Lexer::getLocForEndOfToken(spelling.getEnd(), 0, sourceManager, clang::LangOptions())).second;
-        if (end < start)
-            throw std::runtime_error("invalid decomposed range, probably because of macros");
-        return end - start + extraCharsHack(node);
-    }
-
-    unsigned locOffset(clang::SourceLocation loc)
-    {
-        return sourceManager.getFileOffset(loc);
-    }
-    
-    unsigned locDistance(clang::SourceLocation from, clang::SourceLocation to)
-    {
-        return locOffset(to) - locOffset(from);
-    }
-    
-    unsigned rangeLength(clang::SourceRange r)
-    {
-        return locDistance(r.getBegin(), r.getEnd());
-    }
-    
-    const char *getText(clang::SourceLocation loc)
-    {
-        auto invalid = true;
-        auto text = sourceManager.getCharacterData(loc, &invalid);
-        if (invalid)
-            throw std::runtime_error("cannot get characted data");
-        return text;
-    }
-};
 
 class MethodExtractor : public clang::RecursiveASTVisitor<MethodExtractor>
 {
