@@ -11,6 +11,7 @@
 #include <TextOperationApplier.hpp>
 #include "OffsetRange.hpp"
 #include "CommandLineParser.hpp"
+#include "TextFileOps.hpp"
 
 TextOperationApplier sourceOperations;
 std::string extractedMethodName;
@@ -179,18 +180,6 @@ public:
         return new MethodExtractorUnitHandler();
     }
 };
-
-std::string loadTextFromFile(const std::string& filename)
-{
-    std::ifstream f(filename);
-    return std::string(std::istreambuf_iterator<char>(f), std::istreambuf_iterator<char>());
-}
-
-void writeTextToFile(const std::string& text, const std::string& filename)
-{
-    std::ofstream f(filename);
-    f << text;
-}
 
 void runClangToolForFile(const std::string& filename)
 {
