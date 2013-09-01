@@ -5,6 +5,12 @@
 struct TextOperationApplierTest : testing::Test
 {
     TextOperationApplier applier;
+    
+    void shouldFailTryingToRemove(unsigned from, unsigned to)
+    {
+        ASSERT_THROW(applier.removeTextInRange(from, to), std::invalid_argument)
+            << "should fail trying to remove text in range " << from << ".." << to;
+    }
 };
 
 TEST_F(TextOperationApplierTest, should_not_modify_given_text_when_no_operations_where_added)
@@ -52,20 +58,26 @@ TEST_F(TextOperationApplierTest, should_fail_trying_to_remove_overlapping_ranges
 {
     unsigned B = 3, E = 9;
     applier.removeTextInRange(3, 9);
-    ASSERT_THROW(applier.removeTextInRange(B - 2, B + 1), std::invalid_argument);
-    ASSERT_THROW(applier.removeTextInRange(B - 2, E), std::invalid_argument);
+    shouldFailTryingToRemove(B - 2, B + 1);
+    shouldFailTryingToRemove(B - 2, E);
     ASSERT_NO_THROW(applier.removeTextInRange(B - 2, B));
-    ASSERT_THROW(applier.removeTextInRange(B, E + 1), std::invalid_argument);
-    ASSERT_THROW(applier.removeTextInRange(E - 1, E + 1), std::invalid_argument);
+    shouldFailTryingToRemove(B, E + 1);
+    shouldFailTryingToRemove(E - 1, E + 1);
     ASSERT_NO_THROW(applier.removeTextInRange(E, E + 1));
-    ASSERT_THROW(applier.removeTextInRange(B, B + 2), std::invalid_argument);
-    ASSERT_THROW(applier.removeTextInRange(E - 2, E), std::invalid_argument);
-    ASSERT_THROW(applier.removeTextInRange(B - 2, E + 2), std::invalid_argument);
-    ASSERT_THROW(applier.removeTextInRange(B + 2, E - 2), std::invalid_argument);
+    shouldFailTryingToRemove(B, B + 2);
+    shouldFailTryingToRemove(E - 2, E);
+    shouldFailTryingToRemove(B - 2, E + 2);
+    shouldFailTryingToRemove(B + 2, E - 2);
+}
+
+TEST_F(TextOperationApplierTest, should_fail_trying_to_remove_an_overlapping_empty_range)
+{
+    applier.removeTextInRange(2, 5);
+    shouldFailTryingToRemove(3, 3);
 }
 
 TEST_F(TextOperationApplierTest, should_fail_trying_to_remove_an_invalid_range)
 {
-    ASSERT_THROW(applier.removeTextInRange(5, 4), std::invalid_argument);
+    shouldFailTryingToRemove(5, 4);
     ASSERT_NO_THROW(applier.removeTextInRange(3, 3));
 }
