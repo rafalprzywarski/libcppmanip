@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <OffsetRange.hpp>
+#include <stdexcept>
 
 struct OffsetRangeTest : testing::Test
 {
@@ -29,6 +30,16 @@ TEST_F(OffsetRangeTest, should_detect_degenerate_ranges)
 {
     ASSERT_TRUE(OffsetRange(2, 2).degenerate());
     ASSERT_FALSE(OffsetRange(3, 5).degenerate());
+}
+
+TEST_F(OffsetRangeTest, should_compute_its_length)
+{
+    ASSERT_EQ(5u, OffsetRange(2, 7).length());
+}
+
+TEST_F(OffsetRangeTest, should_fail_when_trying_to_construct_an_invalid_range)
+{
+    ASSERT_THROW(OffsetRange(5, 2), std::invalid_argument);
 }
 
 TEST_F(OffsetRangeTest, two_degenerate_ranges_do_not_overlap)
