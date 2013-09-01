@@ -1,4 +1,4 @@
-Feature: As a developer I want to extract code into method to make my code more readable
+Feature: As a developer I want to extract code into methods to make my code more readable
     @done
     Scenario: Free function without arguments
         Given source code:
@@ -25,5 +25,41 @@ Feature: As a developer I want to extract code into method to make my code more 
             std::cout << "counting" << std::endl;
             runLoop();
             std::cout << std::endl;
+        }
+        """
+    @wip
+    Scenario: Partial selection should work as full selection
+        Given source code:
+        """
+        void f(int);
+        
+        void func()
+        {
+            for (int i = 0; i < 5; ++i)
+            {
+                f(i);
+            }
+            f(10);
+            f(20);
+        }
+        """
+        When I run method extraction from "i);" to "f(2" with name "partial"
+        Then final source code should contain:
+        """
+        void func()
+        {
+            partial();
+        }
+        """
+        And final source code should contain:
+        """
+        void partial()
+        {
+            for (int i = 0; i < 5; ++i)
+            {
+                f(i);
+            }
+            f(10);
+            f(20);
         }
         """
