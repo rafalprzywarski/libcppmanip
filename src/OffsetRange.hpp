@@ -3,7 +3,7 @@
 #include <stdexcept>
 
 /**
- * A left-closed right-open range
+ * A left-closed right-open range, with the exception that degenerate ranges overlap non-degenerate ranges.
  */
 class OffsetRange
 {
@@ -21,7 +21,7 @@ public:
     {
         if (right.from < from)
             return right.overlapsWith(*this);
-        return !right.degenerate() && (right.from < to);
+        return (right.to != from) && (right.from < to);
     }
 private:
     unsigned from, to;

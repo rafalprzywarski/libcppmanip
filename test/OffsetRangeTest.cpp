@@ -48,10 +48,10 @@ TEST_F(OffsetRangeTest, two_degenerate_ranges_do_not_overlap)
     expectNoOverlapping({1, 1}, {2, 2}, "different ranges");
 }
 
-TEST_F(OffsetRangeTest, denerate_ranges_never_overlap)
+TEST_F(OffsetRangeTest, denerate_ranges_overlap_when_not_on_bounds)
 {
     expectNoOverlapping({1, 3}, {1, 1}, "beginnig");
-    expectNoOverlapping({1, 3}, {2, 2}, "middle");
+    expectOverlapping({1, 3}, {2, 2}, "middle");
     expectNoOverlapping({1, 3}, {3, 3}, "ending");
 }
 

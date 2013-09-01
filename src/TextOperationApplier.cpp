@@ -1,17 +1,6 @@
 #include "TextOperationApplier.hpp"
+#include "OffsetRange.hpp"
 #include <stdexcept>
-
-TextOperationApplier::Range::Range(unsigned int from, unsigned int to)
-    : from(from), to(to)
-{
-    if (to < from)
-        throw std::invalid_argument("TextOperationApplier: invalid range");
-}
-
-bool TextOperationApplier::Range::overlapsWith(const TextOperationApplier::Range& r) const
-{
-    return (from < r.to && r.to <= to) || (from <= r.from && r.from < to) || (r.from < from && r.to > to);
-}
 
 std::string TextOperationApplier::apply(const std::string& text)
 {
@@ -28,13 +17,13 @@ void TextOperationApplier::insertTextAt(const std::string& text, unsigned offset
 
 void TextOperationApplier::removeTextInRange(unsigned int from, unsigned int to) 
 {
-    Range range{from, to};
+    OffsetRange range{from, to};
     verifyNoOverlappingRangesExist(range);
-    if (range.empty())
+    if (range.degenerate())
         return;
     replacements[from].setRemovalLength(range.length());
 }
-void TextOperationApplier::verifyNoOverlappingRangesExist(const TextOperationApplier::Range& r)
+void TextOperationApplier::verifyNoOverlappingRangesExist(const OffsetRange& r)
 {
     for (auto const& rep : replacements)
         if (rep.second.overlapsWithRangeAtOffset(r, rep.first))
@@ -52,7 +41,7 @@ void TextOperationApplier::Replacement::setRemovalLength(unsigned int len)
 {
     removalLength = len;
 }
-bool TextOperationApplier::Replacement::overlapsWithRangeAtOffset(const TextOperationApplier::Range& r, unsigned int offset) const
+bool TextOperationApplier::Replacement::overlapsWithRangeAtOffset(const OffsetRange& r, unsigned int offset) const
 {
-    return Range(offset, offset + removalLength).overlapsWith(r);
+    return OffsetRange(offset, offset + removalLength).overlapsWith(r);
 }
