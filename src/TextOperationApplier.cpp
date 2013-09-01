@@ -38,10 +38,12 @@ void TextOperationApplier::insertTextAt(const std::string& text, unsigned offset
 void TextOperationApplier::removeTextInRange(unsigned int from, unsigned int to) 
 {
     Range range{from, to};
-    for (auto const& rem : removals)
-    {
-        if (rem.second.overlapsWith(range))
-            throw std::invalid_argument("TextOperationApplier: overlapping range");
-    }
+    verifyNoOverlappingRangesExist(range);
     removals[from] = range;
+}
+void TextOperationApplier::verifyNoOverlappingRangesExist(const TextOperationApplier::Range& r)
+{
+    for (auto const& rem : removals)
+        if (rem.second.overlapsWith(r))
+            throw std::invalid_argument("TextOperationApplier: overlapping range");
 }

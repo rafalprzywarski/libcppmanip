@@ -19,6 +19,8 @@ private:
     };
     std::map<unsigned, std::string, std::greater<unsigned> > insertions;
     std::map<unsigned, Range, std::greater<unsigned> > removals;
+    
+    void verifyNoOverlappingRangesExist(const Range& r);
 };
 
 #endif // TEXTOPERATIONAPPLIER_HPP
