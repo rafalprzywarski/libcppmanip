@@ -66,7 +66,7 @@ Feature: As a developer I want to extract code into methods to make my code more
             f(20);
         }
         """
-    @wip
+    @done
     Scenario: Extracted function should be inserted before original function
         Given source code:
         """

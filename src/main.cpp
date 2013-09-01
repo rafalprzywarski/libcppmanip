@@ -7,12 +7,13 @@
 #include <sstream>
 #include <fstream>
 #include <stdexcept>
+#include <TextOperationApplier.hpp>
 
 using namespace clang;
 using namespace clang::tooling;
 using namespace llvm;
 
-std::ostringstream output;
+TextOperationApplier sourceOperations;
 std::string extractedMethodName;
 
 struct RowColumn
@@ -119,7 +120,7 @@ public:
         if (!ctx.getSourceManager().isFromMainFile(decl->getLocation()) || !decl->hasBody())
             return true;
         auto stmts = findStatements(*decl, selection);
-        printExtractedFunction(extractedMethodName, stmts);
+        printExtractedFunction(sourceExtractor.getCorrectSourceRange(*decl).getBegin(), extractedMethodName, stmts);
         printOriginalFunctionWithExtractedFunctionCall(extractedMethodName, *decl, stmts);
         return false;
     }
@@ -156,23 +157,22 @@ private:
             std::find_if(begin, body->child_end(), [&](clang::Stmt *s) { return !overlaps(s, selection); });
         return {begin, end};
     }
-    void printExtractedFunction(const std::string& name, Stmt::const_child_range stmts)
+    void printExtractedFunction(SourceLocation at, const std::string& name, Stmt::const_child_range stmts)
     {
-        output << "void " << name << "()\n{\n    " << sourceExtractor.getSource(getSourceRange(stmts)) << "\n}\n";
+        auto& sm = ctx.getSourceManager();
+        std::ostringstream os;
+        os << "void " << name << "()\n{\n    " << sourceExtractor.getSource(getSourceRange(stmts)) << "\n}\n";
+        sourceOperations.insertTextAt(os.str(), sm.getFileOffset(at));
     }
     void printOriginalFunctionWithExtractedFunctionCall(const std::string& name, FunctionDecl& decl, Stmt::const_child_range stmts)
     {
-        output << getTextWithReplace(
-            sourceExtractor.getCorrectSourceRange(decl),
-            getSourceRange(stmts),
-            name + "();");
+        getTextWithReplace(getSourceRange(stmts), name + "();");
     }
-    std::string getTextWithReplace(SourceRange range, SourceRange without, std::string replace)
+    void getTextWithReplace(SourceRange without, std::string replace)
     {
-        return
-            sourceExtractor.getSource(SourceRange(range.getBegin(), without.getBegin())) +
-            replace +
-            sourceExtractor.getSource(SourceRange(without.getEnd(), range.getEnd()));
+        auto& sm = ctx.getSourceManager();
+        sourceOperations.removeTextInRange(sm.getFileOffset(without.getBegin()), sm.getFileOffset(without.getEnd()));
+        sourceOperations.insertTextAt(replace, sm.getFileOffset(without.getBegin()));
     }
 };
 
@@ -204,6 +204,12 @@ unsigned to_u(const char *s)
     return u;
 }
 
+std::string loadFile(const std::string& filename)
+{
+    std::ifstream f(filename);
+    return std::string(std::istreambuf_iterator<char>(f), std::istreambuf_iterator<char>());
+}
+
 int main(int argc, const char** argv)
 {
     int fakeArgc = 3;
@@ -217,6 +223,8 @@ int main(int argc, const char** argv)
     
     tool.run(newFrontendActionFactory<MethodExtractorFactory>());
     
+    std::string source = loadFile(argv[1]);
+    std::string modifiedSource = sourceOperations.apply(source);
     std::ofstream f(argv[1]);
-    f << output.str();
+    f << modifiedSource;
 }
