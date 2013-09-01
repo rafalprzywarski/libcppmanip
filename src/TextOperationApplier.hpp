@@ -10,8 +10,15 @@ public:
     void insertTextAt(const std::string& text, unsigned offset);
     void removeTextInRange(unsigned from, unsigned to);
 private:
+    struct Range
+    {
+        unsigned from, to;
+        Range() : from(0), to(0) { }
+        Range(unsigned from, unsigned to);
+        bool overlapsWith(const Range& r) const;
+    };
     std::map<unsigned, std::string, std::greater<unsigned> > insertions;
-    std::map<unsigned, unsigned, std::greater<unsigned> > removals;
+    std::map<unsigned, Range, std::greater<unsigned> > removals;
 };
 
 #endif // TEXTOPERATIONAPPLIER_HPP

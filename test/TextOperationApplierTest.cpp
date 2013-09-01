@@ -50,11 +50,18 @@ TEST_F(TextOperationApplierTest, should_perform_multiple_removals_at_ranges_give
 
 TEST_F(TextOperationApplierTest, should_fail_trying_to_remove_overlapping_ranges)
 {
+    unsigned B = 3, E = 9;
     applier.removeTextInRange(3, 9);
-    ASSERT_THROW(applier.removeTextInRange(1, 4), std::invalid_argument);
-    ASSERT_NO_THROW(applier.removeTextInRange(1, 3));
-    ASSERT_THROW(applier.removeTextInRange(8, 10), std::invalid_argument);
-    ASSERT_NO_THROW(applier.removeTextInRange(9, 10));
+    ASSERT_THROW(applier.removeTextInRange(B - 2, B + 1), std::invalid_argument);
+    ASSERT_THROW(applier.removeTextInRange(B - 2, E), std::invalid_argument);
+    ASSERT_NO_THROW(applier.removeTextInRange(B - 2, B));
+    ASSERT_THROW(applier.removeTextInRange(B, E + 1), std::invalid_argument);
+    ASSERT_THROW(applier.removeTextInRange(E - 1, E + 1), std::invalid_argument);
+    ASSERT_NO_THROW(applier.removeTextInRange(E, E + 1));
+    ASSERT_THROW(applier.removeTextInRange(B, B + 2), std::invalid_argument);
+    ASSERT_THROW(applier.removeTextInRange(E - 2, E), std::invalid_argument);
+    ASSERT_THROW(applier.removeTextInRange(B - 2, E + 2), std::invalid_argument);
+    ASSERT_THROW(applier.removeTextInRange(B + 2, E - 2), std::invalid_argument);
 }
 
 TEST_F(TextOperationApplierTest, should_fail_trying_to_remove_an_invalid_range)

@@ -1,6 +1,18 @@
 #include "TextOperationApplier.hpp"
 #include <stdexcept>
 
+TextOperationApplier::Range::Range(unsigned int from, unsigned int to)
+    : from(from), to(to)
+{
+    if (to < from)
+        throw std::invalid_argument("TextOperationApplier: invalid range");
+}
+
+bool TextOperationApplier::Range::overlapsWith(const TextOperationApplier::Range& r) const
+{
+    return (from < r.to && r.to <= to) || (from <= r.from && r.from < to);
+}
+
 std::string TextOperationApplier::apply(const std::string& text)
 {
     auto copy = text;
@@ -12,9 +24,8 @@ std::string TextOperationApplier::apply(const std::string& text)
     }
     for (auto const& rem : removals)
     {
-        auto removalFrom = rem.first;
-        auto removalTo = rem.second;
-        copy = copy.substr(0, removalFrom) + copy.substr(removalTo);
+        auto removal = rem.second;
+        copy = copy.substr(0, removal.from) + copy.substr(removal.to);
     }
     return copy;
 }
@@ -26,11 +37,11 @@ void TextOperationApplier::insertTextAt(const std::string& text, unsigned offset
 
 void TextOperationApplier::removeTextInRange(unsigned int from, unsigned int to) 
 {
-    if (to < from) throw std::invalid_argument("TextOperationApplier: invalid range");
+    Range range{from, to};
     for (auto const& rem : removals)
     {
-        if (rem.first < to && to < rem.second) throw std::invalid_argument("");
-        if (rem.first < from && from < rem.second) throw std::invalid_argument("");
+        if (rem.second.overlapsWith(range))
+            throw std::invalid_argument("TextOperationApplier: overlapping range");
     }
-    removals[from] = to;
+    removals[from] = range;
 }
