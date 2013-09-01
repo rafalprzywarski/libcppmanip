@@ -41,8 +41,18 @@ public:
         return SourceRange(spelling.getBegin(), spelling.getBegin().getLocWithOffset(sourceLength));
     }
 
-    std::string getSource(SourceRange range)
+    clang::SourceRange getCorrectSourceRange(ConstStmtRange stmts)
     {
+        clang::SourceRange r;
+        r.setBegin(getCorrectSourceRange(**stmts).getBegin());
+        for (auto s : stmts)
+            r.setEnd(getCorrectSourceRange(*s).getEnd());
+        return r;
+    }
+
+    std::string getSource(ConstStmtRange stmts)
+    {
+        auto range = getCorrectSourceRange(stmts);
         return std::string(getText(range.getBegin()), rangeLength(range));
     }
 
@@ -125,14 +135,6 @@ private:
     {
         return overlaps(sourceExtractor.getCorrectSourceRange(*stmt), s);
     }
-    clang::SourceRange getSourceRange(Stmt::const_child_range stmts)
-    {
-        clang::SourceRange r;
-        r.setBegin(sourceExtractor.getCorrectSourceRange(**stmts).getBegin());
-        for (auto s : stmts)
-            r.setEnd(sourceExtractor.getCorrectSourceRange(*s).getEnd());
-        return r;
-    }
     clang::Stmt::const_child_range findStatements(const FunctionDecl& func, OffsetRange selection)
     {
         auto body = func.getBody();
@@ -146,14 +148,14 @@ private:
     {
         auto& sm = ctx.getSourceManager();
         std::ostringstream os;
-        os << "void " << name << "()\n{\n    " << sourceExtractor.getSource(getSourceRange(stmts)) << "\n}\n";
+        os << "void " << name << "()\n{\n    " << sourceExtractor.getSource(stmts) << "\n}\n";
         sourceOperations.insertTextAt(os.str(), sm.getFileOffset(at));
     }
     void printOriginalFunctionWithExtractedFunctionCall(const std::string& name, FunctionDecl& decl, Stmt::const_child_range stmts)
     {
-        getTextWithReplace(getSourceRange(stmts), name + "();");
+        replaceRangeWith(sourceExtractor.getCorrectSourceRange(stmts), name + "();");
     }
-    void getTextWithReplace(SourceRange without, std::string replace)
+    void replaceRangeWith(SourceRange without, std::string replace)
     {
         auto& sm = ctx.getSourceManager();
         sourceOperations.removeTextInRange(sm.getFileOffset(without.getBegin()), sm.getFileOffset(without.getEnd()));
@@ -189,32 +191,70 @@ unsigned to_u(const char *s)
     return u;
 }
 
-std::string loadFile(const std::string& filename)
+std::string loadTextFromFile(const std::string& filename)
 {
     std::ifstream f(filename);
     return std::string(std::istreambuf_iterator<char>(f), std::istreambuf_iterator<char>());
 }
 
+void writeTextToFile(const std::string& text, const std::string& filename)
+{
+    std::ofstream f(filename);
+    f << text;
+}
+
+void runClangToolForFile(const std::string& filename)
+{
+    int fakeArgc = 3;
+    const char *fakeArgv[] = { "", filename.c_str(), "--" };
+    CommonOptionsParser parser(fakeArgc, fakeArgv);
+    ClangTool tool(parser.GetCompilations(), parser.GetSourcePathList());
+    tool.run(newFrontendActionFactory<MethodExtractorFactory>());
+}
+
+void applySourceOperationsToFile(const std::string& filename)
+{
+    std::string source = loadTextFromFile(filename);
+    std::string modifiedSource = sourceOperations.apply(source);
+    writeTextToFile(modifiedSource, filename); 
+}
+
+void setMethodExtractorForNameAndSourceSelection(const std::string& methodName, OffsetRange sourceRange)
+{
+    extractedMethodName = methodName;
+    extractMethodSelection = sourceRange;
+}
+
+class ArgParser
+{
+public:
+    void parse(int argc, const char** argv)
+    {
+        sourceFilename = argv[1];
+        extractedMethodName = argv[3];
+        sourceSelection = OffsetRange(to_u(argv[4]), to_u(argv[5]));
+    }
+    std::string getSourceFilename() const { return sourceFilename; }
+    std::string getExtractedMethodName() const { return extractedMethodName; }
+    OffsetRange getSourceSelection() const { return sourceSelection; }
+private:
+    std::string sourceFilename;
+    std::string extractedMethodName;
+    OffsetRange sourceSelection;
+};
+
 int main(int argc, const char** argv)
 {
     try
     {
-        int fakeArgc = 3;
-        const char *fakeArgv[] = { argv[0], argv[1], "--" };
-        CommonOptionsParser parser(fakeArgc, fakeArgv);
-        ClangTool tool(parser.GetCompilations(), parser.GetSourcePathList());
-    
-        extractedMethodName = argv[3];
-        extractMethodSelection = OffsetRange(to_u(argv[4]), to_u(argv[5]));
+        ArgParser args;
+        args.parse(argc, argv);
         
-        tool.run(newFrontendActionFactory<MethodExtractorFactory>());
-        
-        std::string source = loadFile(argv[1]);
-        std::string modifiedSource = sourceOperations.apply(source);
-        std::ofstream f(argv[1]);
-        f << modifiedSource;
+        setMethodExtractorForNameAndSourceSelection(args.getExtractedMethodName(), args.getSourceSelection());
+        runClangToolForFile(args.getSourceFilename());
+        applySourceOperationsToFile(args.getSourceFilename());
     }
-    catch (const std::exception& e)
+    catch (const std::logic_error& e)
     {
         std::cerr << "Internal error: " << e.what() << std::endl;
         return 1;
