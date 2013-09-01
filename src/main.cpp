@@ -10,6 +10,7 @@
 #include <iostream>
 #include <TextOperationApplier.hpp>
 #include "OffsetRange.hpp"
+#include "CommandLineParser.hpp"
 
 TextOperationApplier sourceOperations;
 std::string extractedMethodName;
@@ -179,14 +180,6 @@ public:
     }
 };
 
-unsigned to_u(const char *s)
-{
-    std::istringstream ss(s);
-    unsigned u;
-    ss >> u;
-    return u;
-}
-
 std::string loadTextFromFile(const std::string& filename)
 {
     std::ifstream f(filename);
@@ -221,29 +214,11 @@ void setMethodExtractorForNameAndSourceSelection(const std::string& methodName, 
     extractMethodSelection = sourceRange;
 }
 
-class ArgParser
-{
-public:
-    void parse(int argc, const char** argv)
-    {
-        sourceFilename = argv[1];
-        extractedMethodName = argv[3];
-        sourceSelection = OffsetRange(to_u(argv[4]), to_u(argv[5]));
-    }
-    std::string getSourceFilename() const { return sourceFilename; }
-    std::string getExtractedMethodName() const { return extractedMethodName; }
-    OffsetRange getSourceSelection() const { return sourceSelection; }
-private:
-    std::string sourceFilename;
-    std::string extractedMethodName;
-    OffsetRange sourceSelection;
-};
-
 int main(int argc, const char** argv)
 {
     try
     {
-        ArgParser args;
+        CommandLineParser args;
         args.parse(argc, argv);
         
         setMethodExtractorForNameAndSourceSelection(args.getExtractedMethodName(), args.getSourceSelection());
