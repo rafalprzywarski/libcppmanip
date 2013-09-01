@@ -26,6 +26,7 @@ void TextOperationApplier::insertTextAt(const std::string& text, unsigned offset
 
 void TextOperationApplier::removeTextInRange(unsigned int from, unsigned int to) 
 {
+    if (to < from) throw std::invalid_argument("TextOperationApplier: invalid range");
     for (auto const& rem : removals)
     {
         if (rem.first < to && to < rem.second) throw std::invalid_argument("");

@@ -56,3 +56,9 @@ TEST_F(TextOperationApplierTest, should_fail_trying_to_remove_overlapping_ranges
     ASSERT_THROW(applier.removeTextInRange(8, 10), std::invalid_argument);
     ASSERT_NO_THROW(applier.removeTextInRange(9, 10));
 }
+
+TEST_F(TextOperationApplierTest, should_fail_trying_to_remove_an_invalid_range)
+{
+    ASSERT_THROW(applier.removeTextInRange(5, 4), std::invalid_argument);
+    ASSERT_NO_THROW(applier.removeTextInRange(3, 3));
+}
