@@ -21,7 +21,7 @@ def rangeFromPhrases startPhrase, endPhrase, source
   endIndex = $SOURCE.index(endPhrase)
   startIndex.should_not be_nil, "\"#{startPhrase}\" not found in the source code"
   endIndex.should_not be_nil, "\"#{endPhrase}\" not found in the source code"
-  startIndex.should be < endIndex, "\"#{startPhrase}\" must be before \"#{endPhrase}\""
+  startIndex.should be <= endIndex, "\"#{startPhrase}\" must be before or equal to \"#{endPhrase}\""
   endLoc = locationFromOffset(endIndex, source)
   endLoc.col += endPhrase.length
   return locationFromOffset(startIndex, source), endLoc
@@ -41,6 +41,11 @@ When /^I run method extraction from "(.*?)" to "(.*?)" with name "(.*?)"$/ do |s
   output = %x(#{BUILD_DIRECTORY}/cppmanip source.cpp extract_method #{methodName} #{startLoc.row} #{startLoc.col} #{endLoc.row} #{endLoc.col})
   $?.should eq(0), "cppmanip failed with error code #{$?}: #{output}"
 end
+
+When /^I run method extraction for "(.*?)" with name "(.*?)"$/ do |phrase, methodName|
+  step "I run method extraction from \"#{phrase}\" to \"#{phrase}\" with name \"#{methodName}\""
+end
+
 
 Then /^final source code should be:$/ do |expectedSource|
   File.read(SOURCE_FILE).should eq(expectedSource)

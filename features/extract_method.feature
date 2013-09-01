@@ -66,3 +66,35 @@ Feature: As a developer I want to extract code into methods to make my code more
             f(20);
         }
         """
+    @wip
+    Scenario: Extracted function should be inserted before original function
+        Given source code:
+        """
+        #include <iostream>
+        void f(int);
+        void complex()
+        {
+            f(1);
+            std::cout << 2;
+            f(2);
+        }
+        void other();
+        """
+        When I run method extraction for "cout" with name "print"
+        Then final source code should be:
+        """
+        #include <iostream>
+        void f(int);
+        void print()
+        {
+            std::cout << 2;
+        }
+        void complex()
+        {
+            f(1);
+            print();
+            f(2);
+        }
+        void other();
+        """
+        
