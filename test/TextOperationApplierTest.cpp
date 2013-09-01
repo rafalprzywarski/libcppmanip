@@ -60,14 +60,14 @@ TEST_F(TextOperationApplierTest, should_fail_trying_to_remove_overlapping_ranges
     applier.removeTextInRange(3, 9);
     shouldFailTryingToRemove(B - 2, B + 1);
     shouldFailTryingToRemove(B - 2, E);
-    ASSERT_NO_THROW(applier.removeTextInRange(B - 2, B));
     shouldFailTryingToRemove(B, E + 1);
     shouldFailTryingToRemove(E - 1, E + 1);
-    ASSERT_NO_THROW(applier.removeTextInRange(E, E + 1));
     shouldFailTryingToRemove(B, B + 2);
     shouldFailTryingToRemove(E - 2, E);
     shouldFailTryingToRemove(B - 2, E + 2);
     shouldFailTryingToRemove(B + 2, E - 2);
+    ASSERT_NO_THROW(applier.removeTextInRange(B - 2, B));
+    ASSERT_NO_THROW(applier.removeTextInRange(E, E + 1));
 }
 
 TEST_F(TextOperationApplierTest, should_fail_trying_to_remove_an_overlapping_empty_range)
@@ -95,4 +95,10 @@ TEST_F(TextOperationApplierTest, should_perform_simultaneous_removals_and_insert
     applier.removeTextInRange(13, 18);
     applier.insertTextAt("black", 13);
     ASSERT_EQ("this burnt cake is black", applier.apply("this cake is tasty"));
+}
+
+TEST_F(TextOperationApplierTest, should_fail_trying_to_remove_ranges_overlapping_with_insertions)
+{
+    applier.insertTextAt("x", 4);
+    shouldFailTryingToRemove(3, 5);
 }

@@ -10,17 +10,28 @@ public:
     void insertTextAt(const std::string& text, unsigned offset);
     void removeTextInRange(unsigned from, unsigned to);
 private:
-    struct Range
+    class Range
     {
-        unsigned from, to;
+    public:
         Range() : from(0), to(0) { }
         Range(unsigned from, unsigned to);
         bool overlapsWith(const Range& r) const;
+        bool empty() const { return from == to; }
+        unsigned length() const { return to - from; }
+    private:
+        unsigned from, to;
     };
-    struct Replacement
+    class Replacement
     {
-        Range removal;
-        std::string insertion;
+    public:
+        Replacement() : removalLength(0) { }
+        void appendInsertionText(const std::string& s);
+        void setRemovalLength(unsigned len);
+        bool overlapsWithRangeAtOffset(const Range& r, unsigned offset) const;
+        std::string applyAtOffset(unsigned offset, const std::string& s) const;
+    private:
+        unsigned removalLength;
+        std::string insertionText;
     };
     std::map<unsigned, Replacement, std::greater<unsigned> > replacements;
     

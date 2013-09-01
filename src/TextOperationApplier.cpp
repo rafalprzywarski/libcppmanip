@@ -1,6 +1,5 @@
 #include "TextOperationApplier.hpp"
 #include <stdexcept>
-#include <cassert>
 
 TextOperationApplier::Range::Range(unsigned int from, unsigned int to)
     : from(from), to(to)
@@ -11,36 +10,49 @@ TextOperationApplier::Range::Range(unsigned int from, unsigned int to)
 
 bool TextOperationApplier::Range::overlapsWith(const TextOperationApplier::Range& r) const
 {
-    return (from < r.to && r.to <= to) || (from <= r.from && r.from < to);
+    return (from < r.to && r.to <= to) || (from <= r.from && r.from < to) || (r.from < from && r.to > to);
 }
 
 std::string TextOperationApplier::apply(const std::string& text)
 {
     auto current = text;
     for (auto const& it : replacements)
-    {
-        unsigned offset = it.first;
-        auto const& op = it.second;
-        current = current.substr(0, op.removal.from) + current.substr(op.removal.to);
-        current = current.substr(0, offset) + op.insertion + current.substr(offset);
-    }
+        current = it.second.applyAtOffset(it.first, current);
     return current;
 }
 
 void TextOperationApplier::insertTextAt(const std::string& text, unsigned offset)
 {
-    replacements[offset].insertion += text;
+    replacements[offset].appendInsertionText(text);
 }
 
 void TextOperationApplier::removeTextInRange(unsigned int from, unsigned int to) 
 {
     Range range{from, to};
     verifyNoOverlappingRangesExist(range);
-    replacements[from].removal = range;
+    if (range.empty())
+        return;
+    replacements[from].setRemovalLength(range.length());
 }
 void TextOperationApplier::verifyNoOverlappingRangesExist(const TextOperationApplier::Range& r)
 {
-    for (auto const& rem : replacements)
-        if (rem.second.removal.overlapsWith(r))
+    for (auto const& rep : replacements)
+        if (rep.second.overlapsWithRangeAtOffset(r, rep.first))
             throw std::invalid_argument("TextOperationApplier: overlapping range");
+}
+std::string TextOperationApplier::Replacement::applyAtOffset(unsigned int offset, const std::string& s) const
+{
+    return s.substr(0, offset) + insertionText + s.substr(offset + removalLength);
+}
+void TextOperationApplier::Replacement::appendInsertionText(const std::string& s)
+{
+    insertionText += s;
+}
+void TextOperationApplier::Replacement::setRemovalLength(unsigned int len)
+{
+    removalLength = len;
+}
+bool TextOperationApplier::Replacement::overlapsWithRangeAtOffset(const TextOperationApplier::Range& r, unsigned int offset) const
+{
+    return Range(offset, offset + removalLength).overlapsWith(r);
 }
