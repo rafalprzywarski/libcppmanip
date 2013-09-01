@@ -81,3 +81,10 @@ TEST_F(TextOperationApplierTest, should_fail_trying_to_remove_an_invalid_range)
     shouldFailTryingToRemove(5, 4);
     ASSERT_NO_THROW(applier.removeTextInRange(3, 3));
 }
+
+TEST_F(TextOperationApplierTest, should_ignore_an_empty_range)
+{
+    applier.removeTextInRange(2, 2);
+    ASSERT_NO_THROW(applier.removeTextInRange(2, 2));
+    ASSERT_NO_THROW(applier.removeTextInRange(1, 3));
+}
