@@ -11,10 +11,6 @@
 #include <TextOperationApplier.hpp>
 #include "OffsetRange.hpp"
 
-using namespace clang;
-using namespace clang::tooling;
-using namespace llvm;
-
 TextOperationApplier sourceOperations;
 std::string extractedMethodName;
 
@@ -26,7 +22,7 @@ template <typename Node>
 unsigned extraCharsHack(const Node&) { return 0; }
 
 template <>
-unsigned extraCharsHack<Stmt>(const Stmt&) { return 1; } // semicolon
+unsigned extraCharsHack<clang::Stmt>(const clang::Stmt&) { return 1; } // semicolon
 
 class SourceExtractor
 {
@@ -38,10 +34,10 @@ public:
     {
         auto spelling = getSpellingRange(node);
         auto sourceLength = getSourceLength(spelling, node);
-        return SourceRange(spelling.getBegin(), spelling.getBegin().getLocWithOffset(sourceLength));
+        return {spelling.getBegin(), spelling.getBegin().getLocWithOffset(sourceLength)};
     }
 
-    clang::SourceRange getCorrectSourceRange(ConstStmtRange stmts)
+    clang::SourceRange getCorrectSourceRange(clang::ConstStmtRange stmts)
     {
         clang::SourceRange r;
         r.setBegin(getCorrectSourceRange(**stmts).getBegin());
@@ -50,7 +46,7 @@ public:
         return r;
     }
 
-    std::string getSource(ConstStmtRange stmts)
+    std::string getSource(clang::ConstStmtRange stmts)
     {
         auto range = getCorrectSourceRange(stmts);
         return std::string(getText(range.getBegin()), rangeLength(range));
@@ -62,7 +58,7 @@ private:
     template <typename Node>
     clang::SourceRange getSpellingRange(const Node& n)
     {
-        auto r = SourceRange(
+        auto r = clang::SourceRange(
             sourceManager.getSpellingLoc(n.getSourceRange().getBegin()),
             sourceManager.getSpellingLoc(n.getSourceRange().getEnd()));
         if (r.isInvalid())
@@ -81,22 +77,22 @@ private:
         return end - start + extraCharsHack(node);
     }
 
-    unsigned locOffset(SourceLocation loc)
+    unsigned locOffset(clang::SourceLocation loc)
     {
         return sourceManager.getFileOffset(loc);
     }
     
-    unsigned locDistance(SourceLocation from, SourceLocation to)
+    unsigned locDistance(clang::SourceLocation from, clang::SourceLocation to)
     {
         return locOffset(to) - locOffset(from);
     }
     
-    unsigned rangeLength(SourceRange r)
+    unsigned rangeLength(clang::SourceRange r)
     {
         return locDistance(r.getBegin(), r.getEnd());
     }
     
-    const char *getText(SourceLocation loc)
+    const char *getText(clang::SourceLocation loc)
     {
         auto invalid = true;
         auto text = sourceManager.getCharacterData(loc, &invalid);
@@ -106,16 +102,16 @@ private:
     }
 };
 
-class MethodExtractor : public RecursiveASTVisitor<MethodExtractor>
+class MethodExtractor : public clang::RecursiveASTVisitor<MethodExtractor>
 {
-    ASTContext& ctx;
+    clang::ASTContext& ctx;
     SourceExtractor sourceExtractor{ctx.getSourceManager()};
     std::string extractedMethodName;
     OffsetRange selection;
 public:
-    MethodExtractor(ASTContext& ctx, const std::string& extractedMethodName, OffsetRange selection)
+    MethodExtractor(clang::ASTContext& ctx, const std::string& extractedMethodName, OffsetRange selection)
         : ctx(ctx), extractedMethodName(extractedMethodName), selection(selection) { }
-    bool VisitFunctionDecl(FunctionDecl* decl)
+    bool VisitFunctionDecl(clang::FunctionDecl* decl)
     {
         if (!ctx.getSourceManager().isFromMainFile(decl->getLocation()) || !decl->hasBody())
             return true;
@@ -135,7 +131,7 @@ private:
     {
         return overlaps(sourceExtractor.getCorrectSourceRange(*stmt), s);
     }
-    clang::Stmt::const_child_range findStatements(const FunctionDecl& func, OffsetRange selection)
+    clang::ConstStmtRange findStatements(const clang::FunctionDecl& func, OffsetRange selection)
     {
         auto body = func.getBody();
         auto begin =
@@ -144,18 +140,18 @@ private:
             std::find_if(begin, body->child_end(), [&](clang::Stmt *s) { return !overlaps(s, selection); });
         return {begin, end};
     }
-    void printExtractedFunction(SourceLocation at, const std::string& name, Stmt::const_child_range stmts)
+    void printExtractedFunction(clang::SourceLocation at, const std::string& name, clang::ConstStmtRange stmts)
     {
         auto& sm = ctx.getSourceManager();
         std::ostringstream os;
         os << "void " << name << "()\n{\n    " << sourceExtractor.getSource(stmts) << "\n}\n";
         sourceOperations.insertTextAt(os.str(), sm.getFileOffset(at));
     }
-    void printOriginalFunctionWithExtractedFunctionCall(const std::string& name, FunctionDecl& decl, Stmt::const_child_range stmts)
+    void printOriginalFunctionWithExtractedFunctionCall(const std::string& name, clang::FunctionDecl& decl, clang::ConstStmtRange stmts)
     {
         replaceRangeWith(sourceExtractor.getCorrectSourceRange(stmts), name + "();");
     }
-    void replaceRangeWith(SourceRange without, std::string replace)
+    void replaceRangeWith(clang::SourceRange without, std::string replace)
     {
         auto& sm = ctx.getSourceManager();
         sourceOperations.removeTextInRange(sm.getFileOffset(without.getBegin()), sm.getFileOffset(without.getEnd()));
@@ -163,21 +159,21 @@ private:
     }
 };
 
-class MethodExtractorUnitHandler : public ASTConsumer
+class MethodExtractorUnitHandler : public clang::ASTConsumer
 {
 public:
     MethodExtractorUnitHandler() { }
-    virtual void HandleTranslationUnit(ASTContext& ctx)
+    virtual void HandleTranslationUnit(clang::ASTContext& ctx)
     {
         MethodExtractor extractor(ctx, extractedMethodName, extractMethodSelection);
         extractor.TraverseDecl(ctx.getTranslationUnitDecl());
     }
 };
 
-class MethodExtractorFactory: public ASTFrontendAction
+class MethodExtractorFactory: public clang::ASTFrontendAction
 {
 public:
-    virtual ASTConsumer* CreateASTConsumer(CompilerInstance&, StringRef)
+    virtual clang::ASTConsumer* CreateASTConsumer(clang::CompilerInstance&, clang::StringRef)
     {
         return new MethodExtractorUnitHandler();
     }
@@ -207,9 +203,9 @@ void runClangToolForFile(const std::string& filename)
 {
     int fakeArgc = 3;
     const char *fakeArgv[] = { "", filename.c_str(), "--" };
-    CommonOptionsParser parser(fakeArgc, fakeArgv);
-    ClangTool tool(parser.GetCompilations(), parser.GetSourcePathList());
-    tool.run(newFrontendActionFactory<MethodExtractorFactory>());
+    clang::tooling::CommonOptionsParser parser(fakeArgc, fakeArgv);
+    clang::tooling::ClangTool tool(parser.GetCompilations(), parser.GetSourcePathList());
+    tool.run(clang::tooling::newFrontendActionFactory<MethodExtractorFactory>());
 }
 
 void applySourceOperationsToFile(const std::string& filename)
