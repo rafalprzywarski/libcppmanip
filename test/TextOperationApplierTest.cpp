@@ -17,11 +17,12 @@ TEST_F(TextOperationApplierTest, should_insert_text_at_given_offset)
     ASSERT_EQ("This is a text", applier.apply("This  a text"));
 }
 
-TEST_F(TextOperationApplierTest, should_perform_multiple_insertions)
+TEST_F(TextOperationApplierTest, should_perform_multiple_insertions_at_offsets_given_in_any_order)
 {
-    applier.insertTextAt("green", 0);
-    applier.insertTextAt("blue", 5);
-    ASSERT_EQ("green and blue are inserted", applier.apply(" and  are inserted"));
+    applier.insertTextAt("green", 2);
+    applier.insertTextAt("blue", 7);
+    applier.insertTextAt("red", 0);
+    ASSERT_EQ("red, green and blue are inserted", applier.apply(",  and  are inserted"));
 }
 
 TEST_F(TextOperationApplierTest, should_perform_insertions_in_given_order)

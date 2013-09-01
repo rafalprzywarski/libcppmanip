@@ -7,8 +7,8 @@ std::string TextOperationApplier::apply(const std::string& text)
     auto copy = text;
     for (auto const& ins : insertions)
     {
-        unsigned insertionOffset = ins.offset;
-        auto textToInsert = ins.text;
+        unsigned insertionOffset = ins.first;
+        auto textToInsert = ins.second;
         copy = copy.substr(0, insertionOffset) + textToInsert + copy.substr(insertionOffset);
     }
     return copy;
@@ -16,8 +16,5 @@ std::string TextOperationApplier::apply(const std::string& text)
 
 void TextOperationApplier::insertTextAt(const std::string& text, unsigned offset)
 {
-    insertions.push_front({text, offset});
+    insertions[offset] += text;
 }
-
-TextOperationApplier::Insertion::Insertion(const std::string& text, unsigned offset)
-    : text(text), offset(offset) { }
