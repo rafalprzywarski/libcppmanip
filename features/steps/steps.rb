@@ -47,5 +47,5 @@ Then /^final source code should be:$/ do |expectedSource|
 end
 
 Then /^final source code should contain:$/ do |expectedSource|
-  File.read(SOURCE_FILE).should eq(expectedSource)
+  File.read(SOURCE_FILE).should include(expectedSource)
 end

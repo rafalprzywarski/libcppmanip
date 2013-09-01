@@ -27,7 +27,7 @@ Feature: As a developer I want to extract code into methods to make my code more
             std::cout << std::endl;
         }
         """
-    @wip
+    @done
     Scenario: Partial selection should work as full selection
         Given source code:
         """

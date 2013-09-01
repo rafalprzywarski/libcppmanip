@@ -15,9 +15,21 @@ using namespace llvm;
 std::ostringstream output;
 std::string extractedMethodName;
 
+struct RowColumn
+{
+    unsigned row, column;
+    RowColumn() : row(0), column(0) { }
+    RowColumn(unsigned row, unsigned column) : row(row), column(column) { }
+};
+
+struct UserSourceSelection
+{
+    RowColumn from, to;
+};
+
+UserSourceSelection extractMethodSelection;
+
 // TODO: semicolon hack
-// TODO: source location passing
-// TODO: finding statements
 
 template <typename Node>
 unsigned extraCharsHack(const Node&) { return 0; }
@@ -98,34 +110,61 @@ class MethodExtractor : public RecursiveASTVisitor<MethodExtractor>
     ASTContext& ctx;
     SourceExtractor sourceExtractor{ctx.getSourceManager()};
     std::string extractedMethodName;
+    UserSourceSelection selection;
 public:
-    MethodExtractor(ASTContext& ctx, const std::string& extractedMethodName)
-        : ctx(ctx), extractedMethodName(extractedMethodName) { }
+    MethodExtractor(ASTContext& ctx, const std::string& extractedMethodName, UserSourceSelection selection)
+        : ctx(ctx), extractedMethodName(extractedMethodName), selection(selection) { }
     bool VisitFunctionDecl(FunctionDecl* decl)
     {
         if (!ctx.getSourceManager().isFromMainFile(decl->getLocation()) || !decl->hasBody())
             return true;
-        auto& stmt = findStatement(*decl);
-        printExtractedFunction(extractedMethodName, stmt);
-        printOriginalFunctionWithExtractedFunctionCall(extractedMethodName, *decl, stmt);
+        auto stmts = findStatements(*decl, selection);
+        printExtractedFunction(extractedMethodName, stmts);
+        printOriginalFunctionWithExtractedFunctionCall(extractedMethodName, *decl, stmts);
         return false;
     }
 private:
-    const clang::Stmt& findStatement(const FunctionDecl& func)
+    bool overlaps(clang::SourceRange r, UserSourceSelection s)
     {
-        Stmt::child_iterator it = func.getBody()->child_begin();
-        ++it;
-        return **it;
+        auto begin = ctx.getSourceManager().getPresumedLoc(r.getBegin());
+        auto end = ctx.getSourceManager().getPresumedLoc(r.getEnd());
+        if (s.to.row < begin.getLine()) return false;
+        if (s.from.row > end.getLine()) return false;
+        if (s.from.row < end.getLine()) return true;
+        if (s.to.row > begin.getLine()) return true;
+        
+        return true;
     }
-    void printExtractedFunction(const std::string& name, const Stmt& stmt)
+    bool overlaps(clang::Stmt *stmt, UserSourceSelection s)
     {
-        output << "void " << name << "()\n{\n    " << sourceExtractor.getSource(sourceExtractor.getCorrectSourceRange(stmt)) << "\n}\n";
+        return overlaps(sourceExtractor.getCorrectSourceRange(*stmt), s);
     }
-    void printOriginalFunctionWithExtractedFunctionCall(const std::string& name, FunctionDecl& decl, const Stmt& stmt)
+    clang::SourceRange getSourceRange(Stmt::const_child_range stmts)
+    {
+        clang::SourceRange r;
+        r.setBegin(sourceExtractor.getCorrectSourceRange(**stmts).getBegin());
+        for (auto s : stmts)
+            r.setEnd(sourceExtractor.getCorrectSourceRange(*s).getEnd());
+        return r;
+    }
+    clang::Stmt::const_child_range findStatements(const FunctionDecl& func, UserSourceSelection selection)
+    {
+        auto body = func.getBody();
+        auto begin =
+            std::find_if(body->child_begin(), body->child_end(), [&](clang::Stmt *s) { return overlaps(s, selection); });
+        auto end =
+            std::find_if(begin, body->child_end(), [&](clang::Stmt *s) { return !overlaps(s, selection); });
+        return {begin, end};
+    }
+    void printExtractedFunction(const std::string& name, Stmt::const_child_range stmts)
+    {
+        output << "void " << name << "()\n{\n    " << sourceExtractor.getSource(getSourceRange(stmts)) << "\n}\n";
+    }
+    void printOriginalFunctionWithExtractedFunctionCall(const std::string& name, FunctionDecl& decl, Stmt::const_child_range stmts)
     {
         output << getTextWithReplace(
             sourceExtractor.getCorrectSourceRange(decl),
-            sourceExtractor.getCorrectSourceRange(stmt),
+            getSourceRange(stmts),
             name + "();");
     }
     std::string getTextWithReplace(SourceRange range, SourceRange without, std::string replace)
@@ -143,7 +182,8 @@ public:
     MethodExtractorUnitHandler() { }
     virtual void HandleTranslationUnit(ASTContext& ctx)
     {
-        MethodExtractor(ctx, extractedMethodName).TraverseDecl(ctx.getTranslationUnitDecl());
+        MethodExtractor extractor(ctx, extractedMethodName, extractMethodSelection);
+        extractor.TraverseDecl(ctx.getTranslationUnitDecl());
     }
 };
 
@@ -156,6 +196,14 @@ public:
     }
 };
 
+unsigned to_u(const char *s)
+{
+    std::istringstream ss(s);
+    unsigned u;
+    ss >> u;
+    return u;
+}
+
 int main(int argc, const char** argv)
 {
     int fakeArgc = 3;
@@ -164,6 +212,8 @@ int main(int argc, const char** argv)
     ClangTool tool(parser.GetCompilations(), parser.GetSourcePathList());
  
     extractedMethodName = argv[3];
+    extractMethodSelection.from = RowColumn{ to_u(argv[4]), to_u(argv[5]) };
+    extractMethodSelection.to = RowColumn{ to_u(argv[6]), to_u(argv[7]) };
     
     tool.run(newFrontendActionFactory<MethodExtractorFactory>());
     
