@@ -13,13 +13,16 @@ Feature: As a developer I want to extract code into methods to make my code more
         }
         """
         When I run method extraction from "for (" to "<< i;" with name "runLoop"
-        Then final source code should be:
+        Then final source code should contain:
         """
         void runLoop()
         {
             for (int i = 0; i < 10; ++i)
                 std::cout << " " << i;
         }
+        """
+        And final source code should contain:
+        """
         void someFunc()
         {
             std::cout << "counting" << std::endl;
