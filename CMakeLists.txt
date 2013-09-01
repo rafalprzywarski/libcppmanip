@@ -15,7 +15,7 @@ include_directories("src" "gmock-1.6.0/fused-src")
 
 add_library(cppmanip STATIC src/TextOperationApplier.cpp)
 
-add_executable(cppmaniptest test/main.cpp test/TextOperationApplierTest.cpp) 
+add_executable(cppmaniptest test/main.cpp test/TextOperationApplierTest.cpp test/OffsetRangeTest.cpp) 
 
 target_link_libraries(cppmaniptest cppmanip gtestgmock pthread)
 
