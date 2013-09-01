@@ -1,4 +1,5 @@
 #include "TextOperationApplier.hpp"
+#include <stdexcept>
 
 std::string TextOperationApplier::apply(const std::string& text)
 {
@@ -25,5 +26,10 @@ void TextOperationApplier::insertTextAt(const std::string& text, unsigned offset
 
 void TextOperationApplier::removeTextInRange(unsigned int from, unsigned int to) 
 {
+    for (auto const& rem : removals)
+    {
+        if (rem.first < to && to < rem.second) throw std::invalid_argument("");
+        if (rem.first < from && from < rem.second) throw std::invalid_argument("");
+    }
     removals[from] = to;
 }

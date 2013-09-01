@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <TextOperationApplier.hpp>
+#include <stdexcept>
 
 struct TextOperationApplierTest : testing::Test
 {
@@ -45,4 +46,13 @@ TEST_F(TextOperationApplierTest, should_perform_multiple_removals_at_ranges_give
     applier.removeTextInRange(7, 10);
     applier.removeTextInRange(4, 7);
     ASSERT_EQ("", applier.apply("just empty"));
+}
+
+TEST_F(TextOperationApplierTest, should_fail_trying_to_remove_overlapping_ranges)
+{
+    applier.removeTextInRange(3, 9);
+    ASSERT_THROW(applier.removeTextInRange(1, 4), std::invalid_argument);
+    ASSERT_NO_THROW(applier.removeTextInRange(1, 3));
+    ASSERT_THROW(applier.removeTextInRange(8, 10), std::invalid_argument);
+    ASSERT_NO_THROW(applier.removeTextInRange(9, 10));
 }
