@@ -1,3 +1,4 @@
+#include "CppManip.hpp"
 #include <clang/Tooling/CommonOptionsParser.h>
 #include <clang/Tooling/Tooling.h>
 #include <clang/AST/ASTConsumer.h>
@@ -10,7 +11,6 @@
 #include <iostream>
 #include <TextOperationApplier.hpp>
 #include "OffsetRange.hpp"
-#include "CommandLineParser.hpp"
 #include "TextFileOps.hpp"
 #include "SourceExtractor.hpp"
 #include "ClangToolArgsBuilder.hpp"
@@ -107,7 +107,7 @@ private:
 class MethodExtractorFactoryFactory : public clang::tooling::FrontendActionFactory
 {
 public:
-    MethodExtractorFactoryFactory(const std::string& extractedMethodName, UserSelection selection, TextOperationApplier& sourceOperations)
+    MethodExtractorFactoryFactory(const std::string& extractedMethodName, SourceSelection selection, TextOperationApplier& sourceOperations)
         : extractedMethodName(extractedMethodName), selection(selection.from, selection.to), sourceOperations(sourceOperations) { }
     virtual clang::FrontendAction* create()
     {
@@ -137,35 +137,10 @@ void applySourceOperationsToFile(TextOperationApplier& sourceOperations, const s
     writeTextToFile(modifiedSource, filename); 
 }
 
-void extractMethodInFile(const std::string& methodName, UserSelection selection, const std::string& filename)
+void extractMethodInFile(const std::string& methodName, SourceSelection selection, const std::string& filename)
 {
     TextOperationApplier sourceOperations;
     MethodExtractorFactoryFactory extractorFactoryFactory(methodName, selection, sourceOperations);
     performFrontendActionClangToolForFile(extractorFactoryFactory, filename);
     applySourceOperationsToFile(sourceOperations, filename);
-}
-
-void performOperation(const OperationRequest& req)
-{
-    extractMethodInFile(req.extractedMethodName, req.sourceSelection, req.sourceFilename);
-}
-
-int main(int argc, const char** argv)
-{
-    try
-    {
-        CommandLineParser parser;
-        auto operationRequest = parser.parse(argc, argv);
-        performOperation(operationRequest);
-    }
-    catch (const std::logic_error& e)
-    {
-        std::cerr << "Internal error: " << e.what() << std::endl;
-        return 1;
-    }
-    catch (...)
-    {
-        std::cerr << "Unknown internal error" << std::endl;
-        return 1;
-    }
 }

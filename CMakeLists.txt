@@ -13,13 +13,24 @@ add_library(gtestgmock gmock-1.6.0/fused-src/gmock-gtest-all.cc)
 
 include_directories("src" "gmock-1.6.0/fused-src")
 
-add_library(cppmanip STATIC src/SourceExtractor.cpp src/TextFileOps.cpp src/CommandLineParser.cpp src/TextOperationApplier.cpp src/ClangToolArgsBuilder.cpp)
+add_library(cppmanip STATIC
+    src/SourceExtractor.cpp
+    src/TextFileOps.cpp
+    src/TextOperationApplier.cpp
+    src/ClangToolArgsBuilder.cpp
+    src/CppManip.cpp
+)
 
-add_executable(cppmaniptest test/main.cpp test/TextOperationApplierTest.cpp test/OffsetRangeTest.cpp test/ClangToolArgsBuilderTest.cpp) 
+add_executable(cppmaniptest
+    test/main.cpp
+    test/TextOperationApplierTest.cpp
+    test/OffsetRangeTest.cpp
+    test/ClangToolArgsBuilderTest.cpp
+) 
 
 target_link_libraries(cppmaniptest cppmanip gtestgmock pthread)
 
-add_executable(cppmaniprunner src/main.cpp)
+add_executable(cppmaniprunner runner/src/main.cpp runner/src/CommandLineParser.cpp)
 
 target_link_libraries(cppmaniprunner cppmanip clangTooling.a clangFrontend.a clangFrontendTool.a
     clangSerialization.a clangDriver.a
