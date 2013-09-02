@@ -2,17 +2,25 @@
 #define COMMANDLINEPARSER_HPP
 #include "OffsetRange.hpp"
 
+struct UserSelection
+{
+    unsigned from, to;
+    
+    UserSelection() : from(0), to(0) { }
+};
+
+struct OperationRequest
+{
+    std::string sourceFilename;
+    std::string extractedMethodName;
+    UserSelection sourceSelection;
+};
+
 class CommandLineParser
 {
 public:
-    void parse(int argc, const char** argv);
-    std::string getSourceFilename() const { return sourceFilename; }
-    std::string getExtractedMethodName() const { return extractedMethodName; }
-    OffsetRange getSourceSelection() const { return sourceSelection; }
+    OperationRequest parse(int argc, const char** argv);
 private:
-    std::string sourceFilename;
-    std::string extractedMethodName;
-    OffsetRange sourceSelection;
     static unsigned to_u(const char *s);
 };
 

@@ -1,11 +1,14 @@
 #include "CommandLineParser.hpp"
 #include <sstream>
 
-void CommandLineParser::parse(int argc, const char** argv) 
+OperationRequest CommandLineParser::parse(int argc, const char** argv) 
 {
-    sourceFilename = argv[1];
-    extractedMethodName = argv[3];
-    sourceSelection = OffsetRange(to_u(argv[4]), to_u(argv[5]));
+    OperationRequest req;
+    req.sourceFilename = argv[1];
+    req.extractedMethodName = argv[3];
+    req.sourceSelection.from = to_u(argv[4]);
+    req.sourceSelection.to = to_u(argv[5]);
+    return req;
 }
 
 unsigned int CommandLineParser::to_u(const char* s) 
