@@ -14,19 +14,16 @@
 #include "TextFileOps.hpp"
 #include "SourceExtractor.hpp"
 
-TextOperationApplier sourceOperations;
-std::string extractedMethodName;
-OffsetRange extractMethodSelection;
-
 class MethodExtractor : public clang::RecursiveASTVisitor<MethodExtractor>
 {
     clang::ASTContext& ctx;
     SourceExtractor sourceExtractor{ctx.getSourceManager()};
     std::string extractedMethodName;
     OffsetRange selection;
+    TextOperationApplier& sourceOperations;
 public:
-    MethodExtractor(clang::ASTContext& ctx, const std::string& extractedMethodName, OffsetRange selection)
-        : ctx(ctx), extractedMethodName(extractedMethodName), selection(selection) { }
+    MethodExtractor(clang::ASTContext& ctx, const std::string& extractedMethodName, OffsetRange selection, TextOperationApplier& sourceOperations)
+        : ctx(ctx), extractedMethodName(extractedMethodName), selection(selection), sourceOperations(sourceOperations) { }
     bool VisitFunctionDecl(clang::FunctionDecl* decl)
     {
         if (!ctx.getSourceManager().isFromMainFile(decl->getLocation()) || !decl->hasBody())
@@ -78,43 +75,63 @@ private:
 class MethodExtractorUnitHandler : public clang::ASTConsumer
 {
 public:
-    MethodExtractorUnitHandler() { }
+    MethodExtractorUnitHandler(const std::string& extractedMethodName, OffsetRange selection, TextOperationApplier& sourceOperations)
+        : extractedMethodName(extractedMethodName), selection(selection), sourceOperations(sourceOperations) { }
     virtual void HandleTranslationUnit(clang::ASTContext& ctx)
     {
-        MethodExtractor extractor(ctx, extractedMethodName, extractMethodSelection);
+        MethodExtractor extractor(ctx, extractedMethodName, selection, sourceOperations);
         extractor.TraverseDecl(ctx.getTranslationUnitDecl());
     }
+private:
+    std::string extractedMethodName;
+    OffsetRange selection;
+    TextOperationApplier& sourceOperations;
 };
 
 class MethodExtractorFactory: public clang::ASTFrontendAction
 {
 public:
+    MethodExtractorFactory(const std::string& extractedMethodName, OffsetRange selection, TextOperationApplier& sourceOperations)
+        : extractedMethodName(extractedMethodName), selection(selection), sourceOperations(sourceOperations) { }
     virtual clang::ASTConsumer* CreateASTConsumer(clang::CompilerInstance&, clang::StringRef)
     {
-        return new MethodExtractorUnitHandler();
+        return new MethodExtractorUnitHandler(extractedMethodName, selection, sourceOperations);
     }
+private:
+    std::string extractedMethodName;
+    OffsetRange selection;
+    TextOperationApplier& sourceOperations;
 };
 
-void runClangToolForFile(const std::string& filename)
+class MethodExtractorFactoryFactory : public clang::tooling::FrontendActionFactory
+{
+public:
+    MethodExtractorFactoryFactory(const std::string& extractedMethodName, OffsetRange selection, TextOperationApplier& sourceOperations)
+        : extractedMethodName(extractedMethodName), selection(selection), sourceOperations(sourceOperations) { }
+    virtual clang::FrontendAction* create()
+    {
+        return new MethodExtractorFactory(extractedMethodName, selection, sourceOperations);
+    }
+private:
+    std::string extractedMethodName;
+    OffsetRange selection;
+    TextOperationApplier& sourceOperations;
+};
+
+void runClangToolForFile(std::string sourceFilename, MethodExtractorFactoryFactory& extractorFactoryFactory)
 {
     int fakeArgc = 3;
-    const char *fakeArgv[] = { "", filename.c_str(), "--" };
+    const char *fakeArgv[] = { "", sourceFilename.c_str(), "--" };
     clang::tooling::CommonOptionsParser parser(fakeArgc, fakeArgv);
     clang::tooling::ClangTool tool(parser.GetCompilations(), parser.GetSourcePathList());
-    tool.run(clang::tooling::newFrontendActionFactory<MethodExtractorFactory>());
+    tool.run(&extractorFactoryFactory);
 }
 
-void applySourceOperationsToFile(const std::string& filename)
+void applySourceOperationsToFile(TextOperationApplier& sourceOperations, const std::string& filename)
 {
     std::string source = loadTextFromFile(filename);
     std::string modifiedSource = sourceOperations.apply(source);
     writeTextToFile(modifiedSource, filename); 
-}
-
-void setMethodExtractorForNameAndSourceSelection(const std::string& methodName, OffsetRange sourceRange)
-{
-    extractedMethodName = methodName;
-    extractMethodSelection = sourceRange;
 }
 
 int main(int argc, const char** argv)
@@ -123,10 +140,10 @@ int main(int argc, const char** argv)
     {
         CommandLineParser args;
         args.parse(argc, argv);
-        
-        setMethodExtractorForNameAndSourceSelection(args.getExtractedMethodName(), args.getSourceSelection());
-        runClangToolForFile(args.getSourceFilename());
-        applySourceOperationsToFile(args.getSourceFilename());
+        TextOperationApplier sourceOperations;
+        MethodExtractorFactoryFactory f(args.getExtractedMethodName(), args.getSourceSelection(), sourceOperations);
+        runClangToolForFile(args.getSourceFilename(), f);
+        applySourceOperationsToFile(sourceOperations, args.getSourceFilename());
     }
     catch (const std::logic_error& e)
     {
