@@ -12,10 +12,10 @@ clang::SourceRange SourceExtractor::getCorrectSourceRange(clang::ConstStmtRange 
 std::string SourceExtractor::getSource(clang::ConstStmtRange stmts) 
 {
     auto range = getCorrectSourceRange(stmts);
-    return std::string(getText(range.getBegin()), rangeLength(range));
+    return std::string(getSourceText(range.getBegin()), getLength(range));
 }
 
-const char* SourceExtractor::getText(clang::SourceLocation loc) 
+const char* SourceExtractor::getSourceText(clang::SourceLocation loc) 
 {
     auto invalid = true;
     auto text = sourceManager.getCharacterData(loc, &invalid);

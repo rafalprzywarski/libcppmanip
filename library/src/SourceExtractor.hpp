@@ -51,7 +51,7 @@ private:
     template <typename Node>
     unsigned getSourceLength(clang::SourceRange spelling, const Node& node)
     {
-        auto start = locOffset(spelling.getBegin());
+        auto start = getOffset(spelling.getBegin());
         auto end = sourceManager.getDecomposedLoc(
             clang::Lexer::getLocForEndOfToken(spelling.getEnd(), 0, sourceManager, clang::LangOptions())).second;
         if (end < start)
@@ -59,22 +59,22 @@ private:
         return end - start + detail::extraCharsHack(node);
     }
 
-    unsigned locOffset(clang::SourceLocation loc)
+    unsigned getOffset(clang::SourceLocation loc)
     {
         return sourceManager.getFileOffset(loc);
     }
     
-    unsigned locDistance(clang::SourceLocation from, clang::SourceLocation to)
+    unsigned getDistance(clang::SourceLocation from, clang::SourceLocation to)
     {
-        return locOffset(to) - locOffset(from);
+        return getOffset(to) - getOffset(from);
     }
     
-    unsigned rangeLength(clang::SourceRange r)
+    unsigned getLength(clang::SourceRange r)
     {
-        return locDistance(r.getBegin(), r.getEnd());
+        return getDistance(r.getBegin(), r.getEnd());
     }
     
-    const char *getText(clang::SourceLocation loc);
+    const char *getSourceText(clang::SourceLocation loc);
 };
 
 #endif // SOURCEEXTRACTOR_HPP
