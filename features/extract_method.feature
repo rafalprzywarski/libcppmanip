@@ -97,4 +97,33 @@ Feature: As a developer I want to extract code into methods to make my code more
         }
         void other();
         """
-        
+    @wip
+    Scenario: Referenced local variables should be passed to the extracted function
+        Given source code:
+        """
+        void other1(int);
+        void other2();
+        void other3(int, float);
+        void original()
+        {
+            int i = 7;
+            float f = 9.5f;
+            other1(i);
+            other2();
+            other3(i + 5, f * 2);
+        }
+        """
+        When I run method extraction from "other1" to "other3" with name "with_args"
+        Then final source code should contain:
+        """
+        void with_args(int i, float f)
+        {
+            other1(i);
+            other2();
+            other3(i + 5, f * 2);
+        }
+        """
+        And final source code should contain:
+        """
+        with_args(i, f);
+        """
