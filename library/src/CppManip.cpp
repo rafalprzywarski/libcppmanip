@@ -14,22 +14,8 @@
 #include "ClangToolArgsBuilder.hpp"
 #include "MethodExtractorASTConsumer.hpp"
 #include "MethodExtractorFrontendAction.hpp"
+#include "MethodExtractorFrontendActionFactory.hpp"
 #include <functional>
-
-class MethodExtractorFrontendActionFactory : public clang::tooling::FrontendActionFactory
-{
-public:
-    MethodExtractorFrontendActionFactory(const std::string& extractedMethodName, SourceSelection selection, TextOperationApplier& sourceOperations)
-        : extractedMethodName(extractedMethodName), selection(selection.from, selection.to), sourceOperations(sourceOperations) { }
-    virtual clang::FrontendAction* create()
-    {
-        return new MethodExtractorFrontendAction(extractedMethodName, selection, sourceOperations);
-    }
-private:
-    std::string extractedMethodName;
-    OffsetRange selection;
-    TextOperationApplier& sourceOperations;
-};
 
 void performFrontendActionForFile(clang::tooling::FrontendActionFactory& actionFactory, std::string sourceFilename)
 {
