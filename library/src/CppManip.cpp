@@ -12,25 +12,8 @@
 #include "OffsetRange.hpp"
 #include "TextFileOps.hpp"
 #include "ClangToolArgsBuilder.hpp"
-#include "MethodExtractor.hpp"
+#include "MethodExtractorASTConsumer.hpp"
 #include <functional>
-
-class MethodExtractorUnitHandler : public clang::ASTConsumer
-{
-public:
-    MethodExtractorUnitHandler(const std::string& extractedMethodName, OffsetRange selection, TextOperationApplier& sourceOperations)
-        : extractedMethodName(extractedMethodName), selection(selection), sourceOperations(sourceOperations) { }
-    virtual void HandleTranslationUnit(clang::ASTContext& ctx)
-    {
-        SourceExtractor sourceExtractor(ctx.getSourceManager());
-        MethodExtractor extractor(sourceExtractor, extractedMethodName, selection, sourceOperations);
-        extractor.TraverseDecl(ctx.getTranslationUnitDecl());
-    }
-private:
-    std::string extractedMethodName;
-    OffsetRange selection;
-    TextOperationApplier& sourceOperations;
-};
 
 class MethodExtractorFrontendAction: public clang::ASTFrontendAction
 {
@@ -39,7 +22,7 @@ public:
         : extractedMethodName(extractedMethodName), selection(selection), sourceOperations(sourceOperations) { }
     virtual clang::ASTConsumer* CreateASTConsumer(clang::CompilerInstance&, clang::StringRef)
     {
-        return new MethodExtractorUnitHandler(extractedMethodName, selection, sourceOperations);
+        return new MethodExtractorASTConsumer(extractedMethodName, selection, sourceOperations);
     }
 private:
     std::string extractedMethodName;

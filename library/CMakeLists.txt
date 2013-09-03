@@ -14,6 +14,7 @@ add_library(cppmanip STATIC
     src/ClangToolArgsBuilder.cpp
     src/CppManip.cpp
     src/MethodExtractor.cpp
+    src/MethodExtractorASTConsumer.cpp
 )
 
 add_executable(cppmaniptest
