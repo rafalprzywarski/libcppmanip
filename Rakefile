@@ -38,8 +38,8 @@ task :cppmaniprunnertest do
 end
 
 task :unit_tests => [ :cppmaniptest, :cppmaniprunnertest ] do
-  sh "#{BUILD_DIRECTORY}/cppmaniptest"
-  sh "#{BUILD_DIRECTORY}/cppmaniprunnertest"
+  sh "#{BUILD_DIRECTORY}/library/cppmaniptest"
+  sh "#{BUILD_DIRECTORY}/runner/cppmaniprunnertest"
 end
  
 task :ci_unit_tests => :cppmaniptest do
