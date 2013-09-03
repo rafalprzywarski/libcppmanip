@@ -13,22 +13,8 @@
 #include "TextFileOps.hpp"
 #include "ClangToolArgsBuilder.hpp"
 #include "MethodExtractorASTConsumer.hpp"
+#include "MethodExtractorFrontendAction.hpp"
 #include <functional>
-
-class MethodExtractorFrontendAction: public clang::ASTFrontendAction
-{
-public:
-    MethodExtractorFrontendAction(const std::string& extractedMethodName, OffsetRange selection, TextOperationApplier& sourceOperations)
-        : extractedMethodName(extractedMethodName), selection(selection), sourceOperations(sourceOperations) { }
-    virtual clang::ASTConsumer* CreateASTConsumer(clang::CompilerInstance&, clang::StringRef)
-    {
-        return new MethodExtractorASTConsumer(extractedMethodName, selection, sourceOperations);
-    }
-private:
-    std::string extractedMethodName;
-    OffsetRange selection;
-    TextOperationApplier& sourceOperations;
-};
 
 class MethodExtractorFrontendActionFactory : public clang::tooling::FrontendActionFactory
 {
