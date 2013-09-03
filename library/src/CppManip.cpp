@@ -1,21 +1,10 @@
 #include "CppManip.hpp"
 #include <clang/Tooling/CommonOptionsParser.h>
 #include <clang/Tooling/Tooling.h>
-#include <clang/AST/ASTConsumer.h>
-#include <clang/AST/ASTContext.h>
-#include <clang/Lex/Lexer.h>
-#include <sstream>
-#include <fstream>
-#include <stdexcept>
-#include <iostream>
-#include "TextOperationApplier.hpp"
-#include "OffsetRange.hpp"
 #include "TextFileOps.hpp"
 #include "ClangToolArgsBuilder.hpp"
-#include "MethodExtractorASTConsumer.hpp"
-#include "MethodExtractorFrontendAction.hpp"
 #include "MethodExtractorFrontendActionFactory.hpp"
-#include <functional>
+#include "TextOperationApplier.hpp"
 
 void performFrontendActionForFile(clang::tooling::FrontendActionFactory& actionFactory, std::string sourceFilename)
 {
