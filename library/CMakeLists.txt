@@ -13,6 +13,7 @@ add_library(cppmanip STATIC
     src/TextOperationApplier.cpp
     src/ClangToolArgsBuilder.cpp
     src/CppManip.cpp
+    src/MethodExtractor.cpp
 )
 
 add_executable(cppmaniptest
