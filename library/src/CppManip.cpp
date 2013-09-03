@@ -9,7 +9,7 @@
 #include <fstream>
 #include <stdexcept>
 #include <iostream>
-#include <TextOperationApplier.hpp>
+#include "TextOperationApplier.hpp"
 #include "OffsetRange.hpp"
 #include "TextFileOps.hpp"
 #include "SourceExtractor.hpp"

@@ -5,7 +5,7 @@ execute_process(COMMAND ${LLVM_CONFIG} --ldflags OUTPUT_VARIABLE LLVM_LINKER_FLA
 add_definitions("${LLVM_CXX_FLAGS} -fexceptions")
 set(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${LLVM_LINKER_FLAGS}")
 
-include_directories("../include" "src" "gmock-1.6.0/fused-src")
+include_directories("../include" "src" "../gmock-1.6.0/fused-src")
 
 add_library(cppmanip STATIC
     src/SourceExtractor.cpp
