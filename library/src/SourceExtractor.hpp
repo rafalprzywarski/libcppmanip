@@ -6,6 +6,7 @@
 #include <clang/Basic/SourceManager.h>
 #include <clang/Lex/Lexer.h>
 #include <stdexcept>
+#include "OffsetRange.hpp"
 
 namespace detail
 {
@@ -32,7 +33,10 @@ public:
     }
 
     clang::SourceRange getCorrectSourceRange(clang::ConstStmtRange stmts);
-    std::string getSource(clang::ConstStmtRange stmts);
+    std::string getSource(clang::SourceRange range);
+    OffsetRange getOffsetRange(clang::SourceRange r);
+    unsigned getOffset(clang::SourceLocation loc);
+    bool isLocationFromMainFile(clang::SourceLocation loc);
 
 private:
     clang::SourceManager& sourceManager;
@@ -59,11 +63,6 @@ private:
         return end - start + detail::extraCharsHack(node);
     }
 
-    unsigned getOffset(clang::SourceLocation loc)
-    {
-        return sourceManager.getFileOffset(loc);
-    }
-    
     unsigned getDistance(clang::SourceLocation from, clang::SourceLocation to)
     {
         return getOffset(to) - getOffset(from);

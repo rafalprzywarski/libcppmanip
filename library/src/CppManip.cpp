@@ -14,62 +14,83 @@
 #include "TextFileOps.hpp"
 #include "SourceExtractor.hpp"
 #include "ClangToolArgsBuilder.hpp"
+#include <functional>
 
 class MethodExtractor : public clang::RecursiveASTVisitor<MethodExtractor>
 {
-    clang::ASTContext& ctx;
-    SourceExtractor sourceExtractor{ctx.getSourceManager()};
+    SourceExtractor& sourceExtractor;
     std::string extractedMethodName;
     OffsetRange selection;
     TextOperationApplier& sourceOperations;
 public:
-    MethodExtractor(clang::ASTContext& ctx, const std::string& extractedMethodName, OffsetRange selection, TextOperationApplier& sourceOperations)
-        : ctx(ctx), extractedMethodName(extractedMethodName), selection(selection), sourceOperations(sourceOperations) { }
+    MethodExtractor(SourceExtractor& sourceExtractor, const std::string& extractedMethodName, OffsetRange selection, TextOperationApplier& sourceOperations)
+        : sourceExtractor(sourceExtractor), extractedMethodName(extractedMethodName), selection(selection), sourceOperations(sourceOperations) { }
     bool VisitFunctionDecl(clang::FunctionDecl* decl)
     {
-        if (!ctx.getSourceManager().isFromMainFile(decl->getLocation()) || !decl->hasBody())
-            return true;
-        auto stmts = findStatements(*decl, selection);
-        printExtractedFunction(sourceExtractor.getCorrectSourceRange(*decl).getBegin(), extractedMethodName, stmts);
-        printOriginalFunctionWithExtractedFunctionCall(extractedMethodName, *decl, stmts);
-        return false;
+        handleFunctionDecl(*decl);
+        return true;
     }
 private:
-    bool overlaps(clang::SourceRange r, OffsetRange s)
+
+    bool doesNotContainSelection(const clang::FunctionDecl& f)
     {
-        auto begin = ctx.getSourceManager().getFileOffset(r.getBegin());
-        auto end = ctx.getSourceManager().getFileOffset(r.getEnd());
-        return s.overlapsWith({begin, end});
+        return !sourceExtractor.isLocationFromMainFile(f.getLocation()) || !f.hasBody();
     }
-    bool overlaps(clang::Stmt *stmt, OffsetRange s)
+
+    void handleFunctionDecl(const clang::FunctionDecl& decl)
     {
-        return overlaps(sourceExtractor.getCorrectSourceRange(*stmt), s);
+        if (doesNotContainSelection(decl))
+            return;
+        auto stmts = findStatementsTouchingSelection(decl);
+        extractStatmentsFromFunction(stmts, decl);
     }
-    clang::ConstStmtRange findStatements(const clang::FunctionDecl& func, OffsetRange selection)
+
+    void extractStatmentsFromFunction(clang::ConstStmtRange stmts, const clang::FunctionDecl& originalFunction)
+    {
+        auto stmtsRange = sourceExtractor.getCorrectSourceRange(stmts);
+        auto originalFunctionLocation = sourceExtractor.getCorrectSourceRange(originalFunction).getBegin();
+        printExtractedFunction(originalFunctionLocation, extractedMethodName, stmtsRange);
+        replaceStatementsWithFunctionCall(stmtsRange, extractedMethodName);
+    }
+
+    bool selectionOverlapsWithStmt(const clang::Stmt& stmt)
+    {
+        return selection.overlapsWith(sourceExtractor.getOffsetRange(sourceExtractor.getCorrectSourceRange(stmt)));
+    }
+
+    clang::ConstStmtRange findStatementsTouchingSelection(const clang::FunctionDecl& func)
     {
         auto body = func.getBody();
         auto begin =
-            std::find_if(body->child_begin(), body->child_end(), [&](clang::Stmt *s) { return overlaps(s, selection); });
+            std::find_if(body->child_begin(), body->child_end(), [&](clang::Stmt *s) { return selectionOverlapsWithStmt(*s); });
         auto end =
-            std::find_if(begin, body->child_end(), [&](clang::Stmt *s) { return !overlaps(s, selection); });
+            std::find_if(begin, body->child_end(), [&](clang::Stmt *s) { return !selectionOverlapsWithStmt(*s); });
         return {begin, end};
     }
-    void printExtractedFunction(clang::SourceLocation at, const std::string& name, clang::ConstStmtRange stmts)
+
+    void printExtractedFunction(clang::SourceLocation at, const std::string& name, clang::SourceRange stmtsRange)
     {
-        auto& sm = ctx.getSourceManager();
+        printFunction(name, sourceExtractor.getSource(stmtsRange), sourceExtractor.getOffset(at));
+    }
+
+    void printFunction(const std::string& name, const std::string& body, unsigned offset)
+    {
         std::ostringstream os;
-        os << "void " << name << "()\n{\n    " << sourceExtractor.getSource(stmts) << "\n}\n";
-        sourceOperations.insertTextAt(os.str(), sm.getFileOffset(at));
+        os << "void " << name << "()\n{\n    " << body << "\n}\n";
+        sourceOperations.insertTextAt(os.str(), offset);
     }
-    void printOriginalFunctionWithExtractedFunctionCall(const std::string& name, clang::FunctionDecl& decl, clang::ConstStmtRange stmts)
+
+    void replaceStatementsWithFunctionCall(clang::SourceRange stmtsRange, const std::string& functionName)
     {
-        replaceRangeWith(sourceExtractor.getCorrectSourceRange(stmts), name + "();");
+        replaceRangeWith(stmtsRange, functionName + "();");
     }
+
     void replaceRangeWith(clang::SourceRange without, std::string replace)
     {
-        auto& sm = ctx.getSourceManager();
-        sourceOperations.removeTextInRange(sm.getFileOffset(without.getBegin()), sm.getFileOffset(without.getEnd()));
-        sourceOperations.insertTextAt(replace, sm.getFileOffset(without.getBegin()));
+        auto begin = sourceExtractor.getOffset(without.getBegin());
+        auto end = sourceExtractor.getOffset(without.getEnd());
+        sourceOperations.removeTextInRange(begin, end);
+        sourceOperations.insertTextAt(replace, begin);
     }
 };
 
@@ -80,7 +101,8 @@ public:
         : extractedMethodName(extractedMethodName), selection(selection), sourceOperations(sourceOperations) { }
     virtual void HandleTranslationUnit(clang::ASTContext& ctx)
     {
-        MethodExtractor extractor(ctx, extractedMethodName, selection, sourceOperations);
+        SourceExtractor sourceExtractor(ctx.getSourceManager());
+        MethodExtractor extractor(sourceExtractor, extractedMethodName, selection, sourceOperations);
         extractor.TraverseDecl(ctx.getTranslationUnitDecl());
     }
 private:
@@ -119,7 +141,7 @@ private:
     TextOperationApplier& sourceOperations;
 };
 
-void performFrontendActionClangToolForFile(clang::tooling::FrontendActionFactory& actionFactory, std::string sourceFilename)
+void performFrontendActionForFile(clang::tooling::FrontendActionFactory& actionFactory, std::string sourceFilename)
 {
     ClangToolArgsBuilder args;
     args.setSourceFilename(sourceFilename);
@@ -141,6 +163,6 @@ void extractMethodInFile(const std::string& methodName, SourceSelection selectio
 {
     TextOperationApplier sourceOperations;
     MethodExtractorFactoryFactory extractorFactoryFactory(methodName, selection, sourceOperations);
-    performFrontendActionClangToolForFile(extractorFactoryFactory, filename);
+    performFrontendActionForFile(extractorFactoryFactory, filename);
     applySourceOperationsToFile(sourceOperations, filename);
 }
