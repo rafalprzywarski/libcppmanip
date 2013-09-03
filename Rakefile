@@ -31,8 +31,15 @@ task :cppmaniptest do
   sh "cmake --build #{BUILD_DIRECTORY} --target cppmaniptest"
 end
 
-task :unit_tests => :cppmaniptest do
+task :cppmaniprunnertest do
+  sh "cmake -E make_directory #{BUILD_DIRECTORY}"
+  sh "cmake -E chdir #{BUILD_DIRECTORY} cmake .."
+  sh "cmake --build #{BUILD_DIRECTORY} --target cppmaniprunnertest"
+end
+
+task :unit_tests => [ :cppmaniptest, :cppmaniprunnertest ] do
   sh "#{BUILD_DIRECTORY}/cppmaniptest"
+  sh "#{BUILD_DIRECTORY}/cppmaniprunnertest"
 end
  
 task :ci_unit_tests => :cppmaniptest do

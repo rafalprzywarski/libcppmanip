@@ -30,9 +30,17 @@ add_executable(cppmaniptest
 
 target_link_libraries(cppmaniptest cppmanip gtestgmock pthread)
 
-add_executable(cppmaniprunner runner/src/main.cpp runner/src/CommandLineParser.cpp)
+add_library(cppmaniprunnercore STATIC runner/src/CommandLineParser.cpp)
 
-target_link_libraries(cppmaniprunner cppmanip clangTooling.a clangFrontend.a clangFrontendTool.a
+add_executable(cppmaniprunnertest
+    runner/test/main.cpp
+    runner/test/CommandLineParserTest.cpp)
+
+target_link_libraries(cppmaniprunnertest cppmaniprunnercore gtestgmock pthread)
+
+add_executable(cppmaniprunner runner/src/main.cpp)
+
+target_link_libraries(cppmaniprunner cppmanip cppmaniprunnercore clangTooling.a clangFrontend.a clangFrontendTool.a
     clangSerialization.a clangDriver.a
     clangParse.a clangSema.a clangAnalysis.a
     clangRewriteFrontend.a clangRewriteCore.a clangEdit.a clangAST.a
