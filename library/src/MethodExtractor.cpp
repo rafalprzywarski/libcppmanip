@@ -1,11 +1,10 @@
 #include "MethodExtractor.hpp"
-#include <sstream>
 
 MethodExtractor::MethodExtractor(
     SourceExtractor& sourceExtractor, const std::string& extractedMethodName,
-    OffsetRange selection, TextOperationApplier& sourceOperations)
+    OffsetRange selection, TextOperationApplier& sourceOperations, FunctionPrinter& functionPrinter)
     : sourceExtractor(sourceExtractor), extractedMethodName(extractedMethodName),
-    selection(selection), sourceOperations(sourceOperations) { }
+    selection(selection), sourceOperations(sourceOperations), functionPrinter(functionPrinter) { }
 
 bool MethodExtractor::VisitFunctionDecl(clang::FunctionDecl* decl)
 {
@@ -51,19 +50,13 @@ clang::ConstStmtRange MethodExtractor::findStatementsTouchingSelection(const cla
 
 void MethodExtractor::printExtractedFunction(clang::SourceLocation at, const std::string& name, clang::SourceRange stmtsRange)
 {
-    printFunction(name, sourceExtractor.getSource(stmtsRange), sourceExtractor.getOffset(at));
-}
-
-void MethodExtractor::printFunction(const std::string& name, const std::string& body, unsigned int offset)
-{
-    std::ostringstream os;
-    os << "void " << name << "()\n{\n    " << body << "\n}\n";
-    sourceOperations.insertTextAt(os.str(), offset);
+    auto source = functionPrinter.printFunction(name, sourceExtractor.getSource(stmtsRange));
+    sourceOperations.insertTextAt(source, sourceExtractor.getOffset(at));
 }
 
 void MethodExtractor::replaceStatementsWithFunctionCall(clang::SourceRange stmtsRange, const std::string& functionName)
 {
-    replaceRangeWith(stmtsRange, functionName + "();");
+    replaceRangeWith(stmtsRange, functionPrinter.printFunctionCall(functionName));
 }
 
 void MethodExtractor::replaceRangeWith(clang::SourceRange without, std::string replace)

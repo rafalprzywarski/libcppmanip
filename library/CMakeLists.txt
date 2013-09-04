@@ -17,6 +17,7 @@ add_library(cppmanip STATIC
     src/MethodExtractorASTConsumer.cpp
     src/MethodExtractorFrontendAction.cpp
     src/MethodExtractorFrontendActionFactory.cpp
+    src/PrettyFunctionPrinter.cpp
 )
 
 add_executable(cppmaniptest

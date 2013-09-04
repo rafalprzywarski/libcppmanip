@@ -1,11 +1,13 @@
 #include "MethodExtractorASTConsumer.hpp"
 #include "SourceExtractor.hpp"
 #include "MethodExtractor.hpp"
+#include "PrettyFunctionPrinter.hpp"
 #include <clang/AST/ASTContext.h>
 
 void MethodExtractorASTConsumer::HandleTranslationUnit(clang::ASTContext& ctx)
 {
     SourceExtractor sourceExtractor(ctx.getSourceManager());
-    MethodExtractor extractor(sourceExtractor, extractedMethodName, selection, sourceOperations);
+    PrettyFunctionPrinter printer;
+    MethodExtractor extractor(sourceExtractor, extractedMethodName, selection, sourceOperations, printer);
     extractor.TraverseDecl(ctx.getTranslationUnitDecl());
 }
