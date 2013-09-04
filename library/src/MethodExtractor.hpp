@@ -23,9 +23,11 @@ private:
 
     bool functionDoesNotContainSelection(const clang::FunctionDecl& f);
     void handleFunctionDecl(const clang::FunctionDecl& decl);
-    void extractStatmentsFromFunction(clang::ConstStmtRange stmts, const clang::FunctionDecl& originalFunction);
-    bool selectionOverlapsWithStmt(const clang::Stmt& stmt);
+
     clang::ConstStmtRange findStatementsTouchingSelection(const clang::FunctionDecl& func);
+    bool selectionOverlapsWithStmt(const clang::Stmt& stmt);
+
+    void extractStatmentsFromFunction(clang::ConstStmtRange stmts, const clang::FunctionDecl& originalFunction);
     void printExtractedFunction(clang::SourceLocation at, const std::string& name, clang::SourceRange stmtsRange);
     void replaceStatementsWithFunctionCall(clang::SourceRange stmtsRange, const std::string& functionName);
     void replaceRangeWith(clang::SourceRange without, std::string replace);
