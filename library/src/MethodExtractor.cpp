@@ -2,9 +2,9 @@
 
 MethodExtractor::MethodExtractor(
     SourceExtractor& sourceExtractor, const std::string& extractedMethodName,
-    OffsetRange selection, TextOperationApplier& sourceOperations, FunctionPrinter& functionPrinter)
+    StatementLocator& stmtLocator, TextOperationApplier& sourceOperations, FunctionPrinter& functionPrinter)
     : sourceExtractor(sourceExtractor), extractedMethodName(extractedMethodName),
-    selection(selection), sourceOperations(sourceOperations), functionPrinter(functionPrinter) { }
+    stmtLocator(stmtLocator), sourceOperations(sourceOperations), functionPrinter(functionPrinter) { }
 
 bool MethodExtractor::VisitFunctionDecl(clang::FunctionDecl* decl)
 {
@@ -12,16 +12,11 @@ bool MethodExtractor::VisitFunctionDecl(clang::FunctionDecl* decl)
     return true;
 }
 
-bool MethodExtractor::functionDoesNotContainSelection(const clang::FunctionDecl& f)
-{
-    return !sourceExtractor.isLocationFromMainFile(f.getLocation()) || !f.hasBody();
-}
-
 void MethodExtractor::handleFunctionDecl(const clang::FunctionDecl& decl)
 {
-    if (functionDoesNotContainSelection(decl))
+    auto stmts = stmtLocator.findStatementsInFunction(decl);
+    if (!stmts)
         return;
-    auto stmts = findStatementsTouchingSelection(decl);
     extractStatmentsFromFunction(stmts, decl);
 }
 
@@ -31,21 +26,6 @@ void MethodExtractor::extractStatmentsFromFunction(clang::ConstStmtRange stmts, 
     auto originalFunctionLocation = sourceExtractor.getCorrectSourceRange(originalFunction).getBegin();
     printExtractedFunction(originalFunctionLocation, extractedMethodName, stmtsRange);
     replaceStatementsWithFunctionCall(stmtsRange, extractedMethodName);
-}
-
-bool MethodExtractor::selectionOverlapsWithStmt(const clang::Stmt& stmt)
-{
-    return selection.overlapsWith(sourceExtractor.getOffsetRange(sourceExtractor.getCorrectSourceRange(stmt)));
-}
-
-clang::ConstStmtRange MethodExtractor::findStatementsTouchingSelection(const clang::FunctionDecl& func)
-{
-    auto body = func.getBody();
-    auto begin =
-        std::find_if(body->child_begin(), body->child_end(), [&](clang::Stmt *s) { return selectionOverlapsWithStmt(*s); });
-    auto end =
-        std::find_if(begin, body->child_end(), [&](clang::Stmt *s) { return !selectionOverlapsWithStmt(*s); });
-    return {begin, end};
 }
 
 void MethodExtractor::printExtractedFunction(clang::SourceLocation at, const std::string& name, clang::SourceRange stmtsRange)
