@@ -13,12 +13,13 @@ add_library(cppmanip STATIC
     src/TextOperationApplier.cpp
     src/ClangToolArgsBuilder.cpp
     src/CppManip.cpp
-    src/MethodExtractor.cpp
     src/MethodExtractorASTConsumer.cpp
     src/MethodExtractorFrontendAction.cpp
     src/MethodExtractorFrontendActionFactory.cpp
     src/PrettyFunctionPrinter.cpp
     src/NaiveStatementLocator.cpp
+    src/MethodExtractorVisitor.cpp
+    src/DelayedMethodExtractor.cpp
 )
 
 add_executable(cppmaniptest
