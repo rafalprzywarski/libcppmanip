@@ -6,39 +6,18 @@
 class NaiveStatementLocator : public StatementLocator
 {
 public:
-    NaiveStatementLocator(SourceExtractor& sourceExtractor, OffsetRange selection)
-        : sourceExtractor(sourceExtractor), selection(selection) { }
+    NaiveStatementLocator(SourceExtractor& sourceExtractor, OffsetRange selection);
 
-    clang::ConstStmtRange findStatementsInFunction(const clang::FunctionDecl& decl)
-    {
-        if (functionDoesNotContainSelection(decl))
-            return clang::ConstStmtRange();
-        return findStatementsTouchingSelection(decl);
-    }
+    clang::ConstStmtRange findStatementsInFunction(const clang::FunctionDecl& decl);
 
 private:
+
     SourceExtractor& sourceExtractor;
     OffsetRange selection;
 
-    bool functionDoesNotContainSelection(const clang::FunctionDecl& f)
-    {
-        return !sourceExtractor.isLocationFromMainFile(f.getLocation()) || !f.hasBody();
-    }
-
-    clang::ConstStmtRange findStatementsTouchingSelection(const clang::FunctionDecl& func)
-    {
-        auto body = func.getBody();
-        auto begin =
-            std::find_if(body->child_begin(), body->child_end(), [&](clang::Stmt *s) { return selectionOverlapsWithStmt(*s); });
-        auto end =
-            std::find_if(begin, body->child_end(), [&](clang::Stmt *s) { return !selectionOverlapsWithStmt(*s); });
-        return {begin, end};
-    }
-
-    bool selectionOverlapsWithStmt(const clang::Stmt& stmt)
-    {
-        return selection.overlapsWith(sourceExtractor.getOffsetRange(sourceExtractor.getCorrectSourceRange(stmt)));
-    }
+    bool functionDoesNotContainSelection(const clang::FunctionDecl& f);
+    clang::ConstStmtRange findStatementsTouchingSelection(const clang::FunctionDecl& func);
+    bool selectionOverlapsWithStmt(const clang::Stmt& stmt);
 };
 
 #endif // NAIVESTATEMENTLOCATOR_HPP
