@@ -113,7 +113,7 @@ Feature: As a developer I want to extract code into methods to make my code more
             other3(i + 5, f * 2);
         }
         """
-        When I run method extraction from "other1" to "other3" with name "with_args"
+        When I run method extraction from "other1(i)" to "other3(i + 5" with name "with_args"
         Then final source code should contain:
         """
         void with_args(int i, float f)
