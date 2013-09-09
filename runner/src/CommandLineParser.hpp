@@ -3,7 +3,7 @@
 #include <SourceSelection.hpp>
 #include <string>
 
-struct OperationRequest
+struct ExtractMethodRequest
 {
     std::string sourceFilename;
     std::string extractedMethodName;
@@ -13,7 +13,7 @@ struct OperationRequest
 class CommandLineParser
 {
 public:
-    OperationRequest parse(int argc, const char** argv);
+    ExtractMethodRequest parseExtractMethod(int argc, const char** argv);
 private:
     static unsigned to_u(const char *s);
 };

@@ -8,9 +8,9 @@ add_executable(cppmaniprunnertest
 
 target_link_libraries(cppmaniprunnertest cppmaniprunnercore gtest gmock pthread)
 
-add_executable(cppmaniprunner src/main.cpp)
+add_executable(cppmaniprunner_extract_method src/extract_method.cpp)
 
-target_link_libraries(cppmaniprunner cppmanip cppmaniprunnercore clangTooling.a clangFrontend.a clangFrontendTool.a
+target_link_libraries(cppmaniprunner_extract_method cppmanip cppmaniprunnercore clangTooling.a clangFrontend.a clangFrontendTool.a
     clangSerialization.a clangDriver.a
     clangParse.a clangSema.a clangAnalysis.a
     clangRewriteFrontend.a clangRewriteCore.a clangEdit.a clangAST.a

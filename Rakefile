@@ -22,7 +22,7 @@ end
 task :cppmanip do
   sh "cmake -E make_directory #{BUILD_DIRECTORY}"
   sh "cmake -E chdir #{BUILD_DIRECTORY} cmake .."
-  sh "cmake --build #{BUILD_DIRECTORY} --target cppmaniprunner"
+  sh "cmake --build #{BUILD_DIRECTORY} --target cppmaniprunner_extract_method"
 end
 
 task :cppmaniptest do

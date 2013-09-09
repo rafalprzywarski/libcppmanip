@@ -3,18 +3,13 @@
 #include <stdexcept>
 #include <iostream>
 
-void performOperation(const OperationRequest& req)
-{
-    extractMethodInFile(req.extractedMethodName, req.sourceSelection, req.sourceFilename);
-}
-
 int main(int argc, const char** argv)
 {
     try
     {
         CommandLineParser parser;
-        auto operationRequest = parser.parse(argc, argv);
-        performOperation(operationRequest);
+        auto req = parser.parseExtractMethod(argc, argv);
+        extractMethodInFile(req.extractedMethodName, req.sourceSelection, req.sourceFilename);
     }
     catch (const std::logic_error& e)
     {

@@ -8,8 +8,8 @@ struct CommandLineParserTest : testing::Test
 
 TEST_F(CommandLineParserTest, should_parse_extract_method_request)
 {
-    std::vector<const char *> args{ "", "file", "extract_method", "method", "20", "40" };
-    OperationRequest req = parser.parse(args.size(), &args[0]);
+    std::vector<const char *> args{ "", "file", "method", "20", "40" };
+    auto req = parser.parseExtractMethod(args.size(), &args[0]);
     ASSERT_EQ("file", req.sourceFilename);
     ASSERT_EQ("method", req.extractedMethodName);
     ASSERT_EQ(20, req.sourceSelection.from);

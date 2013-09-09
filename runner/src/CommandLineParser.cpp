@@ -1,13 +1,13 @@
 #include "CommandLineParser.hpp"
 #include <sstream>
 
-OperationRequest CommandLineParser::parse(int argc, const char** argv) 
+ExtractMethodRequest CommandLineParser::parseExtractMethod(int argc, const char** argv) 
 {
-    OperationRequest req;
+    ExtractMethodRequest req;
     req.sourceFilename = argv[1];
-    req.extractedMethodName = argv[3];
-    req.sourceSelection.from = to_u(argv[4]);
-    req.sourceSelection.to = to_u(argv[5]);
+    req.extractedMethodName = argv[2];
+    req.sourceSelection.from = to_u(argv[3]);
+    req.sourceSelection.to = to_u(argv[4]);
     return req;
 }
 
