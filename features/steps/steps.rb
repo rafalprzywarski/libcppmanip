@@ -24,19 +24,29 @@ end
 When /^I run method extraction from "(.*?)" to "(.*?)" with name "(.*?)"$/ do |startPhrase, endPhrase, methodName|
   startOffset, endOffset = rangeFromPhrases startPhrase, endPhrase, $SOURCE
   File.open(SOURCE_FILE, "w") { |f| f.write $SOURCE }
-  output = %x(#{BUILD_DIRECTORY}/runner/cppmaniprunner_extract_method #{SOURCE_FILE} #{methodName} #{startOffset} #{endOffset})
-  $?.should eq(0), "cppmanip failed with error code #{$?}: #{output}"
+  $cppmanip_output = %x(#{BUILD_DIRECTORY}/runner/cppmaniprunner_extract_method #{SOURCE_FILE} #{methodName} #{startOffset} #{endOffset})
+  $cppmanip_exit_code = $?
 end
 
 When /^I run method extraction for "(.*?)" with name "(.*?)"$/ do |phrase, methodName|
   step "I run method extraction from \"#{phrase}\" to \"#{phrase}\" with name \"#{methodName}\""
 end
 
+def shouldNotFail
+  $cppmanip_exit_code.should eq(0), "cppmanip failed with error code #{$cppmanip_exit_code}: #{$cppmanip_output}"
+end
 
 Then /^final source code should be:$/ do |expectedSource|
+  shouldNotFail
   File.read(SOURCE_FILE).should eq(expectedSource)
 end
 
 Then /^final source code should contain:$/ do |expectedSource|
+  shouldNotFail
   File.read(SOURCE_FILE).should include(expectedSource)
+end
+
+Then /^it should fail with a message "(.*?)"$/ do |expectedMessage|
+  $cppmanip_exit_code.should_not eq(0), "cppmanip should have failed with message: #{expectedMessage}"
+  $cppmanip_output.should include(expectedMessage)
 end
