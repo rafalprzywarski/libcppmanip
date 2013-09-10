@@ -1,6 +1,7 @@
 #include "SourceExtractor.hpp"
+#include <clang/AST/Decl.h>
 
-clang::SourceRange SourceExtractor::getCorrectSourceRange(clang::ConstStmtRange stmts) 
+clang::SourceRange SourceExtractor::getCorrectSourceRange(clang::StmtRange stmts) 
 {
     clang::SourceRange r;
     r.setBegin(getCorrectSourceRange(**stmts).getBegin());
@@ -36,4 +37,14 @@ unsigned int SourceExtractor::getOffset(clang::SourceLocation loc)
 bool SourceExtractor::isLocationFromMainFile(clang::SourceLocation loc)
 {
     return sourceManager.isFromMainFile(loc);
+}
+
+std::string SourceExtractor::getVarName(const clang::VarDecl& d)
+{
+    return d.getNameAsString();
+}
+
+std::string SourceExtractor::getVarDecl(const clang::VarDecl& d)
+{
+    return d.getType().getAsString() + " " + d.getNameAsString();
 }

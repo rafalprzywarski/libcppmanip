@@ -3,10 +3,10 @@
 NaiveStatementLocator::NaiveStatementLocator(SourceExtractor& sourceExtractor, OffsetRange selection)
     : sourceExtractor(sourceExtractor), selection(selection) { }
 
-clang::ConstStmtRange NaiveStatementLocator::findStatementsInFunction(const clang::FunctionDecl& decl)
+clang::StmtRange NaiveStatementLocator::findStatementsInFunction(const clang::FunctionDecl& decl)
 {
     if (functionDoesNotContainSelection(decl))
-        return clang::ConstStmtRange();
+        return clang::StmtRange();
     return findStatementsTouchingSelection(decl);
 }
 
@@ -15,7 +15,7 @@ bool NaiveStatementLocator::functionDoesNotContainSelection(const clang::Functio
     return !sourceExtractor.isLocationFromMainFile(f.getLocation()) || !f.hasBody();
 }
 
-clang::ConstStmtRange NaiveStatementLocator::findStatementsTouchingSelection(const clang::FunctionDecl& func)
+clang::StmtRange NaiveStatementLocator::findStatementsTouchingSelection(const clang::FunctionDecl& func)
 {
     auto body = func.getBody();
     auto begin =

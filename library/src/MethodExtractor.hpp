@@ -8,7 +8,7 @@ class MethodExtractor
 public:
     virtual ~MethodExtractor() { }
     virtual void extractStatmentsFromFunctionIntoNewFunction(
-        clang::ConstStmtRange stmts, const clang::FunctionDecl& originalFunction, const std::string& extractedFunctionName) = 0;
+        clang::StmtRange stmts, const clang::FunctionDecl& originalFunction, const std::string& extractedFunctionName) = 0;
 };
 
 #endif // METHODEXTRACTOR_HPP

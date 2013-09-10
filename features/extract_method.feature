@@ -97,7 +97,7 @@ Feature: As a developer I want to extract code into methods to make my code more
         }
         void other();
         """
-    @wip
+    @done
     Scenario: Referenced local variables should be passed to the extracted function
         Given source code:
         """

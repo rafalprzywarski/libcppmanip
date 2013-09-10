@@ -8,6 +8,12 @@
 #include <stdexcept>
 #include "OffsetRange.hpp"
 
+namespace clang
+{
+class VarDecl;
+    
+}
+
 namespace detail
 {
     
@@ -32,11 +38,13 @@ public:
         return {spelling.getBegin(), spelling.getBegin().getLocWithOffset(sourceLength)};
     }
 
-    clang::SourceRange getCorrectSourceRange(clang::ConstStmtRange stmts);
+    clang::SourceRange getCorrectSourceRange(clang::StmtRange stmts);
     std::string getSource(clang::SourceRange range);
     OffsetRange getOffsetRange(clang::SourceRange r);
     unsigned getOffset(clang::SourceLocation loc);
     bool isLocationFromMainFile(clang::SourceLocation loc);
+    std::string getVarName(const clang::VarDecl& d);
+    std::string getVarDecl(const clang::VarDecl& d);
 
 private:
     clang::SourceManager& sourceManager;

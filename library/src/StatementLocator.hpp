@@ -8,7 +8,7 @@ class StatementLocator
 public:
     virtual ~StatementLocator() { }
 
-    virtual clang::ConstStmtRange findStatementsInFunction(const clang::FunctionDecl& decl) = 0;
+    virtual clang::StmtRange findStatementsInFunction(const clang::FunctionDecl& decl) = 0;
 };
 
 #endif // STATEMENTLOCATOR_HPP

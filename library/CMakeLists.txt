@@ -20,6 +20,7 @@ add_library(cppmanip STATIC
     src/NaiveStatementLocator.cpp
     src/MethodExtractorVisitor.cpp
     src/DelayedMethodExtractor.cpp
+    src/NaiveLocalVariableLocator.cpp
 )
 
 add_executable(cppmaniptest

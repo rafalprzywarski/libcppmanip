@@ -8,7 +8,7 @@ class NaiveStatementLocator : public StatementLocator
 public:
     NaiveStatementLocator(SourceExtractor& sourceExtractor, OffsetRange selection);
 
-    clang::ConstStmtRange findStatementsInFunction(const clang::FunctionDecl& decl);
+    clang::StmtRange findStatementsInFunction(const clang::FunctionDecl& decl);
 
 private:
 
@@ -16,7 +16,7 @@ private:
     OffsetRange selection;
 
     bool functionDoesNotContainSelection(const clang::FunctionDecl& f);
-    clang::ConstStmtRange findStatementsTouchingSelection(const clang::FunctionDecl& func);
+    clang::StmtRange findStatementsTouchingSelection(const clang::FunctionDecl& func);
     bool selectionOverlapsWithStmt(const clang::Stmt& stmt);
 };
 
