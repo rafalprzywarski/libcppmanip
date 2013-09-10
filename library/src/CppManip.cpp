@@ -24,7 +24,7 @@ void applySourceOperationsToFile(TextOperationApplier& sourceOperations, const s
     writeTextToFile(modifiedSource, filename); 
 }
 
-void extractMethodInFile(const std::string& methodName, SourceSelection selection, const std::string& filename)
+void extractMethodInFile(const std::string& methodName, SourceSelection selection, const std::string& filename, ExtractMethodListener& listener)
 {
     TextOperationApplier sourceOperations;
     MethodExtractorFrontendActionFactory factory(methodName, selection, sourceOperations);

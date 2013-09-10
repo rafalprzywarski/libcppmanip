@@ -4,8 +4,8 @@ require './buildpath'
 SOURCE_FILE="source.cpp"
 
 def rangeFromPhrases startPhrase, endPhrase, source
-  startIndex = $SOURCE.index(startPhrase)
-  endIndex = $SOURCE.index(endPhrase)
+  startIndex = source.index(startPhrase)
+  endIndex = source.index(endPhrase)
   startIndex.should_not be_nil, "\"#{startPhrase}\" not found in the source code"
   endIndex.should_not be_nil, "\"#{endPhrase}\" not found in the source code"
   startIndex.should be <= endIndex, "\"#{startPhrase}\" must be before or equal to \"#{endPhrase}\""
@@ -49,4 +49,8 @@ end
 Then /^it should fail with a message "(.*?)"$/ do |expectedMessage|
   $cppmanip_exit_code.should_not eq(0), "cppmanip should have failed with message: #{expectedMessage}"
   $cppmanip_output.should include(expectedMessage)
+end
+
+Then /^original code should not change$/ do
+  File.read(SOURCE_FILE).should eq($SOURCE)
 end
