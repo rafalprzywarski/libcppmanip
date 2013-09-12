@@ -35,6 +35,7 @@ install(TARGETS cppmanip LIBRARY DESTINATION lib)
 install(FILES
         "${PROJECT_SOURCE_DIR}/include/CppManip.hpp"
         "${PROJECT_SOURCE_DIR}/include/SourceSelection.hpp"
+        "${PROJECT_SOURCE_DIR}/include/ExtractMethodListener.hpp"
         DESTINATION include)
 
 add_executable(cppmaniptest
