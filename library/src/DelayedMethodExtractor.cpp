@@ -2,22 +2,32 @@
 #include "SourceExtractor.hpp"
 #include "TextOperationApplier.hpp"
 #include "FunctionPrinter.hpp"
+#include <ExtractMethodListener.hpp>
 #include <clang/AST/Expr.h>
 #include <clang/AST/RecursiveASTVisitor.h>
 #include <unordered_set>
+#include <boost/algorithm/string/join.hpp>
 
 DelayedMethodExtractor::DelayedMethodExtractor(
-    SourceExtractor& sourceExtractor, TextOperationApplier& sourceOperations, FunctionPrinter& functionPrinter, LocalVariableLocator& localVariableLocator)
-    : sourceExtractor(sourceExtractor), sourceOperations(sourceOperations), functionPrinter(functionPrinter), localVariableLocator(localVariableLocator) { }
+    SourceExtractor& sourceExtractor, TextOperationApplier& sourceOperations, FunctionPrinter& functionPrinter,
+    LocalVariableLocator& localVariableLocator, ExtractMethodListener& listener)
+    : sourceExtractor(sourceExtractor), sourceOperations(sourceOperations), functionPrinter(functionPrinter),
+    localVariableLocator(localVariableLocator), listener(listener) { }
 
 void DelayedMethodExtractor::extractStatmentsFromFunctionIntoNewFunction(
     clang::StmtRange stmts, const clang::FunctionDecl& originalFunction, const std::string& extractedFunctionName)
 {
     auto stmtsRange = sourceExtractor.getCorrectSourceRange(stmts);
     auto originalFunctionLocation = sourceExtractor.getCorrectSourceRange(originalFunction).getBegin();
-    auto variables = localVariableLocator.findLocalVariablesRequiredForStmts(stmts);
-    printExtractedFunction(originalFunctionLocation, extractedFunctionName, variables, stmtsRange);
-    replaceStatementsWithFunctionCall(stmtsRange, extractedFunctionName, variables);
+    auto requiredVars = localVariableLocator.findLocalVariablesRequiredForStmts(stmts);
+    auto usedVars = localVariableLocator.findVariablesDeclaredByAndUsedAfterStmts(stmts, originalFunction);
+    if (!usedVars.empty())
+    {
+        listener.failed("Cannot extract \'" + extractedFunctionName + "\'. Following variables are in use after the selected statements: " + boost::algorithm::join(getNames(usedVars), ", "));
+        return;
+    }
+    printExtractedFunction(originalFunctionLocation, extractedFunctionName, requiredVars, stmtsRange);
+    replaceStatementsWithFunctionCall(stmtsRange, extractedFunctionName, requiredVars);
 }
 
 void DelayedMethodExtractor::printExtractedFunction(

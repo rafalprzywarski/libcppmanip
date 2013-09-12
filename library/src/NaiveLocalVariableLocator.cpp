@@ -5,7 +5,7 @@
 namespace
 {
 
-class DeclRefExprVisitor : public clang::RecursiveASTVisitor<DeclRefExprVisitor>
+class RequiredLocalVariablesFinder : public clang::RecursiveASTVisitor<RequiredLocalVariablesFinder>
 {
 public:
     typedef std::vector<clang::VarDecl *> Variables;
@@ -54,11 +54,51 @@ private:
     }
 };
 
+class UsedVariablesFinder : public clang::RecursiveASTVisitor<UsedVariablesFinder>
+{
+public:
+    typedef std::vector<clang::VarDecl *> Variables;
+
+    Variables getVariables() const
+    {
+        return variables;
+    }
+    void findAfterStmts(clang::StmtRange stmts, const clang::FunctionDecl& func)
+    {
+        for (auto& s : clang::StmtRange(end(stmts), func.getBody()->child_end()))
+            TraverseStmt(s);
+    }
+
+    bool VisitDeclRefExpr(clang::DeclRefExpr *d)
+    {
+        auto var = clang::dyn_cast_or_null<clang::VarDecl>(d->getDecl());
+        if (!var || isGlobal(var))
+            return true;
+        variables.push_back(var);
+        return true;
+    }
+private:
+    Variables variables;
+
+    bool isGlobal(clang::VarDecl *var)
+    {
+        return var->getParentFunctionOrMethod() == nullptr;
+    }
+};
+
 }
 
 LocalVariableLocator::Variables NaiveLocalVariableLocator::findLocalVariablesRequiredForStmts(clang::StmtRange stmts)
 {
-    DeclRefExprVisitor v;
+    RequiredLocalVariablesFinder v;
     v.traverseStmts(stmts);
+    return v.getVariables();
+}
+
+LocalVariableLocator::Variables NaiveLocalVariableLocator::findVariablesDeclaredByAndUsedAfterStmts(
+    clang::StmtRange stmts, const clang::FunctionDecl& func)
+{
+    UsedVariablesFinder v;
+    v.findAfterStmts(stmts, func);
     return v.getVariables();
 }

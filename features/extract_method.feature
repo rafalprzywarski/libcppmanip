@@ -127,8 +127,8 @@ Feature: As a developer I want to extract code into methods to make my code more
         """
         with_args(i, f);
         """
-    @wip
-    Scenario: Extraction of local variables used after the selected block should prevent the extraction
+    @done
+    Scenario: Extraction of local variables declared in and used after the selected block should prevent the extraction
         Given source code:
         """
         void other3(int, int);
@@ -143,3 +143,22 @@ Feature: As a developer I want to extract code into methods to make my code more
         When I run method extraction from "int i = 7" to "j += 5" with name "bad"
         Then it should fail with a message "Cannot extract 'bad'. Following variables are in use after the selected statements: i, j"
         And original code should not change
+
+    Scenario: Local variables used after but not declared in the selected block should not prevent the extraction
+        Given source code:
+        """
+        void other(int);
+        void original()
+        {
+            int i = 7;
+            int j = 9;
+            j += 5;
+            i += 2;
+            other(i);
+        }
+        """
+        When I run method extraction from "int j = 9" to "j += 5" with name "good"
+        Then final source code should contain:
+        """
+        other(i);
+        """

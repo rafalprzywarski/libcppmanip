@@ -4,13 +4,15 @@
 #include "FunctionPrinter.hpp"
 #include "LocalVariableLocator.hpp"
 
+class ExtractMethodListener;
 class TextOperationApplier;
 class SourceExtractor;
 class DelayedMethodExtractor : public MethodExtractor
 {
 public:
     DelayedMethodExtractor(
-        SourceExtractor& sourceExtractor, TextOperationApplier& sourceOperations, FunctionPrinter& functionPrinter, LocalVariableLocator& localVariableLocator);
+        SourceExtractor& sourceExtractor, TextOperationApplier& sourceOperations, FunctionPrinter& functionPrinter,
+        LocalVariableLocator& localVariableLocator, ExtractMethodListener& listener);
 
     void extractStatmentsFromFunctionIntoNewFunction(
         clang::StmtRange stmts, const clang::FunctionDecl& originalFunction, const std::string& extractedFunctionName);
@@ -23,6 +25,7 @@ private:
     TextOperationApplier& sourceOperations;
     FunctionPrinter& functionPrinter;
     LocalVariableLocator& localVariableLocator;
+    ExtractMethodListener& listener;
 
     void printExtractedFunction(clang::SourceLocation at, const std::string& name, const Variables& variables, clang::SourceRange stmtsRange);
     void replaceStatementsWithFunctionCall(clang::SourceRange stmtsRange, const std::string& functionName, const Variables& variables);

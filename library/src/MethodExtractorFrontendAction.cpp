@@ -3,5 +3,5 @@
 
 clang::ASTConsumer* MethodExtractorFrontendAction::CreateASTConsumer(clang::CompilerInstance&, llvm::StringRef)
 {
-    return new MethodExtractorASTConsumer(extractedMethodName, selection, sourceOperations);
+    return new MethodExtractorASTConsumer(extractedMethodName, selection, sourceOperations, listener);
 }

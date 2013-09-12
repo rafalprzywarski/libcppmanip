@@ -24,7 +24,7 @@ end
 When /^I run method extraction from "(.*?)" to "(.*?)" with name "(.*?)"$/ do |startPhrase, endPhrase, methodName|
   startOffset, endOffset = rangeFromPhrases startPhrase, endPhrase, $SOURCE
   File.open(SOURCE_FILE, "w") { |f| f.write $SOURCE }
-  $cppmanip_output = %x(#{BUILD_DIRECTORY}/runner/cppmaniprunner_extract_method #{SOURCE_FILE} #{methodName} #{startOffset} #{endOffset})
+  $cppmanip_output = %x(#{BUILD_DIRECTORY}/runner/cppmaniprunner_extract_method #{SOURCE_FILE} #{methodName} #{startOffset} #{endOffset} 2>&1)
   $cppmanip_exit_code = $?
 end
 
