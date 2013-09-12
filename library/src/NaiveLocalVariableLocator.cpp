@@ -1,12 +1,24 @@
 #include "NaiveLocalVariableLocator.hpp"
 #include <clang/AST/RecursiveASTVisitor.h>
-#include <unordered_set>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/algorithm_ext/push_back.hpp>
 #include <boost/range/algorithm/find.hpp>
+#include <boost/range/algorithm/count.hpp>
 
 namespace
 {
+
+class VariableFinder
+{
+public:
+    typedef std::vector<clang::VarDecl *> Variables;
+    Variables getVariables() const
+    {
+        return variables;
+    }
+protected:
+    Variables variables;
+};
 
 class RequiredLocalVariablesFinder : public clang::RecursiveASTVisitor<RequiredLocalVariablesFinder>
 {
@@ -24,7 +36,7 @@ public:
 
     bool VisitVarDecl(clang::VarDecl *d)
     {
-        notRequiredDecls.insert(d);
+        notRequiredDecls.push_back(d);
         return true;
     }
 
@@ -39,12 +51,12 @@ public:
         Variables v;
         std::remove_copy_if(
             variables.begin(), variables.end(), std::back_inserter(v),
-            [&](clang::VarDecl *d) { return notRequiredDecls.count(d); });
+            [&](clang::VarDecl *d) { return boost::count(notRequiredDecls, d); });
         return v;
     }
 private:
     Variables variables;
-    std::unordered_set<clang::VarDecl *> notRequiredDecls;
+    std::vector<clang::VarDecl *> notRequiredDecls;
 
     bool alreadyFound(clang::VarDecl *var)
     {
@@ -57,15 +69,9 @@ private:
     }
 };
 
-class UsedVariablesFinder : public clang::RecursiveASTVisitor<UsedVariablesFinder>
+class UsedVariablesFinder : public clang::RecursiveASTVisitor<UsedVariablesFinder>, public VariableFinder
 {
 public:
-    typedef std::vector<clang::VarDecl *> Variables;
-
-    Variables getVariables() const
-    {
-        return variables;
-    }
     void findAfterStmts(clang::StmtRange stmts, const clang::FunctionDecl& func)
     {
         for (auto& s : clang::StmtRange(end(stmts), func.getBody()->child_end()))
@@ -81,7 +87,6 @@ public:
         return true;
     }
 private:
-    Variables variables;
 
     bool isGlobal(clang::VarDecl *var)
     {
@@ -89,11 +94,9 @@ private:
     }
 };
 
-class DeclaredLocalVariablesFinder : public clang::RecursiveASTVisitor<RequiredLocalVariablesFinder>
+class DeclaredLocalVariablesFinder : public clang::RecursiveASTVisitor<DeclaredLocalVariablesFinder>, public VariableFinder
 {
 public:
-    typedef std::vector<clang::VarDecl *> Variables;
-
     bool VisitVarDecl(clang::VarDecl *d)
     {
         variables.push_back(d);
@@ -104,24 +107,6 @@ public:
     {
         for (auto& s : stmts)
             TraverseStmt(s);
-    }
-
-    Variables getVariables() const
-    {
-        return variables;
-    }
-private:
-    Variables variables;
-    std::unordered_set<clang::VarDecl *> notRequiredDecls;
-
-    bool alreadyFound(clang::VarDecl *var)
-    {
-        return std::find(variables.begin(), variables.end(), var) != variables.end();
-    }
-
-    bool isGlobal(clang::VarDecl *var)
-    {
-        return var->getParentFunctionOrMethod() == nullptr;
     }
 };
 
