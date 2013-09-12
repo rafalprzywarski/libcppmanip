@@ -143,7 +143,7 @@ Feature: As a developer I want to extract code into methods to make my code more
         When I run method extraction from "int i = 7" to "j += 5" with name "bad"
         Then it should fail with a message "Cannot extract 'bad'. Following variables are in use after the selected statements: i, j"
         And original code should not change
-
+    @done
     Scenario: Local variables used after but not declared in the selected block should not prevent the extraction
         Given source code:
         """
