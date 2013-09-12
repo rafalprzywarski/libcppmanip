@@ -4,10 +4,11 @@ execute_process(COMMAND ${LLVM_CONFIG} --cxxflags OUTPUT_VARIABLE LLVM_CXX_FLAGS
 execute_process(COMMAND ${LLVM_CONFIG} --ldflags OUTPUT_VARIABLE LLVM_LINKER_FLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
 add_definitions("${LLVM_CXX_FLAGS} -fexceptions")
 set(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${LLVM_LINKER_FLAGS}")
+set(CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS "${CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS} ${LLVM_LINKER_FLAGS}")
 
 include_directories("../include" "src" "../gmock-1.6.0/fused-src")
 
-add_library(cppmanip STATIC
+add_library(cppmanip SHARED
     src/SourceExtractor.cpp
     src/TextFileOps.cpp
     src/TextOperationApplier.cpp
@@ -22,6 +23,19 @@ add_library(cppmanip STATIC
     src/DelayedMethodExtractor.cpp
     src/NaiveLocalVariableLocator.cpp
 )
+
+target_link_libraries(cppmanip LINK_PRIVATE
+    clangTooling.a clangFrontend.a clangFrontendTool.a
+    clangSerialization.a clangDriver.a
+    clangParse.a clangSema.a clangAnalysis.a
+    clangRewriteFrontend.a clangRewriteCore.a clangEdit.a clangAST.a
+    clangLex.a clangBasic.a clang.a LLVM-3.2)
+
+install(TARGETS cppmanip LIBRARY DESTINATION lib)
+install(FILES
+        "${PROJECT_SOURCE_DIR}/include/CppManip.hpp"
+        "${PROJECT_SOURCE_DIR}/include/SourceSelection.hpp"
+        DESTINATION include)
 
 add_executable(cppmaniptest
     test/main.cpp
