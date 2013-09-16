@@ -25,12 +25,15 @@ int main(int argc, const char** argv)
     {
         CommandLineParser parser;
         auto req = parser.parseExtractMethod(argc, argv);
-        ErrorListener errorListener;
-        extractMethodInFile(req.extractedMethodName, req.sourceSelection, req.sourceFilename, errorListener);
-        if (errorListener.hasExtractionFailed())
+        for (auto loc : req.locations)
         {
-            std::cerr << errorListener.getMessage() << std::endl;
-            return 1;
+            ErrorListener errorListener;
+            extractMethodInFile(loc.extractedMethodName, loc.sourceSelection, req.sourceFilename, errorListener);
+            if (errorListener.hasExtractionFailed())
+            {
+                std::cerr << errorListener.getMessage() << std::endl;
+                return 1;
+            }
         }
     }
     catch (const std::exception& e)

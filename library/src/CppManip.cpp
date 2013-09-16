@@ -26,6 +26,7 @@ void applySourceOperationsToFile(TextOperationApplier& sourceOperations, const s
 
 void extractMethodInFile(const std::string& methodName, SourceSelection selection, const std::string& filename, ExtractMethodListener& listener)
 {
+    llvm::outs() << "extracting " << selection.from << " " << selection.to << "\n";
     TextOperationApplier sourceOperations;
     MethodExtractorFrontendActionFactory factory(methodName, selection, sourceOperations, listener);
     performFrontendActionForFile(factory, filename);

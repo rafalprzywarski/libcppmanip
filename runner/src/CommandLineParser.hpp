@@ -2,12 +2,17 @@
 #define COMMANDLINEPARSER_HPP
 #include <SourceSelection.hpp>
 #include <string>
+#include <vector>
 
 struct ExtractMethodRequest
 {
+    struct Location
+    {
+        std::string extractedMethodName;
+        SourceSelection sourceSelection;
+    };
     std::string sourceFilename;
-    std::string extractedMethodName;
-    SourceSelection sourceSelection;
+    std::vector<Location> locations;
 };
 
 class CommandLineParser
