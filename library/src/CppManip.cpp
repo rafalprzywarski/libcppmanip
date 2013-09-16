@@ -13,7 +13,7 @@ void performFrontendActionForFile(clang::tooling::FrontendActionFactory& actionF
     auto argc = args.getArgc();
     auto argv = args.getArgv();
     clang::tooling::CommonOptionsParser parser(argc, argv);
-    clang::tooling::ClangTool tool(parser.GetCompilations(), parser.GetSourcePathList());
+    clang::tooling::ClangTool tool(parser.GetCompilations(), { sourceFilename }); // clang bug: parser.GetSourcePathList() uses statics and "adds up" source file names
     tool.run(&actionFactory);
 }
 

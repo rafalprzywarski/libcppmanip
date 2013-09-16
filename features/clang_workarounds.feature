@@ -1,5 +1,5 @@
 Feature: As I developer I want to use this library despite clang sortcomings
-    @wip
+    @done
     Scenario: Extract method should run more than once
         Given source code:
         """
