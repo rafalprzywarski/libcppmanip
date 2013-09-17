@@ -39,10 +39,13 @@ install(FILES
         DESTINATION include)
 
 add_executable(cppmaniptest
+    test/ParsedFunction.cpp
+    test/Condition.cpp
     test/main.cpp
     test/TextOperationApplierTest.cpp
     test/OffsetRangeTest.cpp
     test/ClangToolArgsBuilderTest.cpp
+    test/SourceExtractorTest.cpp
 ) 
 
-target_link_libraries(cppmaniptest cppmanip gtest gmock pthread)
+target_link_libraries(cppmaniptest cppmanip gtest gmock boost_thread pthread)
