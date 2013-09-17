@@ -162,3 +162,28 @@ Feature: As a developer I want to extract code into methods to make my code more
         """
         other(i);
         """
+    @done
+    Scenario: Method extraction should not add empty line at the end of method body. Newline should be added after extracted method call.
+        Given source code:
+        """
+        void simpleFunction()
+        {
+            int a = 666;
+            int b = 7;
+            int c = 123;
+        }
+        """
+        When I run method extraction from "int b" to "7;" with name "extracted"
+        Then final source code should be:
+        """
+        void extracted()
+        {
+            int b = 7;
+        }
+        void simpleFunction()
+        {
+            int a = 666;
+            extracted();
+            int c = 123;
+        }
+        """
