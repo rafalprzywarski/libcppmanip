@@ -162,7 +162,7 @@ Feature: As a developer I want to extract code into methods to make my code more
         """
         other(i);
         """
-    @done
+    @wip
     Scenario: Method extraction should not add empty line at the end of method body. Newline should be added after extracted method call.
         Given source code:
         """
