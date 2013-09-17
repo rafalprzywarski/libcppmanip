@@ -4,7 +4,6 @@
 #include "FunctionPrinter.hpp"
 #include "LocalVariableLocator.hpp"
 
-class ExtractMethodListener;
 class TextOperationApplier;
 class SourceExtractor;
 class DelayedMethodExtractor : public MethodExtractor
@@ -12,7 +11,7 @@ class DelayedMethodExtractor : public MethodExtractor
 public:
     DelayedMethodExtractor(
         SourceExtractor& sourceExtractor, TextOperationApplier& sourceOperations, FunctionPrinter& functionPrinter,
-        LocalVariableLocator& localVariableLocator, ExtractMethodListener& listener);
+        LocalVariableLocator& localVariableLocator);
 
     void extractStatmentsFromFunctionIntoNewFunction(
         clang::StmtRange stmts, const clang::FunctionDecl& originalFunction, const std::string& extractedFunctionName);
@@ -25,13 +24,13 @@ private:
     TextOperationApplier& sourceOperations;
     FunctionPrinter& functionPrinter;
     LocalVariableLocator& localVariableLocator;
-    ExtractMethodListener& listener;
 
     void printExtractedFunction(clang::SourceLocation at, const std::string& name, const Variables& variables, clang::SourceRange stmtsRange);
     void replaceStatementsWithFunctionCall(clang::SourceRange stmtsRange, const std::string& functionName, const Variables& variables);
     void replaceRangeWith(clang::SourceRange without, std::string replace);
     FunctionPrinter::Strings getTypesAndNames(Variables variables);
     FunctionPrinter::Strings getNames(Variables variables);
+    void failIfVariablesAreDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, const clang::FunctionDecl& originalFunction, const std::string& extractedFunctionName);
 };
 
 #endif // DELAYEDMETHODEXTRACTOR_HPP

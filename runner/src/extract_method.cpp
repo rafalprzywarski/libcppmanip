@@ -1,23 +1,8 @@
 #include "CommandLineParser.hpp"
 #include <CppManip.hpp>
-#include <ExtractMethodListener.hpp>
+#include <ExtractMethodError.hpp>
 #include <stdexcept>
 #include <iostream>
-
-class ErrorListener : public ExtractMethodListener
-{
-public:
-    void failed(const std::string& message)
-    {
-        extractionFailed = true;
-        this->message = message;
-    }
-    std::string getMessage() const { return message; }
-    bool hasExtractionFailed() const { return extractionFailed; }
-private:
-    bool extractionFailed = false;
-    std::string message;
-};
 
 int main(int argc, const char** argv)
 {
@@ -27,11 +12,13 @@ int main(int argc, const char** argv)
         auto req = parser.parseExtractMethod(argc, argv);
         for (auto loc : req.locations)
         {
-            ErrorListener errorListener;
-            extractMethodInFile(loc.extractedMethodName, loc.sourceSelection, req.sourceFilename, errorListener);
-            if (errorListener.hasExtractionFailed())
+            try
             {
-                std::cerr << errorListener.getMessage() << std::endl;
+                extractMethodInFile(loc.extractedMethodName, loc.sourceSelection, req.sourceFilename);
+            }
+            catch (const ExtractMethodError& e)
+            {
+                std::cerr << e.what() << std::endl;
                 return 1;
             }
         }

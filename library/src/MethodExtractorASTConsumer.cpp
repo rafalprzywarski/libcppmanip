@@ -14,7 +14,7 @@ void MethodExtractorASTConsumer::HandleTranslationUnit(clang::ASTContext& ctx)
     PrettyFunctionPrinter printer;
     NaiveStatementLocator stmtLocator(sourceExtractor, selection);
     NaiveLocalVariableLocator localVariableLocator;
-    DelayedMethodExtractor extractor(sourceExtractor, sourceOperations, printer, localVariableLocator, listener);
+    DelayedMethodExtractor extractor(sourceExtractor, sourceOperations, printer, localVariableLocator);
     MethodExtractorVisitor visitor(extractedMethodName, extractor, stmtLocator);
     visitor.TraverseDecl(ctx.getTranslationUnitDecl());
 }

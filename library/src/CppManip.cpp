@@ -24,11 +24,11 @@ void applySourceOperationsToFile(TextOperationApplier& sourceOperations, const s
     writeTextToFile(modifiedSource, filename); 
 }
 
-void extractMethodInFile(const std::string& methodName, SourceSelection selection, const std::string& filename, ExtractMethodListener& listener)
+void extractMethodInFile(const std::string& methodName, SourceSelection selection, const std::string& filename)
 {
     llvm::outs() << "extracting " << selection.from << " " << selection.to << "\n";
     TextOperationApplier sourceOperations;
-    MethodExtractorFrontendActionFactory factory(methodName, selection, sourceOperations, listener);
+    MethodExtractorFrontendActionFactory factory(methodName, selection, sourceOperations);
     performFrontendActionForFile(factory, filename);
     applySourceOperationsToFile(sourceOperations, filename);
 }

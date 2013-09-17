@@ -2,7 +2,7 @@
 #include "SourceExtractor.hpp"
 #include "TextOperationApplier.hpp"
 #include "FunctionPrinter.hpp"
-#include <ExtractMethodListener.hpp>
+#include <ExtractMethodError.hpp>
 #include <clang/AST/Expr.h>
 #include <clang/AST/RecursiveASTVisitor.h>
 #include <unordered_set>
@@ -10,22 +10,17 @@
 
 DelayedMethodExtractor::DelayedMethodExtractor(
     SourceExtractor& sourceExtractor, TextOperationApplier& sourceOperations, FunctionPrinter& functionPrinter,
-    LocalVariableLocator& localVariableLocator, ExtractMethodListener& listener)
+    LocalVariableLocator& localVariableLocator)
     : sourceExtractor(sourceExtractor), sourceOperations(sourceOperations), functionPrinter(functionPrinter),
-    localVariableLocator(localVariableLocator), listener(listener) { }
+    localVariableLocator(localVariableLocator) { }
 
 void DelayedMethodExtractor::extractStatmentsFromFunctionIntoNewFunction(
     clang::StmtRange stmts, const clang::FunctionDecl& originalFunction, const std::string& extractedFunctionName)
 {
     auto stmtsRange = sourceExtractor.getCorrectSourceRange(stmts);
+    failIfVariablesAreDeclaredByAndUsedAfterStmts(stmts, originalFunction, extractedFunctionName);
     auto originalFunctionLocation = sourceExtractor.getCorrectSourceRange(originalFunction).getBegin();
     auto requiredVars = localVariableLocator.findLocalVariablesRequiredForStmts(stmts);
-    auto usedVars = localVariableLocator.findVariablesDeclaredByAndUsedAfterStmts(stmts, originalFunction);
-    if (!usedVars.empty())
-    {
-        listener.failed("Cannot extract \'" + extractedFunctionName + "\'. Following variables are in use after the selected statements: " + boost::algorithm::join(getNames(usedVars), ", "));
-        return;
-    }
     printExtractedFunction(originalFunctionLocation, extractedFunctionName, requiredVars, stmtsRange);
     replaceStatementsWithFunctionCall(stmtsRange, extractedFunctionName, requiredVars);
 }
@@ -66,4 +61,13 @@ FunctionPrinter::Strings DelayedMethodExtractor::getNames(DelayedMethodExtractor
     for (auto d : variables)
         args.push_back(sourceExtractor.getVarName(*d));
     return args;
+}
+void DelayedMethodExtractor::failIfVariablesAreDeclaredByAndUsedAfterStmts(
+    clang::StmtRange stmts, const clang::FunctionDecl& originalFunction, const std::string& extractedFunctionName)
+{
+    auto usedVars = localVariableLocator.findVariablesDeclaredByAndUsedAfterStmts(stmts, originalFunction);
+    if (!usedVars.empty())
+        throw ExtractMethodError("Cannot extract \'" + extractedFunctionName +
+            "\'. Following variables are in use after the selected statements: " + boost::algorithm::join(getNames(usedVars), ", "));
+
 }

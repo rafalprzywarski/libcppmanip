@@ -2,5 +2,5 @@
 #include "MethodExtractorFrontendAction.hpp"
 
 clang::FrontendAction* MethodExtractorFrontendActionFactory::create() {
-    return new MethodExtractorFrontendAction(extractedMethodName, selection, sourceOperations, listener);
+    return new MethodExtractorFrontendAction(extractedMethodName, selection, sourceOperations);
 }
