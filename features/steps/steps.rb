@@ -62,3 +62,15 @@ end
 Then /^original code should not change$/ do
   File.read(SOURCE_FILE).should eq($SOURCE)
 end
+
+Given /^libcppmanip repository$/ do
+    #we are in it
+end
+
+When /^I install it$/ do
+  pending # express the regexp above with the code you wish you had
+end
+
+Then /^another project using it should compile and link$/ do
+  pending # express the regexp above with the code you wish you had
+end
