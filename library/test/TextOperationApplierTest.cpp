@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <TextOperationApplier.hpp>
+#include <TextReplacer.hpp>
 #include <stdexcept>
 
 struct TextOperationApplierTest : testing::Test

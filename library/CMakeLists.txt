@@ -22,6 +22,7 @@ add_library(cppmanip SHARED
     src/MethodExtractorVisitor.cpp
     src/DelayedMethodExtractor.cpp
     src/NaiveLocalVariableLocator.cpp
+    src/TextReplacer.cpp
 )
 
 target_link_libraries(cppmanip LINK_PRIVATE

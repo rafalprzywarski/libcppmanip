@@ -5,6 +5,7 @@
 #include "ClangToolArgsBuilder.hpp"
 #include "MethodExtractorFrontendActionFactory.hpp"
 #include "TextOperationApplier.hpp"
+#include "TextReplacer.hpp"
 
 void performFrontendActionForFile(clang::tooling::FrontendActionFactory& actionFactory, std::string sourceFilename)
 {

@@ -2,28 +2,9 @@
 #define TEXTOPERATIONAPPLIER_HPP
 #include <string>
 #include <map>
+#include "TextReplacementListener.hpp"
 
 class OffsetRange;
-
-class TextReplacementListener
-{
-public:
-    virtual ~TextReplacementListener() { }
-    virtual void replaceWithTextInRange(const std::string& replacement, unsigned from, unsigned to) = 0;
-};
-
-class TextReplacer : public TextReplacementListener
-{
-public:
-    explicit TextReplacer(const std::string& text) : text(text) { }
-    void replaceWithTextInRange(const std::string& replacement, unsigned from, unsigned to)
-    {
-        text = text.substr(0, from) + replacement + text.substr(to);
-    }
-    std::string getText() const { return text; }
-private:
-    std::string text;
-};
 
 class TextOperationApplier
 {
