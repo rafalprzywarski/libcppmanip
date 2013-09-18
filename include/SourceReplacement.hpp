@@ -2,12 +2,7 @@
 #define SOURCEREPLACEMENT_HPP
 #include <string>
 #include <vector>
-
-struct SourceLocation
-{
-    unsigned row, col;
-    SourceLocation() : row(), col() { }
-};
+#include "SourceLocation.hpp"
 
 struct SourceReplacement
 {

@@ -3,8 +3,9 @@
 #include <string>
 #include "SourceSelection.hpp"
 #include "SourceReplacement.hpp"
+#include "SourceRange.hpp"
 
-void extractMethodInFile(const std::string& methodName, SourceSelection selection, const std::string& filename);
+void extractMethodInFile(const std::string& methodName, SourceRange selection, const std::string& filename);
 SourceReplacements extractFunctionInFile(const std::string& functionName, SourceSelection selection, const std::string& filename);
 
 #endif // CPPMANIP_HPP

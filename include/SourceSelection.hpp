@@ -1,11 +1,10 @@
 #ifndef SOURCESELECTION_HPP
 #define SOURCESELECTION_HPP
+#include "SourceLocation.hpp"
 
 struct SourceSelection
 {
-    unsigned from, to;
-    
-    SourceSelection() : from(0), to(0) { }
+    SourceLocation from, to;
 };
 
 #endif // SOURCESELECTION_HPP

@@ -1,6 +1,6 @@
 #ifndef COMMANDLINEPARSER_HPP
 #define COMMANDLINEPARSER_HPP
-#include <SourceSelection.hpp>
+#include <SourceRange.hpp>
 #include <string>
 #include <vector>
 
@@ -9,7 +9,7 @@ struct ExtractMethodRequest
     struct Location
     {
         std::string extractedMethodName;
-        SourceSelection sourceSelection;
+        SourceRange sourceSelection;
     };
     std::string sourceFilename;
     std::vector<Location> locations;

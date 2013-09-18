@@ -38,17 +38,26 @@ void applySourceOperationsToFile(SourceReplacements replacements, const std::str
 SourceReplacements extractFunctionInFile(const std::string& functionName, SourceSelection selection, const std::string& filename)
 {
     TextOperationApplier sourceOperations;
-    MethodExtractorFrontendActionFactory factory(functionName, selection, sourceOperations);
-    performFrontendActionForFile(factory, filename);
     std::string source = loadTextFromFile(filename);
+    SourceLocationConverter sourceLocationConverter(source);
+    SourceRange range;
+    range.from = sourceLocationConverter.getOffsetFromLocation(selection.from);
+    range.to = sourceLocationConverter.getOffsetFromLocation(selection.to);
+    MethodExtractorFrontendActionFactory factory(functionName, range, sourceOperations);
+    performFrontendActionForFile(factory, filename);
     OffsetConverter offsetCoverter(source);
     TextReplacementRecorder recorder(std::bind(&OffsetConverter::getLocationFromOffset, &offsetCoverter, std::placeholders::_1));
     sourceOperations.apply(recorder);
     return recorder.getReplacements();
 }
 
-void extractMethodInFile(const std::string& methodName, SourceSelection selection, const std::string& filename)
+void extractMethodInFile(const std::string& methodName, SourceRange range, const std::string& filename)
 {
+    std::string source = loadTextFromFile(filename);
+    OffsetConverter offsetCoverter(source);
+    SourceSelection selection;
+    selection.from = offsetCoverter.getLocationFromOffset(range.from);
+    selection.to = offsetCoverter.getLocationFromOffset(range.to);
     auto replacements = extractFunctionInFile(methodName, selection, filename);
     applySourceOperationsToFile(replacements, filename);
 }

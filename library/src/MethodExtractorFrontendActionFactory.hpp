@@ -1,7 +1,7 @@
 #ifndef METHODEXTRACTORFRONTENDACTIONFACTORY_HPP
 #define METHODEXTRACTORFRONTENDACTIONFACTORY_HPP
 #include <clang/Tooling/Tooling.h>
-#include <SourceSelection.hpp>
+#include <SourceRange.hpp>
 #include "OffsetRange.hpp"
 
 class TextOperationApplier;
@@ -10,7 +10,7 @@ class MethodExtractorFrontendActionFactory : public clang::tooling::FrontendActi
 {
 public:
     MethodExtractorFrontendActionFactory(
-        const std::string& extractedMethodName, SourceSelection selection, TextOperationApplier& sourceOperations)
+        const std::string& extractedMethodName, SourceRange selection, TextOperationApplier& sourceOperations)
         : extractedMethodName(extractedMethodName), selection(selection.from, selection.to),
         sourceOperations(sourceOperations) { }
 
