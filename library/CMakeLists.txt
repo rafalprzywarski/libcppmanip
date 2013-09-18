@@ -23,6 +23,7 @@ add_library(cppmanip SHARED
     src/DelayedMethodExtractor.cpp
     src/NaiveLocalVariableLocator.cpp
     src/TextReplacer.cpp
+    src/TextReplacementRecorder.cpp
 )
 
 target_link_libraries(cppmanip LINK_PRIVATE
@@ -48,6 +49,7 @@ add_executable(cppmaniptest
     test/OffsetRangeTest.cpp
     test/ClangToolArgsBuilderTest.cpp
     test/SourceExtractorTest.cpp
+    test/TextReplacementRecorderTest.cpp
 ) 
 
 target_link_libraries(cppmaniptest cppmanip gtest gmock boost_thread boost_system pthread)
