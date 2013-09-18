@@ -5,6 +5,8 @@
 
 using namespace testing;
 
+#define ALLOWING_CALL EXPECT_CALL
+
 struct TextReplacementRecorderTest : testing::Test
 {
     TextReplacementRecorder recorder;
@@ -40,4 +42,17 @@ TEST_F(TextReplacementRecorderTest, should_record_a_text_replacement)
     ASSERT_EQ(FROM.col, replacements[0].from.col);
     ASSERT_EQ(TO.row, replacements[0].to.row);
     ASSERT_EQ(TO.col, replacements[0].to.col);
+}
+
+TEST_F(TextReplacementRecorderTest, should_record_all_replacements)
+{
+    ALLOWING_CALL(*this, fromOffsetToSourceLocation(_)).Times(2 * 3).WillRepeatedly(Return(SourceLocation()));
+    recorder.replaceWithTextInRange("a", 0, 0);
+    recorder.replaceWithTextInRange("b", 0, 0);
+    recorder.replaceWithTextInRange("c", 0, 0);
+    SourceReplacements replacements = recorder.getReplacements();
+    ASSERT_EQ(3u, replacements.size());
+    ASSERT_EQ("a", replacements[0].text);
+    ASSERT_EQ("b", replacements[1].text);
+    ASSERT_EQ("c", replacements[2].text);
 }

@@ -2,7 +2,7 @@
 #define TEXTREPLACEMENTRECORDER_HPP
 #include "TextReplacementListener.hpp"
 #include <SourceReplacement.hpp>
-#include <boost/optional.hpp>
+#include <functional>
 
 class TextReplacementRecorder : public TextReplacementListener
 {
@@ -14,7 +14,7 @@ public:
     SourceReplacements getReplacements() const;
 private:
     OffsetToSourceLocation getOffsetFromSourceLocation;
-    boost::optional<SourceReplacement> r;
+    SourceReplacements replacements;
 };
 
 #endif // TEXTREPLACEMENTRECORDER_HPP
