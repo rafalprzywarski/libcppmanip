@@ -5,10 +5,30 @@
 
 class OffsetRange;
 
+class TextReplacementListener
+{
+public:
+    virtual ~TextReplacementListener() { }
+    virtual void replaceWithTextInRange(const std::string& replacement, unsigned from, unsigned to) = 0;
+};
+
+class TextReplacer : public TextReplacementListener
+{
+public:
+    explicit TextReplacer(const std::string& text) : text(text) { }
+    void replaceWithTextInRange(const std::string& replacement, unsigned from, unsigned to)
+    {
+        text = text.substr(0, from) + replacement + text.substr(to);
+    }
+    std::string getText() const { return text; }
+private:
+    std::string text;
+};
+
 class TextOperationApplier
 {
 public:
-    std::string apply(const std::string& text);
+    void apply(TextReplacementListener& replacer);
     void insertTextAt(const std::string& text, unsigned offset);
     void removeTextInRange(unsigned from, unsigned to);
 private:
@@ -19,13 +39,13 @@ private:
         void appendInsertionText(const std::string& s);
         void setRemovalLength(unsigned len);
         bool overlapsWithRangeAtOffset(const OffsetRange& r, unsigned offset) const;
-        std::string applyAtOffset(unsigned offset, const std::string& s) const;
+        void applyAtOffset(unsigned offset, TextReplacementListener& listner) const;
     private:
         unsigned removalLength;
         std::string insertionText;
     };
     std::map<unsigned, Replacement, std::greater<unsigned> > replacements;
-    
+
     void verifyNoOverlappingRangesExist(const OffsetRange& r);
 };
 

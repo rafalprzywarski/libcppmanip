@@ -2,12 +2,10 @@
 #include "OffsetRange.hpp"
 #include <stdexcept>
 
-std::string TextOperationApplier::apply(const std::string& text)
+void TextOperationApplier::apply(TextReplacementListener& replacer)
 {
-    auto current = text;
     for (auto const& it : replacements)
-        current = it.second.applyAtOffset(it.first, current);
-    return current;
+        it.second.applyAtOffset(it.first, replacer);
 }
 
 void TextOperationApplier::insertTextAt(const std::string& text, unsigned offset)
@@ -30,10 +28,11 @@ void TextOperationApplier::verifyNoOverlappingRangesExist(const OffsetRange& r)
         if (rep.second.overlapsWithRangeAtOffset(r, rep.first))
             throw std::invalid_argument("TextOperationApplier: overlapping range");
 }
-std::string TextOperationApplier::Replacement::applyAtOffset(unsigned int offset, const std::string& s) const
+void TextOperationApplier::Replacement::applyAtOffset(unsigned int offset, TextReplacementListener& listner) const
 {
-    return s.substr(0, offset) + insertionText + s.substr(offset + removalLength);
+    listner.replaceWithTextInRange(insertionText, offset, offset + removalLength);
 }
+
 void TextOperationApplier::Replacement::appendInsertionText(const std::string& s)
 {
     insertionText += s;

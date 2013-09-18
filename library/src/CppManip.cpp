@@ -20,7 +20,9 @@ void performFrontendActionForFile(clang::tooling::FrontendActionFactory& actionF
 void applySourceOperationsToFile(TextOperationApplier& sourceOperations, const std::string& filename)
 {
     std::string source = loadTextFromFile(filename);
-    std::string modifiedSource = sourceOperations.apply(source);
+    TextReplacer replacer(source);
+    sourceOperations.apply(replacer);
+    std::string modifiedSource = replacer.getText();
     writeTextToFile(modifiedSource, filename); 
 }
 

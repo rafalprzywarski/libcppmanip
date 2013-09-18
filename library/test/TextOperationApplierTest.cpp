@@ -11,17 +11,24 @@ struct TextOperationApplierTest : testing::Test
         ASSERT_THROW(applier.removeTextInRange(from, to), std::invalid_argument)
             << "should fail trying to remove text in range " << from << ".." << to;
     }
+    
+    void expectTextFrom(const std::string& expected, const std::string& original)
+    {
+        TextReplacer replacer(original);
+        applier.apply(replacer);
+        ASSERT_EQ(expected, replacer.getText());
+    }
 };
 
 TEST_F(TextOperationApplierTest, should_not_modify_given_text_when_no_operations_where_added)
 {
-    ASSERT_EQ("something", applier.apply("something"));
+    expectTextFrom("something", "something");
 }
 
 TEST_F(TextOperationApplierTest, should_insert_text_at_given_offset)
 {
     applier.insertTextAt("is", 5);
-    ASSERT_EQ("This is a text", applier.apply("This  a text"));
+    expectTextFrom("This is a text", "This  a text");
 }
 
 TEST_F(TextOperationApplierTest, should_perform_multiple_insertions_at_offsets_given_in_any_order)
@@ -29,7 +36,7 @@ TEST_F(TextOperationApplierTest, should_perform_multiple_insertions_at_offsets_g
     applier.insertTextAt("green", 2);
     applier.insertTextAt("blue", 7);
     applier.insertTextAt("red", 0);
-    ASSERT_EQ("red, green and blue are inserted", applier.apply(",  and  are inserted"));
+    expectTextFrom("red, green and blue are inserted", ",  and  are inserted");
 }
 
 TEST_F(TextOperationApplierTest, should_perform_insertions_in_given_order)
@@ -37,13 +44,13 @@ TEST_F(TextOperationApplierTest, should_perform_insertions_in_given_order)
     applier.insertTextAt("a", 0);
     applier.insertTextAt("b", 0);
     applier.insertTextAt("c", 0);
-    ASSERT_EQ("abc", applier.apply(""));
+    expectTextFrom("abc", "");
 }
 
 TEST_F(TextOperationApplierTest, should_remove_text_at_given_range)
 {
     applier.removeTextInRange(3, 11);
-    ASSERT_EQ("it works", applier.apply("it bla bla works"));
+    expectTextFrom("it works", "it bla bla works");
 }
 
 TEST_F(TextOperationApplierTest, should_perform_multiple_removals_at_ranges_given_in_any_order)
@@ -51,7 +58,7 @@ TEST_F(TextOperationApplierTest, should_perform_multiple_removals_at_ranges_give
     applier.removeTextInRange(0, 4);
     applier.removeTextInRange(7, 10);
     applier.removeTextInRange(4, 7);
-    ASSERT_EQ("", applier.apply("just empty"));
+    expectTextFrom("", "just empty");
 }
 
 TEST_F(TextOperationApplierTest, should_fail_trying_to_remove_overlapping_ranges)
@@ -94,7 +101,7 @@ TEST_F(TextOperationApplierTest, should_perform_simultaneous_removals_and_insert
     applier.insertTextAt("burnt ", 5);
     applier.removeTextInRange(13, 18);
     applier.insertTextAt("black", 13);
-    ASSERT_EQ("this burnt cake is black", applier.apply("this cake is tasty"));
+    expectTextFrom("this burnt cake is black", "this cake is tasty");
 }
 
 TEST_F(TextOperationApplierTest, should_fail_trying_to_remove_ranges_overlapping_with_insertions)
