@@ -36,6 +36,7 @@ install(FILES
         "${PROJECT_SOURCE_DIR}/include/CppManip.hpp"
         "${PROJECT_SOURCE_DIR}/include/SourceSelection.hpp"
         "${PROJECT_SOURCE_DIR}/include/ExtractMethodError.hpp"
+        "${PROJECT_SOURCE_DIR}/include/Replacement.hpp"
         DESTINATION include)
 
 add_executable(cppmaniptest
