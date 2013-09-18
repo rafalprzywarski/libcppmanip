@@ -2,13 +2,11 @@ include_directories("../include" "src" "../gmock-1.6.0/fused-src")
 
 add_library(cppmaniprunnercore STATIC
     src/CommandLineParser.cpp
-    src/SourceLocationConverter.cpp
 )
 
 add_executable(cppmaniprunnertest
     test/main.cpp
     test/CommandLineParserTest.cpp
-    test/SourceLocationConverterTest.cpp
 )
 
 target_link_libraries(cppmaniprunnertest cppmaniprunnercore gtest gmock pthread)

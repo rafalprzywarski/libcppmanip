@@ -25,6 +25,7 @@ add_library(cppmanip SHARED
     src/TextReplacer.cpp
     src/TextReplacementRecorder.cpp
     src/OffsetConverter.cpp
+    src/SourceLocationConverter.cpp
 )
 
 target_link_libraries(cppmanip LINK_PRIVATE
@@ -52,6 +53,7 @@ add_executable(cppmaniptest
     test/SourceExtractorTest.cpp
     test/TextReplacementRecorderTest.cpp
     test/OffsetConverterTest.cpp
+    test/SourceLocationConverterTest.cpp
 ) 
 
 target_link_libraries(cppmaniptest cppmanip gtest gmock boost_thread boost_system pthread)

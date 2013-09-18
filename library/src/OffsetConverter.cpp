@@ -19,7 +19,9 @@ void OffsetConverter::validateOffset(unsigned int offset) const
 
 unsigned int OffsetConverter::calcColumn(unsigned int offset) const
 {
-    auto lastEol = source.rfind('\n', offset);
+    if (offset == 0)
+        return offset;
+    auto lastEol = source.rfind('\n', offset - 1);
     if (lastEol == std::string::npos)
         return offset;
     return offset - lastEol - 1;

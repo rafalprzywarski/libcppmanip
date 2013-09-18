@@ -6,6 +6,9 @@
 #include "MethodExtractorFrontendActionFactory.hpp"
 #include "TextOperationApplier.hpp"
 #include "TextReplacer.hpp"
+#include "TextReplacementRecorder.hpp"
+#include "OffsetConverter.hpp"
+#include "SourceLocationConverter.hpp"
 
 void performFrontendActionForFile(clang::tooling::FrontendActionFactory& actionFactory, std::string sourceFilename)
 {
@@ -18,20 +21,34 @@ void performFrontendActionForFile(clang::tooling::FrontendActionFactory& actionF
     tool.run(&actionFactory);
 }
 
-void applySourceOperationsToFile(TextOperationApplier& sourceOperations, const std::string& filename)
+void applySourceOperationsToFile(SourceReplacements replacements, const std::string& filename)
 {
     std::string source = loadTextFromFile(filename);
+    SourceLocationConverter sourceLocationConverter(source);
+
     TextReplacer replacer(source);
-    sourceOperations.apply(replacer);
+    for (auto r : replacements)
+        replacer.replaceWithTextInRange(
+            r.text, sourceLocationConverter.getOffsetFromLocation(r.from), sourceLocationConverter.getOffsetFromLocation(r.to));
+
     std::string modifiedSource = replacer.getText();
     writeTextToFile(modifiedSource, filename); 
 }
 
+SourceReplacements extractFunctionInFile(const std::string& functionName, SourceSelection selection, const std::string& filename)
+{
+    TextOperationApplier sourceOperations;
+    MethodExtractorFrontendActionFactory factory(functionName, selection, sourceOperations);
+    performFrontendActionForFile(factory, filename);
+    std::string source = loadTextFromFile(filename);
+    OffsetConverter offsetCoverter(source);
+    TextReplacementRecorder recorder(std::bind(&OffsetConverter::getLocationFromOffset, &offsetCoverter, std::placeholders::_1));
+    sourceOperations.apply(recorder);
+    return recorder.getReplacements();
+}
+
 void extractMethodInFile(const std::string& methodName, SourceSelection selection, const std::string& filename)
 {
-    llvm::outs() << "extracting " << selection.from << " " << selection.to << "\n";
-    TextOperationApplier sourceOperations;
-    MethodExtractorFrontendActionFactory factory(methodName, selection, sourceOperations);
-    performFrontendActionForFile(factory, filename);
-    applySourceOperationsToFile(sourceOperations, filename);
+    auto replacements = extractFunctionInFile(methodName, selection, filename);
+    applySourceOperationsToFile(replacements, filename);
 }
