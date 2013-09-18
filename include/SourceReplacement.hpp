@@ -1,5 +1,5 @@
-#ifndef REPLACEMENT_HPP
-#define REPLACEMENT_HPP
+#ifndef SOURCEREPLACEMENT_HPP
+#define SOURCEREPLACEMENT_HPP
 #include <string>
 #include <vector>
 
@@ -9,12 +9,12 @@ struct SourceLocation
     SourceLocation() : row(), col() { }
 };
 
-struct Replacement
+struct SourceReplacement
 {
     SourceLocation from, to;
     std::string text;
 };
 
-typedef std::vector<Replacement> Replacements;
+typedef std::vector<SourceReplacement> SourceReplacements;
 
-#endif // REPLACEMENT_HPP
+#endif // SOURCEREPLACEMENT_HPP
