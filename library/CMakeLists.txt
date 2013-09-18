@@ -48,4 +48,4 @@ add_executable(cppmaniptest
     test/SourceExtractorTest.cpp
 ) 
 
-target_link_libraries(cppmaniptest cppmanip gtest gmock boost_thread pthread)
+target_link_libraries(cppmaniptest cppmanip gtest gmock boost_thread boost_system pthread)
