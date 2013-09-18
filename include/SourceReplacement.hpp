@@ -5,8 +5,11 @@
 
 struct SourceLocation
 {
-    unsigned row, col;
-    SourceLocation() : row(), col() { }
+    unsigned row;
+    unsigned col;
+    SourceLocation() : SourceLocation(0,0) {}
+    SourceLocation(unsigned row, unsigned col)
+    : row(row), col(col) {}
 };
 
 struct SourceReplacement
