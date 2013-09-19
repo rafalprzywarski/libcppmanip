@@ -13,18 +13,6 @@ Feature: As I developer I want to use this library despite clang sortcomings
             std::cout << 2;
         }
         """
-        When I run two method extractions for "std::cout << 2" with name "eg" and for "std::cout << 1" with name "ef"
-        Then final source code should contain:
-        """
-        void g()
-        {
-            eg();
-        }
-        """
-        And final source code should contain:
-        """
-        void f()
-        {
-            ef();
-        }
-        """
+        When I run two function extractions for "std::cout << 2" with name "eg" and for "std::cout << 1" with name "ef"
+        Then there should be a replacement with "eg();"
+        And there should be a replacement with "ef();"

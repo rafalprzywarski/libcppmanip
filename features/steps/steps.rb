@@ -54,13 +54,23 @@ When /^I run function extraction for "(.*?)" with name "(.*?)"$/ do |phrase, fun
   step "I run function extraction from \"#{phrase}\" to \"#{phrase}\" with name \"#{functionName}\""
 end
 
-When /^I run function extraction from "(.*?)" to "(.*?)" with name "(.*?)"$/ do |startPhrase, endPhrase, functionName|
-  startOffset, endOffset = rangeFromPhrases startPhrase, endPhrase, $SOURCE
+def runExtractFunction args
   File.open(SOURCE_FILE, "w") { |f| f.write $SOURCE }
-  $cppmanip_output = %x(#{BUILD_DIRECTORY}/runner/cppmaniprunner_extract_function #{SOURCE_FILE} #{functionName} #{startOffset} #{endOffset} 2>&1)
+  $cppmanip_output = %x(#{BUILD_DIRECTORY}/runner/cppmaniprunner_extract_function #{args} 2>&1)
   $?.should eq(0), "cppmanip failed with error \'#{$?}\': #{$cppmanip_output}"
   @replacements = loadReplacementsFromXml(REPLACEMENTS_FILE) if File.file?(REPLACEMENTS_FILE)
   @error = loadError(ERROR_FILE) if @replacements.nil?
+end
+
+When /^I run function extraction from "(.*?)" to "(.*?)" with name "(.*?)"$/ do |startPhrase, endPhrase, functionName|
+  startOffset, endOffset = rangeFromPhrases startPhrase, endPhrase, $SOURCE
+  runExtractFunction "#{SOURCE_FILE} #{functionName} #{startOffset} #{endOffset}"
+end
+
+When /^I run two function extractions for "(.*?)" with name "(.*?)" and for "(.*?)" with name "(.*?)"$/ do |phrase1, functionName1, phrase2, functionName2|
+  startOffset1, endOffset1 = rangeFromPhrases phrase1, phrase1, $SOURCE
+  startOffset2, endOffset2 = rangeFromPhrases phrase2, phrase2, $SOURCE
+  runExtractFunction "#{SOURCE_FILE} #{functionName1} #{startOffset1} #{endOffset1} #{functionName2} #{startOffset2} #{endOffset2}"
 end
 
 def shouldNotFail
