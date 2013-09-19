@@ -11,12 +11,20 @@
 #include <SourceReplacementSerialization.hpp>
 
 const std::string REPLACEMENTS_FILE = "replacements.xml";
+const std::string ERROR_FILE = "errors.xml";
 
 void saveReplacements(SourceReplacements replacements)
 {
     std::ofstream of(REPLACEMENTS_FILE);
     boost::archive::xml_oarchive oa(of);
     oa << boost::serialization::make_nvp("replacements", replacements);
+}
+
+void saveError(const std::string& error)
+{
+    std::ofstream of(ERROR_FILE);
+    boost::archive::xml_oarchive oa(of);
+    oa << boost::serialization::make_nvp("error", error);
 }
 
 int main(int argc, const char** argv)
@@ -36,13 +44,12 @@ int main(int argc, const char** argv)
                 selection.to = conv.getLocationFromOffset(loc.sourceSelection.to);
                 boost::push_back(replacements, extractFunctionInFile(loc.extractedMethodName, selection, req.sourceFilename));
             }
+            saveReplacements(replacements);
         }
         catch (const ExtractMethodError& e)
         {
-            std::cerr << e.what() << std::endl;
-            return 1;
+            saveError(e.what());
         }
-        saveReplacements(replacements);
     }
     catch (const std::exception& e)
     {

@@ -1,9 +1,11 @@
 require 'rspec'
 require './buildpath'
 require './features/steps/replacements'
+require './features/steps/errors'
 
 SOURCE_FILE="source.cpp"
 REPLACEMENTS_FILE="replacements.xml"
+ERROR_FILE="errors.xml"
 
 Transform /^(-?\d+)$/ do |number|
   number.to_i
@@ -20,8 +22,9 @@ def rangeFromPhrases startPhrase, endPhrase, source
 end
 
 After do
-  File.delete(SOURCE_FILE) if File.file?(SOURCE_FILE)
-  File.delete(REPLACEMENTS_FILE) if File.file?(REPLACEMENTS_FILE)
+  [ SOURCE_FILE, REPLACEMENTS_FILE, ERROR_FILE ].each do |f|
+    File.delete(f) if File.file?(f)
+  end
 end
 
 Given /^source code:$/ do |source|
@@ -56,7 +59,8 @@ When /^I run function extraction from "(.*?)" to "(.*?)" with name "(.*?)"$/ do 
   File.open(SOURCE_FILE, "w") { |f| f.write $SOURCE }
   $cppmanip_output = %x(#{BUILD_DIRECTORY}/runner/cppmaniprunner_extract_function #{SOURCE_FILE} #{functionName} #{startOffset} #{endOffset} 2>&1)
   $?.should eq(0), "cppmanip failed with error \'#{$?}\': #{$cppmanip_output}"
-  @replacements = loadReplacementsFromXml(REPLACEMENTS_FILE)
+  @replacements = loadReplacementsFromXml(REPLACEMENTS_FILE) if File.file?(REPLACEMENTS_FILE)
+  @error = loadError(ERROR_FILE) if @replacements.nil?
 end
 
 def shouldNotFail
@@ -74,8 +78,7 @@ Then /^final source code should contain:$/ do |expectedSource|
 end
 
 Then /^it should fail with a message "(.*?)"$/ do |expectedMessage|
-  $cppmanip_exit_code.should_not eq(0), "cppmanip should have failed with message: #{expectedMessage}"
-  $cppmanip_output.should include(expectedMessage)
+  @error.should eq(expectedMessage), "cppmanip should have failed with message: #{expectedMessage}"
 end
 
 Then /^original code should not change$/ do
