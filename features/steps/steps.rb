@@ -106,6 +106,10 @@ Then /^there should be an insertion before "(.*?)":$/ do |before, insertionText|
   @replacements.index { |r| r.isInsertionBefore(before, $SOURCE) && r.text == insertionText }.should_not be_nil
 end
 
+Then /^there should be a replacement with "(.*?)"$/ do |replacementText|
+  @replacements.index { |r| r.text == replacementText }.should_not be_nil, "replacement with \'#{replacementText}\' not found in #{@replacements}"
+end
+
 Then /^there should be a replacement from "(.*?)" to "(.*?)" with "(.*?)"$/ do |from, to, replacementText|
   @replacements.index { |r|
     r.text == replacementText && r.isFrom(from, $SOURCE) && r.isTo(to, $SOURCE)

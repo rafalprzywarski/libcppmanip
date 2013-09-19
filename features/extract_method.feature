@@ -95,8 +95,8 @@ Feature: As a developer I want to extract code into methods to make my code more
             other3(i + 5, f * 2);
         }
         """
-        When I run method extraction from "other1(i)" to "other3(i + 5" with name "with_args"
-        Then final source code should contain:
+        When I run function extraction from "other1(i)" to "other3(i + 5" with name "with_args"
+        Then there should be an insertion:
         """
         void with_args(int i, float f)
         {
@@ -104,11 +104,9 @@ Feature: As a developer I want to extract code into methods to make my code more
             other2();
             other3(i + 5, f * 2);
         }
+
         """
-        And final source code should contain:
-        """
-        with_args(i, f);
-        """
+        And there should be a replacement with "with_args(i, f);"
     @done
     Scenario: Extraction of local variables declared in and used after the selected block should prevent the extraction
         Given source code:
