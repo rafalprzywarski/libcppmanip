@@ -52,6 +52,7 @@ Feature: As a developer I want to extract code into methods to make my code more
             for (int i = 0; i < 10; ++i)
                 std::cout << " " << i;
         }
+
         """
         And there should be a replacement from "for (" to "<< i;" with "runLoop();"
     @done
