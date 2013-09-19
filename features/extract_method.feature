@@ -137,11 +137,8 @@ Feature: As a developer I want to extract code into methods to make my code more
             other(i);
         }
         """
-        When I run method extraction from "int j = 9" to "j += 5" with name "good"
-        Then final source code should contain:
-        """
-        other(i);
-        """
+        When I run function extraction from "int j = 9" to "j += 5" with name "good"
+        Then there should be a replacement with "good();"
     Scenario: Method extraction should not add empty line at the end of method body. Newline should be added after extracted method call.
         Given source code:
         """
