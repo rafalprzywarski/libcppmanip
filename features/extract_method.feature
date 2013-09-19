@@ -139,7 +139,7 @@ Feature: As a developer I want to extract code into methods to make my code more
         """
         When I run function extraction from "int j = 9" to "j += 5" with name "good"
         Then there should be a replacement with "good();"
-    Scenario: Method extraction should not add empty line at the end of method body. Newline should be added after extracted method call.
+    Scenario: Method extraction should not add empty line at the end of method body when extracting a variable declaration. Newline should be added after extracted method call.
         Given source code:
         """
         void simpleFunction()
@@ -149,17 +149,13 @@ Feature: As a developer I want to extract code into methods to make my code more
             int c = 123;
         }
         """
-        When I run method extraction from "int b" to "7;" with name "extracted"
-        Then final source code should be:
+        When I run function extraction for "int b = 7;" with name "extracted"
+        Then there should be an insertion:
         """
         void extracted()
         {
             int b = 7;
         }
-        void simpleFunction()
-        {
-            int a = 666;
-            extracted();
-            int c = 123;
-        }
+
         """
+        And there should be a replacement for "int b = 7;" with "extracted();"

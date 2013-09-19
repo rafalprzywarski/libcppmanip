@@ -115,3 +115,7 @@ Then /^there should be a replacement from "(.*?)" to "(.*?)" with "(.*?)"$/ do |
     r.text == replacementText && r.isFrom(from, $SOURCE) && r.isTo(to, $SOURCE)
   }.should_not be_nil, "replacement with \'#{replacementText}\' not found in #{@replacements}"
 end
+
+Then /^there should be a replacement for "(.*?)" with "(.*?)"$/ do |phrase, replacementText|
+  step "there should be a replacement from \"#{phrase}\" to \"#{phrase}\" with \"#{replacementText}\""
+end
