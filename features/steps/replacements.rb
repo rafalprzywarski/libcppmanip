@@ -20,17 +20,20 @@ class SourceReplacement
   def isInsertion
     @from.row == @to.row && @from.col == @to.col
   end
+  def isInsertionBefore phrase, source
+    isInsertion && getColumnOfPhraseAtRow(phrase, @from.row, source) == @from.col
+  end
   def isFrom phrase, source
-    getPhraseColumnAtRow(phrase, @from.row, source) == @from.col
+    getColumnOfPhraseAtRow(phrase, @from.row, source) == @from.col
   end
   def isTo phrase, source
-    getPhraseColumnAtRow(phrase, @to.row, source) == (@to.col - phrase.length)
+    getColumnOfPhraseAtRow(phrase, @to.row, source) == (@to.col - phrase.length)
   end
   def to_s
     "#{@from} -> #{@to} : \'#{text}\'"
   end
 private
-  def getPhraseColumnAtRow phrase, row, source
+  def getColumnOfPhraseAtRow phrase, row, source
     line = source.split("\n")[row]
     line.index(phrase) if line
   end

@@ -70,22 +70,14 @@ Feature: As a developer I want to extract code into methods to make my code more
         }
         void other();
         """
-        When I run method extraction for "cout" with name "print"
-        Then final source code should be:
+        When I run function extraction for "cout << 2" with name "print"
+        Then there should be an insertion before "void complex":
         """
-        #include <iostream>
-        void f(int);
         void print()
         {
             std::cout << 2;
         }
-        void complex()
-        {
-            f(1);
-            print();
-            f(2);
-        }
-        void other();
+
         """
     @done
     Scenario: Referenced local variables should be passed to the extracted function

@@ -47,6 +47,9 @@ When /^I run two method extractions for "(.*?)" with name "(.*?)" and for "(.*?)
   $cppmanip_exit_code = $?
 end
 
+When /^I run function extraction for "(.*?)" with name "(.*?)"$/ do |phrase, functionName|
+  step "I run function extraction from \"#{phrase}\" to \"#{phrase}\" with name \"#{functionName}\""
+end
 
 When /^I run function extraction from "(.*?)" to "(.*?)" with name "(.*?)"$/ do |startPhrase, endPhrase, functionName|
   startOffset, endOffset = rangeFromPhrases startPhrase, endPhrase, $SOURCE
@@ -96,7 +99,11 @@ Then /^there should be (\d+) changes$/ do |changeCount|
 end
 
 Then /^there should be an insertion:$/ do |insertionText|
-  @replacements.index { |r| r.isInsertion && r.text == insertionText }.should_not be_nil
+  @replacements.index { |r| r.isInsertion && r.text == insertionText }.should_not be_nil, "insertion with \'#{insertionText}\' not found in #{@replacements}"
+end
+
+Then /^there should be an insertion before "(.*?)":$/ do |before, insertionText|
+  @replacements.index { |r| r.isInsertionBefore(before, $SOURCE) && r.text == insertionText }.should_not be_nil
 end
 
 Then /^there should be a replacement from "(.*?)" to "(.*?)" with "(.*?)"$/ do |from, to, replacementText|
