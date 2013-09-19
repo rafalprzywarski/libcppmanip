@@ -21,20 +21,6 @@ void performFrontendActionForFile(clang::tooling::FrontendActionFactory& actionF
     tool.run(&actionFactory);
 }
 
-void applySourceOperationsToFile(SourceReplacements replacements, const std::string& filename)
-{
-    std::string source = loadTextFromFile(filename);
-    SourceLocationConverter sourceLocationConverter(source);
-
-    TextReplacer replacer(source);
-    for (auto r : replacements)
-        replacer.replaceWithTextInRange(
-            r.text, sourceLocationConverter.getOffsetFromLocation(r.from), sourceLocationConverter.getOffsetFromLocation(r.to));
-
-    std::string modifiedSource = replacer.getText();
-    writeTextToFile(modifiedSource, filename); 
-}
-
 SourceReplacements extractFunctionInFile(const std::string& functionName, SourceSelection selection, const std::string& filename)
 {
     TextOperationApplier sourceOperations;
@@ -49,15 +35,4 @@ SourceReplacements extractFunctionInFile(const std::string& functionName, Source
     TextReplacementRecorder recorder(std::bind(&OffsetConverter::getLocationFromOffset, &offsetCoverter, std::placeholders::_1));
     sourceOperations.apply(recorder);
     return recorder.getReplacements();
-}
-
-void extractMethodInFile(const std::string& methodName, SourceRange range, const std::string& filename)
-{
-    std::string source = loadTextFromFile(filename);
-    OffsetConverter offsetCoverter(source);
-    SourceSelection selection;
-    selection.from = offsetCoverter.getLocationFromOffset(range.from);
-    selection.to = offsetCoverter.getLocationFromOffset(range.to);
-    auto replacements = extractFunctionInFile(methodName, selection, filename);
-    applySourceOperationsToFile(replacements, filename);
 }
