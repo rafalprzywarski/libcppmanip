@@ -102,5 +102,5 @@ end
 Then /^there should be a replacement from "(.*?)" to "(.*?)" with "(.*?)"$/ do |from, to, replacementText|
   @replacements.index { |r|
     r.text == replacementText && r.isFrom(from, $SOURCE) && r.isTo(to, $SOURCE)
-  }.should_not be_nil
+  }.should_not be_nil, "replacement with \'#{replacementText}\' not found in #{@replacements}"
 end

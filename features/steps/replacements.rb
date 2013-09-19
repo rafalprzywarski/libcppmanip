@@ -7,6 +7,9 @@ class SourceLocation
     loc.row, loc.col = row, col
     loc
   end
+  def to_s
+    "#{@row}:#{@col}"
+  end
 end
 
 class SourceReplacement
@@ -18,14 +21,18 @@ class SourceReplacement
     @from.row == @to.row && @from.col == @to.col
   end
   def isFrom phrase, source
-      getPhraseColumnAtRow(phrase, @from.row, source) == @from.col
+    getPhraseColumnAtRow(phrase, @from.row, source) == @from.col
   end
   def isTo phrase, source
-    (getPhraseColumnAtRow(phrase, @to.row, source) + phrase.length) == @to.col
+    getPhraseColumnAtRow(phrase, @to.row, source) == (@to.col - phrase.length)
+  end
+  def to_s
+    "#{@from} -> #{@to} : \'#{text}\'"
   end
 private
   def getPhraseColumnAtRow phrase, row, source
-    source.split("\n")[row].index(phrase)
+    line = source.split("\n")[row]
+    line.index(phrase) if line
   end
 end
 

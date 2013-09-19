@@ -40,15 +40,10 @@ Feature: As a developer I want to extract code into methods to make my code more
             f(20);
         }
         """
-        When I run method extraction from "i);" to "f(2" with name "partial"
-        Then final source code should contain:
-        """
-        void func()
-        {
-            partial();
-        }
-        """
-        And final source code should contain:
+        When I run function extraction from "i);" to "f(2" with name "partial"
+        Then there should be 2 changes
+        And there should be a replacement from "for (" to "20);" with "partial();"
+        And there should be an insertion:
         """
         void partial()
         {
@@ -59,6 +54,7 @@ Feature: As a developer I want to extract code into methods to make my code more
             f(10);
             f(20);
         }
+
         """
     @done
     Scenario: Extracted function should be inserted before original function
