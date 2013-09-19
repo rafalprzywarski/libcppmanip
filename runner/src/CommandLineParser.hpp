@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-struct ExtractMethodRequest
+struct ExtractFunctionRequest
 {
     struct Location
     {
@@ -18,7 +18,7 @@ struct ExtractMethodRequest
 class CommandLineParser
 {
 public:
-    ExtractMethodRequest parseExtractMethod(int argc, const char** argv);
+    ExtractFunctionRequest parseExtractFunction(int argc, const char** argv);
 private:
     static unsigned to_u(const char *s);
 };

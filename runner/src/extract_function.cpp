@@ -32,7 +32,7 @@ int main(int argc, const char** argv)
     try
     {
         CommandLineParser parser;
-        auto req = parser.parseExtractMethod(argc, argv);
+        auto req = parser.parseExtractFunction(argc, argv);
         SourceReplacements replacements;
         OffsetConverter conv(loadTextFromFile(req.sourceFilename));
         try
