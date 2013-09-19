@@ -3,6 +3,10 @@ require './buildpath'
 
 SOURCE_FILE="source.cpp"
 
+Transform /^(-?\d+)$/ do |number|
+  number.to_i
+end
+
 def rangeFromPhrases startPhrase, endPhrase, source
   startIndex = source.index(startPhrase)
   endIndex = source.index(endPhrase)
@@ -14,7 +18,7 @@ def rangeFromPhrases startPhrase, endPhrase, source
 end
 
 After do
-  File.delete(SOURCE_FILE)
+  File.delete(SOURCE_FILE) if File.file?(SOURCE_FILE)
 end
 
 Given /^source code:$/ do |source|
@@ -38,6 +42,10 @@ When /^I run two method extractions for "(.*?)" with name "(.*?)" and for "(.*?)
   File.open(SOURCE_FILE, "w") { |f| f.write $SOURCE }
   $cppmanip_output = %x(#{BUILD_DIRECTORY}/runner/cppmaniprunner_extract_method #{SOURCE_FILE} #{methodName1} #{startOffset1} #{endOffset1} #{methodName2} #{startOffset2} #{endOffset2} 2>&1)
   $cppmanip_exit_code = $?
+end
+
+When /^I run function extraction from "(.*?)" to "(.*?)" with name "(.*?)"$/ do |startPhrase, endPhrase, functionName|
+  pending # express the regexp above with the code you wish you had
 end
 
 def shouldNotFail
@@ -72,5 +80,17 @@ When /^I install it$/ do
 end
 
 Then /^another project using it should compile and link$/ do
+  pending # express the regexp above with the code you wish you had
+end
+
+Then /^there should be (\d+) changes$/ do |changeCount|
+  pending # express the regexp above with the code you wish you had
+end
+
+Then /^there should be an insertion:$/ do |insertionText|
+  pending # express the regexp above with the code you wish you had
+end
+
+Then /^there should be a replacement from "(.*?)" to "(.*?)" with "(.*?)"$/ do |from, to, replacementText|
   pending # express the regexp above with the code you wish you had
 end

@@ -30,6 +30,30 @@ Feature: As a developer I want to extract code into methods to make my code more
             std::cout << std::endl;
         }
         """
+    @wip
+    Scenario: Free function without arguments #2
+        Given source code:
+        """
+        #include <iostream>
+        void someFunc()
+        {
+            std::cout << "counting" << std::endl;
+            for (int i = 0; i < 10; ++i)
+                std::cout << " " << i;
+            std::cout << std::endl;
+        }
+        """
+        When I run function extraction from "for (" to "<< i;" with name "runLoop"
+        Then there should be 2 changes
+        And there should be an insertion:
+        """
+        void runLoop()
+        {
+            for (int i = 0; i < 10; ++i)
+                std::cout << " " << i;
+        }
+        """
+        And there should be a replacement from "for (" to "<< i;" with "runLoop();"
     @done
     Scenario: Partial selection should work as full selection
         Given source code:
