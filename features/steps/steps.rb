@@ -31,25 +31,6 @@ Given /^source code:$/ do |source|
   $SOURCE = source
 end
 
-When /^I run method extraction from "(.*?)" to "(.*?)" with name "(.*?)"$/ do |startPhrase, endPhrase, methodName|
-  startOffset, endOffset = rangeFromPhrases startPhrase, endPhrase, $SOURCE
-  File.open(SOURCE_FILE, "w") { |f| f.write $SOURCE }
-  $cppmanip_output = %x(#{BUILD_DIRECTORY}/runner/cppmaniprunner_extract_method #{SOURCE_FILE} #{methodName} #{startOffset} #{endOffset} 2>&1)
-  $cppmanip_exit_code = $?
-end
-
-When /^I run method extraction for "(.*?)" with name "(.*?)"$/ do |phrase, methodName|
-  step "I run method extraction from \"#{phrase}\" to \"#{phrase}\" with name \"#{methodName}\""
-end
-
-When /^I run two method extractions for "(.*?)" with name "(.*?)" and for "(.*?)" with name "(.*?)"$/ do |phrase1, methodName1, phrase2, methodName2|
-  startOffset1, endOffset1 = rangeFromPhrases phrase1, phrase1, $SOURCE
-  startOffset2, endOffset2 = rangeFromPhrases phrase2, phrase2, $SOURCE
-  File.open(SOURCE_FILE, "w") { |f| f.write $SOURCE }
-  $cppmanip_output = %x(#{BUILD_DIRECTORY}/runner/cppmaniprunner_extract_method #{SOURCE_FILE} #{methodName1} #{startOffset1} #{endOffset1} #{methodName2} #{startOffset2} #{endOffset2} 2>&1)
-  $cppmanip_exit_code = $?
-end
-
 When /^I run function extraction for "(.*?)" with name "(.*?)"$/ do |phrase, functionName|
   step "I run function extraction from \"#{phrase}\" to \"#{phrase}\" with name \"#{functionName}\""
 end
@@ -73,26 +54,8 @@ When /^I run two function extractions for "(.*?)" with name "(.*?)" and for "(.*
   runExtractFunction "#{SOURCE_FILE} #{functionName1} #{startOffset1} #{endOffset1} #{functionName2} #{startOffset2} #{endOffset2}"
 end
 
-def shouldNotFail
-  $cppmanip_exit_code.should eq(0), "cppmanip failed with error code #{$cppmanip_exit_code}: #{$cppmanip_output}"
-end
-
-Then /^final source code should be:$/ do |expectedSource|
-  shouldNotFail
-  File.read(SOURCE_FILE).should eq(expectedSource)
-end
-
-Then /^final source code should contain:$/ do |expectedSource|
-  shouldNotFail
-  File.read(SOURCE_FILE).should include(expectedSource)
-end
-
 Then /^it should fail with a message "(.*?)"$/ do |expectedMessage|
   @error.should eq(expectedMessage), "cppmanip should have failed with message: #{expectedMessage}"
-end
-
-Then /^original code should not change$/ do
-  File.read(SOURCE_FILE).should eq($SOURCE)
 end
 
 Given /^libcppmanip repository$/ do
