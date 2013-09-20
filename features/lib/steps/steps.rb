@@ -1,7 +1,7 @@
 require 'rspec'
 require './buildpath'
-require './features/steps/replacements'
-require './features/steps/errors'
+require 'replacements'
+require 'errors'
 
 SOURCE_FILE="source.cpp"
 REPLACEMENTS_FILE="replacements.xml"
