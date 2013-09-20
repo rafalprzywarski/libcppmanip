@@ -15,4 +15,10 @@ describe :OffsetCoverter do
     conv.getLocationFromOffset(4).col.should eq(0)
     conv.getLocationFromOffset(5).col.should eq(1)
   end
+  it "should return number of eols till offset as row" do
+    conv = OffsetConverter.new("x\n\n\nxxxxx\n");
+    conv.getLocationFromOffset(2).row.should eq(1)
+    conv.getLocationFromOffset(4).row.should eq(3)
+    conv.getLocationFromOffset(5).row.should eq(3)
+  end
 end
