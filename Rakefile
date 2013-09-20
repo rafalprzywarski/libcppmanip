@@ -4,8 +4,8 @@ require './buildpath'
 CLOBBER.include(BUILD_DIRECTORY)
 
 
-task :default => :test 
-task :test => [:unit_tests, :acceptance_tests]
+task :default => :test
+task :test => [:unit_tests, :steps_unit_tests, :acceptance_tests]
 
 task :acceptance_tests => :cppmanip do
   sh 'cucumber -p acceptance_tests'
@@ -40,6 +40,10 @@ end
 task :unit_tests => [ :cppmaniptest, :cppmaniprunnertest ] do
   sh "#{BUILD_DIRECTORY}/library/cppmaniptest"
   sh "#{BUILD_DIRECTORY}/runner/cppmaniprunnertest"
+end
+
+task :steps_unit_tests do
+  sh 'rspec features'
 end
  
 task :ci_unit_tests => :cppmaniptest do
