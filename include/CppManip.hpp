@@ -3,7 +3,6 @@
 #include <string>
 #include "SourceSelection.hpp"
 #include "SourceReplacement.hpp"
-#include "SourceRange.hpp"
 
 SourceReplacements extractFunctionInFile(const std::string& functionName, SourceSelection selection, const std::string& filename);
 
