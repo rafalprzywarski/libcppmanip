@@ -2,7 +2,7 @@
 #include "SourceExtractor.hpp"
 #include "TextOperationApplier.hpp"
 #include "FunctionPrinter.hpp"
-#include <ExtractMethodError.hpp>
+#include <cppmanip/ExtractMethodError.hpp>
 #include <clang/AST/Expr.h>
 #include <clang/AST/RecursiveASTVisitor.h>
 #include <unordered_set>

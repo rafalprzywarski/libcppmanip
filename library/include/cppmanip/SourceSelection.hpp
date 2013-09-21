@@ -1,6 +1,6 @@
 #ifndef SOURCESELECTION_HPP
 #define SOURCESELECTION_HPP
-#include "SourceLocation.hpp"
+#include <cppmanip/SourceLocation.hpp>
 
 struct SourceSelection
 {

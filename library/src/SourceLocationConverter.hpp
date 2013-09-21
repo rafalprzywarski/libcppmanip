@@ -1,6 +1,6 @@
 #ifndef SOURCELOCATIONCONVERTER_HPP
 #define SOURCELOCATIONCONVERTER_HPP
-#include <SourceReplacement.hpp>
+#include <cppmanip/SourceReplacement.hpp>
 
 class SourceLocationConverter
 {

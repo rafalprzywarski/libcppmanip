@@ -2,7 +2,7 @@
 #define SOURCEREPLACEMENT_HPP
 #include <string>
 #include <vector>
-#include "SourceLocation.hpp"
+#include <cppmanip/SourceLocation.hpp>
 
 struct SourceReplacement
 {

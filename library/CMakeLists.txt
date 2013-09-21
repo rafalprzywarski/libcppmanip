@@ -46,11 +46,13 @@ target_link_libraries(cppmanip LINK_PRIVATE
 install(TARGETS cppmanip LIBRARY DESTINATION lib)
 install(FILES
         "${PROJECT_SOURCE_DIR}/include/CppManip.hpp"
-        "${PROJECT_SOURCE_DIR}/include/SourceSelection.hpp"
-        "${PROJECT_SOURCE_DIR}/include/ExtractMethodError.hpp"
-        "${PROJECT_SOURCE_DIR}/include/SourceReplacement.hpp"
-        "${PROJECT_SOURCE_DIR}/include/SourceLocation.hpp"
         DESTINATION include)
+install(FILES
+        "${PROJECT_SOURCE_DIR}/include/cppmanip/SourceSelection.hpp"
+        "${PROJECT_SOURCE_DIR}/include/cppmanip/ExtractMethodError.hpp"
+        "${PROJECT_SOURCE_DIR}/include/cppmanip/SourceReplacement.hpp"
+        "${PROJECT_SOURCE_DIR}/include/cppmanip/SourceLocation.hpp"
+        DESTINATION include/cppmanip)
 
 add_executable(cppmaniptest
     test/ParsedFunction.cpp

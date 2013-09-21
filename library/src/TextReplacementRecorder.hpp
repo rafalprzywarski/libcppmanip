@@ -1,7 +1,7 @@
 #ifndef TEXTREPLACEMENTRECORDER_HPP
 #define TEXTREPLACEMENTRECORDER_HPP
 #include "TextReplacementListener.hpp"
-#include <SourceReplacement.hpp>
+#include <cppmanip/SourceReplacement.hpp>
 #include <functional>
 
 class TextReplacementRecorder : public TextReplacementListener
