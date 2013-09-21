@@ -50,7 +50,6 @@ install(FILES
         "${PROJECT_SOURCE_DIR}/include/ExtractMethodError.hpp"
         "${PROJECT_SOURCE_DIR}/include/SourceReplacement.hpp"
         "${PROJECT_SOURCE_DIR}/include/SourceLocation.hpp"
-        "${PROJECT_SOURCE_DIR}/src/SourceRange.hpp" #FIXME: remove after merge
         DESTINATION include)
 
 add_executable(cppmaniptest
