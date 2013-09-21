@@ -1,4 +1,4 @@
-#include <SourceExtractor.hpp>
+#include <cppmanip/SourceExtractor.hpp>
 #include "ParsedFunction.hpp"
 #include <gtest/gtest.h>
 #include <boost/scoped_ptr.hpp>

@@ -17,23 +17,23 @@ link_directories("${PROJECT_SOURCE_DIR}/../gmock-1.6.0/build/gtest")
 link_directories("${PROJECT_SOURCE_DIR}/../gmock-1.6.0/build")
 
 add_library(cppmanip SHARED
-    src/SourceExtractor.cpp
-    src/TextFileOps.cpp
-    src/TextOperationApplier.cpp
-    src/ClangToolArgsBuilder.cpp
-    src/CppManip.cpp
-    src/MethodExtractorASTConsumer.cpp
-    src/MethodExtractorFrontendAction.cpp
-    src/MethodExtractorFrontendActionFactory.cpp
-    src/PrettyFunctionPrinter.cpp
-    src/NaiveStatementLocator.cpp
-    src/MethodExtractorVisitor.cpp
-    src/DelayedMethodExtractor.cpp
-    src/NaiveLocalVariableLocator.cpp
-    src/TextReplacer.cpp
-    src/TextReplacementRecorder.cpp
-    src/OffsetConverter.cpp
-    src/SourceLocationConverter.cpp
+    src/cppmanip/SourceExtractor.cpp
+    src/cppmanip/TextFileOps.cpp
+    src/cppmanip/TextOperationApplier.cpp
+    src/cppmanip/ClangToolArgsBuilder.cpp
+    src/cppmanip/CppManip.cpp
+    src/cppmanip/MethodExtractorASTConsumer.cpp
+    src/cppmanip/MethodExtractorFrontendAction.cpp
+    src/cppmanip/MethodExtractorFrontendActionFactory.cpp
+    src/cppmanip/PrettyFunctionPrinter.cpp
+    src/cppmanip/NaiveStatementLocator.cpp
+    src/cppmanip/MethodExtractorVisitor.cpp
+    src/cppmanip/DelayedMethodExtractor.cpp
+    src/cppmanip/NaiveLocalVariableLocator.cpp
+    src/cppmanip/TextReplacer.cpp
+    src/cppmanip/TextReplacementRecorder.cpp
+    src/cppmanip/OffsetConverter.cpp
+    src/cppmanip/SourceLocationConverter.cpp
 )
 
 target_link_libraries(cppmanip LINK_PRIVATE

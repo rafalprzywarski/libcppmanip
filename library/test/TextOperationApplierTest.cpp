@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include <TextOperationApplier.hpp>
-#include <TextReplacer.hpp>
+#include <cppmanip/TextOperationApplier.hpp>
+#include <cppmanip/TextReplacer.hpp>
 #include <stdexcept>
 
 namespace cppmanip

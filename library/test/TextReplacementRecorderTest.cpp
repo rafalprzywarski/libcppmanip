@@ -1,4 +1,4 @@
-#include <TextReplacementRecorder.hpp>
+#include <cppmanip/TextReplacementRecorder.hpp>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <functional>
