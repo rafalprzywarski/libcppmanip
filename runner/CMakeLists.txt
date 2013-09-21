@@ -1,4 +1,4 @@
-include_directories("../include" "src" "../gmock-1.6.0/fused-src")
+include_directories("${PROJECT_SOURCE_DIR}/include" "src" "${PROJECT_SOURCE_DIR}/gmock-1.6.0/fused-src")
 
 add_library(cppmaniprunnercore STATIC
     src/CommandLineParser.cpp

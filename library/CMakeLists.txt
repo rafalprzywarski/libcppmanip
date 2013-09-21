@@ -6,7 +6,7 @@ add_definitions("${LLVM_CXX_FLAGS} -fexceptions")
 set(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${LLVM_LINKER_FLAGS}")
 set(CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS "${CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS} ${LLVM_LINKER_FLAGS}")
 
-include_directories("../include" "src" "../gmock-1.6.0/fused-src")
+include_directories("${PROJECT_SOURCE_DIR}/include" "src" "${PROJECT_SOURCE_DIR}/gmock-1.6.0/fused-src")
 
 add_library(cppmanip SHARED
     src/SourceExtractor.cpp
