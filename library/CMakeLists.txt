@@ -1,3 +1,9 @@
+project(libcppmanip)
+
+cmake_minimum_required(VERSION 2.8)
+
+add_definitions("-std=c++11")
+
 set(LLVM_CONFIG "llvm-config-3.2")
 
 execute_process(COMMAND ${LLVM_CONFIG} --cxxflags OUTPUT_VARIABLE LLVM_CXX_FLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -6,7 +12,9 @@ add_definitions("${LLVM_CXX_FLAGS} -fexceptions")
 set(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${LLVM_LINKER_FLAGS}")
 set(CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS "${CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS} ${LLVM_LINKER_FLAGS}")
 
-include_directories("../include" "src" "../gmock-1.6.0/fused-src")
+include_directories("include" "src" "../gmock-1.6.0/fused-src")
+link_directories("${PROJECT_SOURCE_DIR}/../gmock-1.6.0/build/gtest")
+link_directories("${PROJECT_SOURCE_DIR}/../gmock-1.6.0/build")
 
 add_library(cppmanip SHARED
     src/SourceExtractor.cpp
@@ -42,7 +50,7 @@ install(FILES
         "${PROJECT_SOURCE_DIR}/include/ExtractMethodError.hpp"
         "${PROJECT_SOURCE_DIR}/include/SourceReplacement.hpp"
         "${PROJECT_SOURCE_DIR}/include/SourceLocation.hpp"
-        "${PROJECT_SOURCE_DIR}/include/SourceRange.hpp"
+        "${PROJECT_SOURCE_DIR}/src/SourceRange.hpp" #FIXME: remove after merge
         DESTINATION include)
 
 add_executable(cppmaniptest

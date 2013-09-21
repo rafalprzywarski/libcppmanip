@@ -1,8 +1,8 @@
 #include "CommandLineParser.hpp"
 #include <CppManip.hpp>
 #include <ExtractMethodError.hpp>
-#include "../library/src/OffsetConverter.hpp"
-#include <../library/src/TextFileOps.hpp>
+#include "../../library/src/OffsetConverter.hpp" // FIXME: remove after merge
+#include "../../library/src/TextFileOps.hpp" // FIXME: remove after merge
 #include <stdexcept>
 #include <iostream>
 #include <boost/range/algorithm_ext/push_back.hpp>

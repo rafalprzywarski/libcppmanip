@@ -28,7 +28,7 @@ end
 
 def runExtractFunction args
   File.open(SOURCE_FILE, "w") { |f| f.write $SOURCE }
-  $cppmanip_output = %x(#{BUILD_DIRECTORY}/runner/cppmaniprunner_extract_function #{args} 2>&1)
+  $cppmanip_output = %x(#{RUNNER_BUILD_DIRECTORY}/cppmaniprunner_extract_function #{args} 2>&1)
   $?.should eq(0), "cppmanip failed with error \'#{$?}\': #{$cppmanip_output}"
   @replacements = loadReplacementsFromXml(REPLACEMENTS_FILE) if File.file?(REPLACEMENTS_FILE)
   @error = loadError(ERROR_FILE) if @replacements.nil?
