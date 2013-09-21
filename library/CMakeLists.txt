@@ -55,16 +55,16 @@ install(FILES
         DESTINATION include/cppmanip)
 
 add_executable(cppmaniptest
-    test/ParsedFunction.cpp
-    test/Condition.cpp
+    test/cppmanip/ParsedFunction.cpp
+    test/cppmanip/Condition.cpp
     test/main.cpp
-    test/TextOperationApplierTest.cpp
-    test/OffsetRangeTest.cpp
-    test/ClangToolArgsBuilderTest.cpp
-    test/SourceExtractorTest.cpp
-    test/TextReplacementRecorderTest.cpp
-    test/OffsetConverterTest.cpp
-    test/SourceLocationConverterTest.cpp
+    test/cppmanip/TextOperationApplierTest.cpp
+    test/cppmanip/OffsetRangeTest.cpp
+    test/cppmanip/ClangToolArgsBuilderTest.cpp
+    test/cppmanip/SourceExtractorTest.cpp
+    test/cppmanip/TextReplacementRecorderTest.cpp
+    test/cppmanip/OffsetConverterTest.cpp
+    test/cppmanip/SourceLocationConverterTest.cpp
 ) 
 
 target_link_libraries(cppmaniptest cppmanip gtest gmock boost_thread boost_system pthread)
