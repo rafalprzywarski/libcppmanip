@@ -21,4 +21,9 @@ describe :OffsetCoverter do
     conv.getLocationFromOffset(4).row.should eq(3)
     conv.getLocationFromOffset(5).row.should eq(3)
   end
+  it "should fail if offset is greater than the text size" do
+    conv = OffsetConverter.new("abc\ndef");
+    expect { conv.getLocationFromOffset(7) }.to_not raise_error
+    expect { conv.getLocationFromOffset(8) }.to raise_error(IndexError)
+  end
 end

@@ -5,6 +5,7 @@ class OffsetConverter
     @text = text
   end
   def getLocationFromOffset offset
+    raise IndexError.new if offset > @text.length
     SourceLocation.row_col calc_row(offset), calc_column(offset)
   end
   private
