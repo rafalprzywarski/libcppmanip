@@ -1,51 +1,61 @@
 require 'rake/clean'
 require './buildpath'
 
-CLOBBER.include(BUILD_DIRECTORY)
+CLOBBER.include(GMOCK_BUILD_DIRECTORY)
+CLOBBER.include(LIBRARY_BUILD_DIRECTORY)
+CLOBBER.include(LIBRARY_INSTALLATION_DIRECTORY)
+CLOBBER.include(RUNNER_BUILD_DIRECTORY)
 
+task :default => :acceptance_tests
 
-task :default => :test
-task :test => [:unit_tests, :steps_unit_tests, :acceptance_tests]
+task :gmock do
+  build_cmake_targets GMOCK_BUILD_DIRECTORY, [ :gtest, :gmock ]
+end
 
-task :acceptance_tests => :cppmanip do
+task :libcppmanip => :gmock do
+  build_cmake_targets LIBRARY_BUILD_DIRECTORY, [ :cppmaniptest ]
+  sh "#{LIBRARY_BUILD_DIRECTORY}/cppmaniptest"
+end
+
+task :install_libcppmanip => :libcppmanip do
+  sh "(cd #{LIBRARY_BUILD_DIRECTORY}; make install DESTDIR=#{absolute_path(LIBRARY_INSTALLATION_DIRECTORY)})"
+end
+
+task :libcppmanip_runner => :install_libcppmanip do
+  env = {
+    :LIBCPPMANIP_INSTALLATION_INCLUDE => absolute_path(LIBCPPMANIP_INSTALLATION_INCLUDE),
+    :LIBCPPMANIP_INSTALLATION_LIB => absolute_path(LIBCPPMANIP_INSTALLATION_LIB)
+  }
+  build_cmake_targets RUNNER_BUILD_DIRECTORY, [ :cppmaniprunner_extract_function, :cppmaniprunnertest ], env
+  sh "#{RUNNER_BUILD_DIRECTORY}/cppmaniprunnertest"
+end
+
+task :steps_tests do
+  sh 'rspec features'
+end
+
+task :acceptance_tests => [ :libcppmanip_runner, :steps_tests ] do
   sh 'cucumber -p acceptance_tests'
 end
 
-task :wip => :cppmanip do
+task :wip => [ :libcppmanip_runner, :steps_tests ] do
   sh 'cucumber -p wip'
 end
 
-task :ci_acceptance_tests => :cppmanip do
-  sh 'cucumber -p ci_acceptance_tests'
+
+PROJECT_DIRECTORY=File.dirname(__FILE__)
+
+def absolute_path dir
+  PROJECT_DIRECTORY + "/" + dir
 end
 
-task :cppmanip do
-  sh "cmake -E make_directory #{BUILD_DIRECTORY}"
-  sh "cmake -E chdir #{BUILD_DIRECTORY} cmake .."
-  sh "cmake --build #{BUILD_DIRECTORY} --target cppmaniprunner_extract_function"
+def build_cmake_target path, target, env = {}
+  sh "cmake -E make_directory #{path}"
+  sh "cmake -E chdir #{path} cmake .. #{env.map{ |n,v| " -D#{n.to_s}=#{v}"}.join}"
+  sh "cmake --build #{path} --target #{target.to_s}"
 end
 
-task :cppmaniptest do
-  sh "cmake -E make_directory #{BUILD_DIRECTORY}"
-  sh "cmake -E chdir #{BUILD_DIRECTORY} cmake .."
-  sh "cmake --build #{BUILD_DIRECTORY} --target cppmaniptest"
+def build_cmake_targets path, targets, env = {}
+  targets.each { |target| build_cmake_target path, target, env }
 end
 
-task :cppmaniprunnertest do
-  sh "cmake -E make_directory #{BUILD_DIRECTORY}"
-  sh "cmake -E chdir #{BUILD_DIRECTORY} cmake .."
-  sh "cmake --build #{BUILD_DIRECTORY} --target cppmaniprunnertest"
-end
-
-task :unit_tests => [ :cppmaniptest, :cppmaniprunnertest ] do
-  sh "#{BUILD_DIRECTORY}/library/cppmaniptest"
-  sh "#{BUILD_DIRECTORY}/runner/cppmaniprunnertest"
-end
-
-task :steps_unit_tests do
-  sh 'rspec features'
-end
- 
-task :ci_unit_tests => :cppmaniptest do
-  sh "#{BUILD_DIRECTORY}/cppmaniptest --gtest_output=xml:ci_test_results/"
-end

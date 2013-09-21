@@ -1,4 +1,7 @@
-/build
+/gmock-1.6.0/build
+/library/build
+/runner/build
+/test_installation
 *~
 .*
 !.gitignore
