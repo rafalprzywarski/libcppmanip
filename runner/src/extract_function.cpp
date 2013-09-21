@@ -25,25 +25,36 @@ void saveError(const std::string& error)
     oa << boost::serialization::make_nvp("error", error);
 }
 
+ExtractFunctionRequest parseRequest(int argc, const char** argv)
+{
+    CommandLineParser parser;
+    return parser.parseExtractFunction(argc, argv);
+}
+
+void extractFunctions(ExtractFunctionRequest req)
+{
+    SourceReplacements allReplacements;
+    try
+    {
+        for (auto loc : req.locations)
+        {
+            auto replacements = extractFunctionInFile(loc.extractedMethodName, loc.sourceSelection, req.sourceFilename);
+            boost::push_back(allReplacements, replacements);
+        }
+        saveReplacements(allReplacements);
+    }
+    catch (const ExtractMethodError& e)
+    {
+        saveError(e.what());
+    }
+}
+
 int main(int argc, const char** argv)
 {
     try
     {
-        CommandLineParser parser;
-        auto req = parser.parseExtractFunction(argc, argv);
-        SourceReplacements replacements;
-        try
-        {
-            for (auto loc : req.locations)
-            {
-                boost::push_back(replacements, extractFunctionInFile(loc.extractedMethodName, loc.sourceSelection, req.sourceFilename));
-            }
-            saveReplacements(replacements);
-        }
-        catch (const ExtractMethodError& e)
-        {
-            saveError(e.what());
-        }
+        auto req = parseRequest(argc, argv);
+        extractFunctions(req);
     }
     catch (const std::exception& e)
     {
