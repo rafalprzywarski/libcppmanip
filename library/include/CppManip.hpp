@@ -3,6 +3,7 @@
 #include <string>
 #include <cppmanip/SourceSelection.hpp>
 #include <cppmanip/SourceReplacement.hpp>
+#include <cppmanip/ExtractMethodError.hpp>
 
 SourceReplacements extractFunctionInFile(const std::string& functionName, SourceSelection selection, const std::string& filename);
 

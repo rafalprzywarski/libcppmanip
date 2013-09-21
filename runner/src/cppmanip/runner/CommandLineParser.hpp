@@ -1,6 +1,6 @@
 #ifndef COMMANDLINEPARSER_HPP
 #define COMMANDLINEPARSER_HPP
-#include <SourceSelection.hpp>
+#include <cppmanip/SourceSelection.hpp>
 #include <string>
 #include <vector>
 

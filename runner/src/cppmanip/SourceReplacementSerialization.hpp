@@ -1,6 +1,6 @@
 #ifndef SOURCEREPLACEMENTSERIALIZATION_HPP
 #define SOURCEREPLACEMENTSERIALIZATION_HPP
-#include <SourceReplacement.hpp>
+#include <cppmanip/SourceReplacement.hpp>
 #include <boost/serialization/vector.hpp>
 
 namespace boost {
