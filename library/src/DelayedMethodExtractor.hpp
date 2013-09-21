@@ -1,5 +1,5 @@
-#ifndef DELAYEDMETHODEXTRACTOR_HPP
-#define DELAYEDMETHODEXTRACTOR_HPP
+#ifndef CPPMANIP_799523E01B0442A6ABBA2BFB7EF4F97A_HPP
+#define CPPMANIP_799523E01B0442A6ABBA2BFB7EF4F97A_HPP
 #include "MethodExtractor.hpp"
 #include "FunctionPrinter.hpp"
 #include "LocalVariableLocator.hpp"
@@ -33,4 +33,4 @@ private:
     void failIfVariablesAreDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, const clang::FunctionDecl& originalFunction, const std::string& extractedFunctionName);
 };
 
-#endif // DELAYEDMETHODEXTRACTOR_HPP
+#endif // CPPMANIP_799523E01B0442A6ABBA2BFB7EF4F97A_HPP

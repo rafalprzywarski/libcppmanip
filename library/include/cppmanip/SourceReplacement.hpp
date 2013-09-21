@@ -1,5 +1,5 @@
-#ifndef SOURCEREPLACEMENT_HPP
-#define SOURCEREPLACEMENT_HPP
+#ifndef CPPMANIP_87BF0ADA8D254F05ADB329BD628E8995_HPP
+#define CPPMANIP_87BF0ADA8D254F05ADB329BD628E8995_HPP
 #include <string>
 #include <vector>
 #include <cppmanip/SourceLocation.hpp>
@@ -12,4 +12,4 @@ struct SourceReplacement
 
 typedef std::vector<SourceReplacement> SourceReplacements;
 
-#endif // SOURCEREPLACEMENT_HPP
+#endif // CPPMANIP_87BF0ADA8D254F05ADB329BD628E8995_HPP

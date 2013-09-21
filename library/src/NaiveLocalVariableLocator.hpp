@@ -1,5 +1,5 @@
-#ifndef NAIVELOCALVARIABLELOCATOR_HPP
-#define NAIVELOCALVARIABLELOCATOR_HPP
+#ifndef CPPMANIP_050F6B6B2ADD47528D05772006AEF4C7_HPP
+#define CPPMANIP_050F6B6B2ADD47528D05772006AEF4C7_HPP
 
 #include "LocalVariableLocator.hpp"
 
@@ -10,4 +10,4 @@ public:
     virtual Variables findVariablesDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, const clang::FunctionDecl& func);
 };
 
-#endif // NAIVELOCALVARIABLELOCATOR_HPP
+#endif // CPPMANIP_050F6B6B2ADD47528D05772006AEF4C7_HPP

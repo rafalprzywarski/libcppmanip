@@ -1,5 +1,5 @@
-#ifndef TEXTREPLACER_HPP
-#define TEXTREPLACER_HPP
+#ifndef CPPMANIP_D9C114835E7740F0946533374E15CE6D_HPP
+#define CPPMANIP_D9C114835E7740F0946533374E15CE6D_HPP
 #include "TextReplacementListener.hpp"
 
 class TextReplacer : public TextReplacementListener
@@ -12,4 +12,4 @@ private:
     std::string text;
 };
 
-#endif // TEXTREPLACER_HPP
+#endif // CPPMANIP_D9C114835E7740F0946533374E15CE6D_HPP

@@ -1,5 +1,5 @@
-#ifndef TEXTREPLACEMENTRECORDER_HPP
-#define TEXTREPLACEMENTRECORDER_HPP
+#ifndef CPPMANIP_5D669DAA80544067971378BD1ED150FA_HPP
+#define CPPMANIP_5D669DAA80544067971378BD1ED150FA_HPP
 #include "TextReplacementListener.hpp"
 #include <cppmanip/SourceReplacement.hpp>
 #include <functional>
@@ -17,4 +17,4 @@ private:
     SourceReplacements replacements;
 };
 
-#endif // TEXTREPLACEMENTRECORDER_HPP
+#endif // CPPMANIP_5D669DAA80544067971378BD1ED150FA_HPP

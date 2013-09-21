@@ -1,5 +1,5 @@
-#ifndef TEXTOPERATIONAPPLIER_HPP
-#define TEXTOPERATIONAPPLIER_HPP
+#ifndef CPPMANIP_01077C995F92441DB2604431793CC665_HPP
+#define CPPMANIP_01077C995F92441DB2604431793CC665_HPP
 #include <string>
 #include <map>
 #include "TextReplacementListener.hpp"
@@ -30,4 +30,4 @@ private:
     void verifyNoOverlappingRangesExist(const OffsetRange& r);
 };
 
-#endif // TEXTOPERATIONAPPLIER_HPP
+#endif // CPPMANIP_01077C995F92441DB2604431793CC665_HPP

@@ -1,5 +1,5 @@
-#ifndef SOURCESELECTION_HPP
-#define SOURCESELECTION_HPP
+#ifndef CPPMANIP_852119A7D6A44925BA0F6BC519011576_HPP
+#define CPPMANIP_852119A7D6A44925BA0F6BC519011576_HPP
 #include <cppmanip/SourceLocation.hpp>
 
 struct SourceSelection
@@ -7,4 +7,4 @@ struct SourceSelection
     SourceLocation from, to;
 };
 
-#endif // SOURCESELECTION_HPP
+#endif // CPPMANIP_852119A7D6A44925BA0F6BC519011576_HPP

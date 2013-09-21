@@ -1,5 +1,5 @@
-#ifndef PARSEDFUNCTION_HPP
-#define PARSEDFUNCTION_HPP
+#ifndef CPPMANIP_9DCB109EF1064760828DE63EE74C3314_HPP
+#define CPPMANIP_9DCB109EF1064760828DE63EE74C3314_HPP
 #include "Condition.hpp"
 #include <clang/AST/StmtIterator.h>
 #include <clang/AST/ASTContext.h>
@@ -19,4 +19,4 @@ private:
     boost::thread thread;
 };
 
-#endif // PARSEDFUNCTION_HPP
+#endif // CPPMANIP_9DCB109EF1064760828DE63EE74C3314_HPP

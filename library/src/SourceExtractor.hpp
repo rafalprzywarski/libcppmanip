@@ -1,5 +1,5 @@
-#ifndef SOURCEEXTRACTOR_HPP
-#define SOURCEEXTRACTOR_HPP
+#ifndef CPPMANIP_215653695B8744B6B4E2B7B6AC37D277_HPP
+#define CPPMANIP_215653695B8744B6B4E2B7B6AC37D277_HPP
 
 // TODO: semicolon hack
 #include <clang/AST/Stmt.h>
@@ -84,4 +84,4 @@ private:
     const char *getSourceText(clang::SourceLocation loc);
 };
 
-#endif // SOURCEEXTRACTOR_HPP
+#endif // CPPMANIP_215653695B8744B6B4E2B7B6AC37D277_HPP

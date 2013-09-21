@@ -1,5 +1,5 @@
-#ifndef PRETTYFUNCTIONPRINTER_HPP
-#define PRETTYFUNCTIONPRINTER_HPP
+#ifndef CPPMANIP_8537935905244EB2B44A1991E6B21577_HPP
+#define CPPMANIP_8537935905244EB2B44A1991E6B21577_HPP
 #include "FunctionPrinter.hpp"
 
 class PrettyFunctionPrinter : public FunctionPrinter
@@ -9,4 +9,4 @@ public:
     virtual std::string printFunctionCall(const std::string& name, const Strings& args);
 };
 
-#endif // PRETTYFUNCTIONPRINTER_HPP
+#endif // CPPMANIP_8537935905244EB2B44A1991E6B21577_HPP

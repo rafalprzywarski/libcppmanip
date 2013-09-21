@@ -1,5 +1,5 @@
-#ifndef SOURCEREPLACEMENTSERIALIZATION_HPP
-#define SOURCEREPLACEMENTSERIALIZATION_HPP
+#ifndef CPPMANIP_650003D942654C61B6F65F46A45BDDD7_HPP
+#define CPPMANIP_650003D942654C61B6F65F46A45BDDD7_HPP
 #include <cppmanip/SourceReplacement.hpp>
 #include <boost/serialization/vector.hpp>
 
@@ -24,4 +24,4 @@ void serialize(Archive & ar, SourceReplacement& r, unsigned)
 }
 }
 
-#endif // SOURCEREPLACEMENTSERIALIZATION_HPP
+#endif // CPPMANIP_650003D942654C61B6F65F46A45BDDD7_HPP

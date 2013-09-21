@@ -1,5 +1,5 @@
-#ifndef SOURCELOCATIONCONVERTER_HPP
-#define SOURCELOCATIONCONVERTER_HPP
+#ifndef CPPMANIP_1C57B55DCAEB439E9409ED2823E4F3B2_HPP
+#define CPPMANIP_1C57B55DCAEB439E9409ED2823E4F3B2_HPP
 #include <cppmanip/SourceReplacement.hpp>
 
 class SourceLocationConverter
@@ -12,4 +12,4 @@ private:
     unsigned int calcRowOffset(unsigned int row) const;
 };
 
-#endif // SOURCELOCATIONCONVERTER_HPP
+#endif // CPPMANIP_1C57B55DCAEB439E9409ED2823E4F3B2_HPP

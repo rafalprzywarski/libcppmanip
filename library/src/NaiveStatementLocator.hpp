@@ -1,5 +1,5 @@
-#ifndef NAIVESTATEMENTLOCATOR_HPP
-#define NAIVESTATEMENTLOCATOR_HPP
+#ifndef CPPMANIP_D889C71C321745A497D7FCEAABF958DC_HPP
+#define CPPMANIP_D889C71C321745A497D7FCEAABF958DC_HPP
 #include "StatementLocator.hpp"
 #include "SourceExtractor.hpp"
 
@@ -20,4 +20,4 @@ private:
     bool selectionOverlapsWithStmt(const clang::Stmt& stmt);
 };
 
-#endif // NAIVESTATEMENTLOCATOR_HPP
+#endif // CPPMANIP_D889C71C321745A497D7FCEAABF958DC_HPP

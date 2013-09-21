@@ -1,5 +1,5 @@
-#ifndef LOCALVARIABLELOCATOR_HPP
-#define LOCALVARIABLELOCATOR_HPP
+#ifndef CPPMANIP_74A28F4CBA3943F3B3E1299FF722AA23_HPP
+#define CPPMANIP_74A28F4CBA3943F3B3E1299FF722AA23_HPP
 #include <vector>
 #include <clang/AST/StmtIterator.h>
 
@@ -17,4 +17,4 @@ public:
     virtual Variables findVariablesDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, const clang::FunctionDecl& func) = 0;
 };
 
-#endif // LOCALVARIABLELOCATOR_HPP
+#endif // CPPMANIP_74A28F4CBA3943F3B3E1299FF722AA23_HPP

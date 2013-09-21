@@ -1,5 +1,5 @@
-#ifndef OFFSETCONVERTER_HPP
-#define OFFSETCONVERTER_HPP
+#ifndef CPPMANIP_D2CBE39E835843F3956DC75AC0955354_HPP
+#define CPPMANIP_D2CBE39E835843F3956DC75AC0955354_HPP
 #include <cppmanip/SourceReplacement.hpp>
 
 class OffsetConverter
@@ -14,4 +14,4 @@ private:
     unsigned int calcRow(unsigned int offset) const ;
 };
 
-#endif // OFFSETCONVERTER_HPP
+#endif // CPPMANIP_D2CBE39E835843F3956DC75AC0955354_HPP
