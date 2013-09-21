@@ -1,8 +1,6 @@
 #include "CommandLineParser.hpp"
 #include <CppManip.hpp>
 #include <ExtractMethodError.hpp>
-#include "../library/src/OffsetConverter.hpp"
-#include <../library/src/TextFileOps.hpp>
 #include <stdexcept>
 #include <iostream>
 #include <boost/range/algorithm_ext/push_back.hpp>
@@ -34,15 +32,11 @@ int main(int argc, const char** argv)
         CommandLineParser parser;
         auto req = parser.parseExtractFunction(argc, argv);
         SourceReplacements replacements;
-        OffsetConverter conv(loadTextFromFile(req.sourceFilename));
         try
         {
             for (auto loc : req.locations)
             {
-                SourceSelection selection;
-                selection.from = conv.getLocationFromOffset(loc.sourceSelection.from);
-                selection.to = conv.getLocationFromOffset(loc.sourceSelection.to);
-                boost::push_back(replacements, extractFunctionInFile(loc.extractedMethodName, selection, req.sourceFilename));
+                boost::push_back(replacements, extractFunctionInFile(loc.extractedMethodName, loc.sourceSelection, req.sourceFilename));
             }
             saveReplacements(replacements);
         }

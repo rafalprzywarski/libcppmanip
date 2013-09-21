@@ -35,14 +35,14 @@ def runExtractFunction args
 end
 
 When /^I run function extraction from "(.*?)" to "(.*?)" with name "(.*?)"$/ do |startPhrase, endPhrase, functionName|
-  startOffset, endOffset = rangeFromPhrases startPhrase, endPhrase, @source
-  runExtractFunction "#{SOURCE_FILE} #{functionName} #{startOffset} #{endOffset}"
+  startLoc, endLoc = rangeFromPhrases startPhrase, endPhrase, @source
+  runExtractFunction "#{SOURCE_FILE} #{functionName} #{startLoc.row} #{startLoc.col} #{endLoc.row} #{endLoc.col}"
 end
 
 When /^I run two function extractions for "(.*?)" with name "(.*?)" and for "(.*?)" with name "(.*?)"$/ do |phrase1, functionName1, phrase2, functionName2|
-  startOffset1, endOffset1 = rangeFromPhrases phrase1, phrase1, @source
-  startOffset2, endOffset2 = rangeFromPhrases phrase2, phrase2, @source
-  runExtractFunction "#{SOURCE_FILE} #{functionName1} #{startOffset1} #{endOffset1} #{functionName2} #{startOffset2} #{endOffset2}"
+  startLoc1, endLoc1 = rangeFromPhrases phrase1, phrase1, @source
+  startLoc2, endLoc2 = rangeFromPhrases phrase2, phrase2, @source
+  runExtractFunction "#{SOURCE_FILE} #{functionName1} #{startLoc1.row} #{startLoc1.col} #{endLoc1.row} #{endLoc1.col} #{functionName2} #{startLoc2.row} #{startLoc2.col} #{endLoc2.row} #{endLoc2.col}"
 end
 
 Then /^it should fail with a message "(.*?)"$/ do |expectedMessage|
