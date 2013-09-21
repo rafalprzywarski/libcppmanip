@@ -19,7 +19,7 @@ After do
 end
 
 Given /^source code:$/ do |source|
-  $SOURCE = source
+  @source = source
 end
 
 When /^I run function extraction for "(.*?)" with name "(.*?)"$/ do |phrase, functionName|
@@ -27,21 +27,21 @@ When /^I run function extraction for "(.*?)" with name "(.*?)"$/ do |phrase, fun
 end
 
 def runExtractFunction args
-  File.open(SOURCE_FILE, "w") { |f| f.write $SOURCE }
-  $cppmanip_output = %x(#{BUILD_DIRECTORY}/runner/cppmaniprunner_extract_function #{args} 2>&1)
-  $?.should eq(0), "cppmanip failed with error \'#{$?}\': #{$cppmanip_output}"
+  File.open(SOURCE_FILE, "w") { |f| f.write @source }
+  output = %x(#{BUILD_DIRECTORY}/runner/cppmaniprunner_extract_function #{args} 2>&1)
+  $?.should eq(0), "cppmanip failed with error \'#{$?}\': #{output}"
   @replacements = loadReplacementsFromXml(REPLACEMENTS_FILE) if File.file?(REPLACEMENTS_FILE)
   @error = loadError(ERROR_FILE) if @replacements.nil?
 end
 
 When /^I run function extraction from "(.*?)" to "(.*?)" with name "(.*?)"$/ do |startPhrase, endPhrase, functionName|
-  startOffset, endOffset = rangeFromPhrases startPhrase, endPhrase, $SOURCE
+  startOffset, endOffset = rangeFromPhrases startPhrase, endPhrase, @source
   runExtractFunction "#{SOURCE_FILE} #{functionName} #{startOffset} #{endOffset}"
 end
 
 When /^I run two function extractions for "(.*?)" with name "(.*?)" and for "(.*?)" with name "(.*?)"$/ do |phrase1, functionName1, phrase2, functionName2|
-  startOffset1, endOffset1 = rangeFromPhrases phrase1, phrase1, $SOURCE
-  startOffset2, endOffset2 = rangeFromPhrases phrase2, phrase2, $SOURCE
+  startOffset1, endOffset1 = rangeFromPhrases phrase1, phrase1, @source
+  startOffset2, endOffset2 = rangeFromPhrases phrase2, phrase2, @source
   runExtractFunction "#{SOURCE_FILE} #{functionName1} #{startOffset1} #{endOffset1} #{functionName2} #{startOffset2} #{endOffset2}"
 end
 
@@ -70,7 +70,7 @@ Then /^there should be an insertion:$/ do |insertionText|
 end
 
 Then /^there should be an insertion before "(.*?)":$/ do |before, insertionText|
-  @replacements.index { |r| r.isInsertionBefore(before, $SOURCE) && r.text == insertionText }.should_not be_nil
+  @replacements.index { |r| r.isInsertionBefore(before, @source) && r.text == insertionText }.should_not be_nil
 end
 
 Then /^there should be a replacement with "(.*?)"$/ do |replacementText|
@@ -79,7 +79,7 @@ end
 
 Then /^there should be a replacement from "(.*?)" to "(.*?)" with "(.*?)"$/ do |from, to, replacementText|
   @replacements.index { |r|
-    r.text == replacementText && r.isFrom(from, $SOURCE) && r.isTo(to, $SOURCE)
+    r.text == replacementText && r.isFrom(from, @source) && r.isTo(to, @source)
   }.should_not be_nil, "replacement with \'#{replacementText}\' not found in #{@replacements}"
 end
 
