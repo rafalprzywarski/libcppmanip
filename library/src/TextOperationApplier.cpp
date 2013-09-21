@@ -2,6 +2,9 @@
 #include "OffsetRange.hpp"
 #include <stdexcept>
 
+namespace cppmanip
+{
+
 void TextOperationApplier::apply(TextReplacementListener& replacer)
 {
     for (auto const& it : replacements)
@@ -44,4 +47,6 @@ void TextOperationApplier::Replacement::setRemovalLength(unsigned int len)
 bool TextOperationApplier::Replacement::overlapsWithRangeAtOffset(const OffsetRange& r, unsigned int offset) const
 {
     return OffsetRange(offset, offset + removalLength).overlapsWith(r);
+}
+
 }

@@ -2,6 +2,9 @@
 #define CPPMANIP_10F3A6DA37744054897720CE57342C12_HPP
 #include <stdexcept>
 
+namespace cppmanip
+{
+
 /**
  * A left-closed right-open range, with the exception that degenerate ranges overlap non-degenerate ranges.
  */
@@ -27,4 +30,5 @@ private:
     unsigned from, to;
 };
 
+}
 #endif // CPPMANIP_10F3A6DA37744054897720CE57342C12_HPP

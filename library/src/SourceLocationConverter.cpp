@@ -1,6 +1,9 @@
 #include "SourceLocationConverter.hpp"
 #include <stdexcept>
 
+namespace cppmanip
+{
+
 unsigned int SourceLocationConverter::getOffsetFromLocation(SourceLocation loc) const
 {
     return loc.col + calcRowOffset(loc.row);
@@ -18,4 +21,6 @@ unsigned int SourceLocationConverter::calcRowOffset(unsigned int row) const
         it++;
     }
     return (it - source.begin());
+}
+
 }

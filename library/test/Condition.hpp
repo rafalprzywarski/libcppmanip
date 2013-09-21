@@ -3,6 +3,11 @@
 
 #include <boost/thread.hpp>
 
+namespace cppmanip
+{
+namespace test
+{
+
 class Notifier
 {
 public:
@@ -29,4 +34,6 @@ private:
     bool ready;
 };
 
+}
+}
 #endif // CPPMANIP_4C010B1504FA456091DA9EC210C6128D_HPP

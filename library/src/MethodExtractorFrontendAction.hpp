@@ -3,6 +3,9 @@
 #include <clang/Frontend/FrontendAction.h>
 #include "OffsetRange.hpp"
 
+namespace cppmanip
+{
+
 class TextOperationApplier;
 
 class MethodExtractorFrontendAction : public clang::ASTFrontendAction
@@ -18,4 +21,5 @@ private:
     TextOperationApplier& sourceOperations;
 };
 
+}
 #endif // CPPMANIP_F700977BB33C4599BFB514B446B105AF_HPP

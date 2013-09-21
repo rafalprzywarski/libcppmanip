@@ -2,6 +2,9 @@
 #include <algorithm>
 #include <stdexcept>
 
+namespace cppmanip
+{
+
 SourceLocation OffsetConverter::getLocationFromOffset(unsigned int offset) const
 {
     validateOffset(offset);
@@ -30,4 +33,6 @@ unsigned int OffsetConverter::calcColumn(unsigned int offset) const
 unsigned int OffsetConverter::calcRow(unsigned int offset) const
 {
     return std::count(source.begin(), source.begin() + offset, '\n');
+}
+
 }

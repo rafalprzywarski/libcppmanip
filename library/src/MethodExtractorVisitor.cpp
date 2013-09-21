@@ -1,5 +1,8 @@
 #include "MethodExtractorVisitor.hpp"
 
+namespace cppmanip
+{
+
 MethodExtractorVisitor::MethodExtractorVisitor(
     const std::string& extractedMethodName, MethodExtractor& extractor, StatementLocator& stmtLocator)
     : extractedMethodName(extractedMethodName), extractor(extractor), stmtLocator(stmtLocator) { }
@@ -13,3 +16,4 @@ bool MethodExtractorVisitor::VisitFunctionDecl(clang::FunctionDecl* decl)
     return false;
 }
 
+}

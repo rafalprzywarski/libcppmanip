@@ -10,6 +10,9 @@
 #include "OffsetConverter.hpp"
 #include "SourceLocationConverter.hpp"
 
+namespace cppmanip
+{
+
 void performFrontendActionForFile(clang::tooling::FrontendActionFactory& actionFactory, std::string sourceFilename)
 {
     ClangToolArgsBuilder args;
@@ -35,4 +38,6 @@ SourceReplacements extractFunctionInFile(const std::string& functionName, Source
     TextReplacementRecorder recorder(std::bind(&OffsetConverter::getLocationFromOffset, &offsetCoverter, std::placeholders::_1));
     sourceOperations.apply(recorder);
     return recorder.getReplacements();
+}
+
 }

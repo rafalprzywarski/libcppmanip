@@ -4,6 +4,9 @@
 #include <string>
 #include "OffsetRange.hpp"
 
+namespace cppmanip
+{
+
 class TextOperationApplier;
 
 class MethodExtractorASTConsumer : public clang::ASTConsumer
@@ -19,4 +22,5 @@ private:
     TextOperationApplier& sourceOperations;
 };
 
+}
 #endif // CPPMANIP_B6BFCC681F474EA1B1E5AD0A2D9B3126_HPP

@@ -9,6 +9,9 @@ class VarDecl;
 class FunctionDecl;
 }
 
+namespace cppmanip
+{
+
 class LocalVariableLocator
 {
 public:
@@ -17,4 +20,5 @@ public:
     virtual Variables findVariablesDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, const clang::FunctionDecl& func) = 0;
 };
 
+}
 #endif // CPPMANIP_74A28F4CBA3943F3B3E1299FF722AA23_HPP

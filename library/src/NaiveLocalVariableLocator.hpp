@@ -3,6 +3,9 @@
 
 #include "LocalVariableLocator.hpp"
 
+namespace cppmanip
+{
+
 class NaiveLocalVariableLocator : public LocalVariableLocator
 {
 public:
@@ -10,4 +13,5 @@ public:
     virtual Variables findVariablesDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, const clang::FunctionDecl& func);
 };
 
+}
 #endif // CPPMANIP_050F6B6B2ADD47528D05772006AEF4C7_HPP

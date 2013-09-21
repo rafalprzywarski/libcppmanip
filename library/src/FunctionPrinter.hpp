@@ -3,6 +3,9 @@
 #include <string>
 #include <vector>
 
+namespace cppmanip
+{
+
 class FunctionPrinter
 {
 public:
@@ -12,4 +15,5 @@ public:
     virtual std::string printFunctionCall(const std::string& name, const Strings& args) = 0;
 };
 
+}
 #endif // CPPMANIP_8928F17D8AA84417B27EA483D089DFED_HPP

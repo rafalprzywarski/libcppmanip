@@ -3,6 +3,9 @@
 #include <vector>
 #include <string>
 
+namespace cppmanip
+{
+
 class ClangToolArgsBuilder
 {
 public:
@@ -15,4 +18,5 @@ private:
     mutable std::vector<const char *> rawArgs;
 };
 
+}
 #endif // CPPMANIP_8A600DD0C25B4B6EBEDD227EC5617E12_HPP

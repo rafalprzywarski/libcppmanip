@@ -2,6 +2,9 @@
 #define CPPMANIP_D9C114835E7740F0946533374E15CE6D_HPP
 #include "TextReplacementListener.hpp"
 
+namespace cppmanip
+{
+
 class TextReplacer : public TextReplacementListener
 {
 public:
@@ -12,4 +15,5 @@ private:
     std::string text;
 };
 
+}
 #endif // CPPMANIP_D9C114835E7740F0946533374E15CE6D_HPP

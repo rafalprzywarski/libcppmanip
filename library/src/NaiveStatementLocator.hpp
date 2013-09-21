@@ -3,6 +3,9 @@
 #include "StatementLocator.hpp"
 #include "SourceExtractor.hpp"
 
+namespace cppmanip
+{
+
 class NaiveStatementLocator : public StatementLocator
 {
 public:
@@ -20,4 +23,5 @@ private:
     bool selectionOverlapsWithStmt(const clang::Stmt& stmt);
 };
 
+}
 #endif // CPPMANIP_D889C71C321745A497D7FCEAABF958DC_HPP

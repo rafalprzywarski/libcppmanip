@@ -7,6 +7,9 @@ using namespace testing;
 
 #define ALLOWING_CALL EXPECT_CALL
 
+namespace cppmanip
+{
+
 struct TextReplacementRecorderTest : testing::Test
 {
     TextReplacementRecorder recorder;
@@ -55,4 +58,6 @@ TEST_F(TextReplacementRecorderTest, should_record_all_replacements)
     ASSERT_EQ("a", replacements[0].text);
     ASSERT_EQ("b", replacements[1].text);
     ASSERT_EQ("c", replacements[2].text);
+}
+
 }

@@ -2,6 +2,9 @@
 #define CPPMANIP_5994AB87DE5B483B948FD9AB2776346A_HPP
 #include <string>
 
+namespace cppmanip
+{
+
 class TextReplacementListener
 {
 public:
@@ -9,4 +12,5 @@ public:
     virtual void replaceWithTextInRange(const std::string& replacement, unsigned from, unsigned to) = 0;
 };
 
+}
 #endif // CPPMANIP_5994AB87DE5B483B948FD9AB2776346A_HPP

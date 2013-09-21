@@ -4,6 +4,9 @@
 #include <SourceRange.hpp>
 #include "OffsetRange.hpp"
 
+namespace cppmanip
+{
+
 class TextOperationApplier;
 
 class MethodExtractorFrontendActionFactory : public clang::tooling::FrontendActionFactory
@@ -22,4 +25,5 @@ private:
     TextOperationApplier& sourceOperations;
 };
 
+}
 #endif // CPPMANIP_71A4C766A1F04C4BB01EFA68BF81545F_HPP

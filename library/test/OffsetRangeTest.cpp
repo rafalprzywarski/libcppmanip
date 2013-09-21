@@ -2,6 +2,9 @@
 #include <OffsetRange.hpp>
 #include <stdexcept>
 
+namespace cppmanip
+{
+
 struct OffsetRangeTest : testing::Test
 {
     void expectNoOverlapping(OffsetRange left, OffsetRange right, const std::string& desc)
@@ -67,4 +70,6 @@ TEST_F(OffsetRangeTest, should_detect_overlapping_ranges)
     expectOverlapping({1, 10}, {3, 7}, "containing");
     expectOverlapping({1, 4}, {1, 3}, "common beginning");
     expectOverlapping({1, 5}, {2, 5}, "common ending");
+}
+
 }

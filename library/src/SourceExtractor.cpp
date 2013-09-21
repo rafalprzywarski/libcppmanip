@@ -1,7 +1,10 @@
 #include "SourceExtractor.hpp"
 #include <clang/AST/Decl.h>
 
-clang::SourceRange SourceExtractor::getCorrectSourceRange(clang::StmtRange stmts) 
+namespace cppmanip
+{
+
+clang::SourceRange SourceExtractor::getCorrectSourceRange(clang::StmtRange stmts)
 {
     clang::SourceRange r;
     r.setBegin(getCorrectSourceRange(**stmts).getBegin());
@@ -47,4 +50,6 @@ std::string SourceExtractor::getVarName(const clang::VarDecl& d)
 std::string SourceExtractor::getVarDecl(const clang::VarDecl& d)
 {
     return d.getType().getAsString() + " " + d.getNameAsString();
+}
+
 }

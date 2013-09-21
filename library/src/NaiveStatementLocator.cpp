@@ -1,5 +1,8 @@
 #include "NaiveStatementLocator.hpp"
 
+namespace cppmanip
+{
+
 NaiveStatementLocator::NaiveStatementLocator(SourceExtractor& sourceExtractor, OffsetRange selection)
     : sourceExtractor(sourceExtractor), selection(selection) { }
 
@@ -28,4 +31,6 @@ clang::StmtRange NaiveStatementLocator::findStatementsTouchingSelection(const cl
 bool NaiveStatementLocator::selectionOverlapsWithStmt(const clang::Stmt& stmt)
 {
     return selection.overlapsWith(sourceExtractor.getOffsetRange(sourceExtractor.getCorrectSourceRange(stmt)));
+}
+
 }

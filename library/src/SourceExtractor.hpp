@@ -11,8 +11,10 @@
 namespace clang
 {
 class VarDecl;
-    
 }
+
+namespace cppmanip
+{
 
 namespace detail
 {
@@ -84,4 +86,5 @@ private:
     const char *getSourceText(clang::SourceLocation loc);
 };
 
+}
 #endif // CPPMANIP_215653695B8744B6B4E2B7B6AC37D277_HPP

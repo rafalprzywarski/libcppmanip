@@ -4,6 +4,9 @@
 #include <cppmanip/SourceReplacement.hpp>
 #include <functional>
 
+namespace cppmanip
+{
+
 class TextReplacementRecorder : public TextReplacementListener
 {
 public:
@@ -17,4 +20,5 @@ private:
     SourceReplacements replacements;
 };
 
+}
 #endif // CPPMANIP_5D669DAA80544067971378BD1ED150FA_HPP

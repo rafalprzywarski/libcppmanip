@@ -1,6 +1,9 @@
 #include "TextFileOps.hpp"
 #include <fstream>
 
+namespace cppmanip
+{
+
 std::string loadTextFromFile(const std::string& filename)
 {
     std::ifstream f(filename);
@@ -11,4 +14,6 @@ void writeTextToFile(const std::string& text, const std::string& filename)
 {
     std::ofstream f(filename);
     f << text;
+}
+
 }

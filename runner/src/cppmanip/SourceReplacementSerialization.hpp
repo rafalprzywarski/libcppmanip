@@ -7,14 +7,14 @@ namespace boost {
 namespace serialization {
 
 template<class Archive>
-void serialize(Archive & ar, SourceLocation& loc, unsigned)
+void serialize(Archive & ar, cppmanip::SourceLocation& loc, unsigned)
 {
     ar & boost::serialization::make_nvp("col", loc.col);
     ar & boost::serialization::make_nvp("row", loc.row);
 }
 
 template<class Archive>
-void serialize(Archive & ar, SourceReplacement& r, unsigned)
+void serialize(Archive & ar, cppmanip::SourceReplacement& r, unsigned)
 {
     ar & boost::serialization::make_nvp("from", r.from);
     ar & boost::serialization::make_nvp("to", r.to);

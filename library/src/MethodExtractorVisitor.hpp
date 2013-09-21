@@ -4,6 +4,9 @@
 #include "MethodExtractor.hpp"
 #include "StatementLocator.hpp"
 
+namespace cppmanip
+{
+
 class MethodExtractorVisitor : public clang::RecursiveASTVisitor<MethodExtractorVisitor>
 {
 public:
@@ -17,5 +20,5 @@ private:
     StatementLocator& stmtLocator;
 };
 
-
+}
 #endif // CPPMANIP_FB9B63A4F1F94D448C896416220B5F93_HPP

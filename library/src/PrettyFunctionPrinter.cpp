@@ -1,6 +1,9 @@
 #include "PrettyFunctionPrinter.hpp"
 #include <sstream>
 
+namespace cppmanip
+{
+
 std::string PrettyFunctionPrinter::printFunction(const std::string& name, const Strings& args, const std::string& body)
 {
     std::ostringstream os;
@@ -25,4 +28,6 @@ std::string PrettyFunctionPrinter::printFunctionCall(const std::string& name, co
     }
     os << ");";
     return os.str();
+}
+
 }

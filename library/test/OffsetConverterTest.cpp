@@ -2,6 +2,9 @@
 #include <gtest/gtest.h>
 #include <stdexcept>
 
+namespace cppmanip
+{
+
 TEST(OffsetConverterTest, should_return_offset_in_the_first_line)
 {
     OffsetConverter coverter("xxxxx\nx\nxxxxxxxxx");
@@ -34,4 +37,6 @@ TEST(OffsetConverterTest, should_fail_if_offset_is_greater_or_equal_the_length_o
     ASSERT_NO_THROW(converter.getLocationFromOffset(19));
     ASSERT_THROW(converter.getLocationFromOffset(20), std::out_of_range);
     ASSERT_THROW(converter.getLocationFromOffset(21), std::out_of_range);
+}
+
 }

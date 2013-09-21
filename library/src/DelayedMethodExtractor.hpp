@@ -4,6 +4,9 @@
 #include "FunctionPrinter.hpp"
 #include "LocalVariableLocator.hpp"
 
+namespace cppmanip
+{
+
 class TextOperationApplier;
 class SourceExtractor;
 class DelayedMethodExtractor : public MethodExtractor
@@ -33,4 +36,5 @@ private:
     void failIfVariablesAreDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, const clang::FunctionDecl& originalFunction, const std::string& extractedFunctionName);
 };
 
+}
 #endif // CPPMANIP_799523E01B0442A6ABBA2BFB7EF4F97A_HPP

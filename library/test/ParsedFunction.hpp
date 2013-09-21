@@ -5,6 +5,11 @@
 #include <clang/AST/ASTContext.h>
 #include <clang/Basic/SourceManager.h>
 
+namespace cppmanip
+{
+namespace test
+{
+
 class ParsedFunction : boost::noncopyable
 {
 public:
@@ -19,4 +24,6 @@ private:
     boost::thread thread;
 };
 
+}
+}
 #endif // CPPMANIP_9DCB109EF1064760828DE63EE74C3314_HPP

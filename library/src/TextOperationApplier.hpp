@@ -4,6 +4,9 @@
 #include <map>
 #include "TextReplacementListener.hpp"
 
+namespace cppmanip
+{
+
 class OffsetRange;
 
 class TextOperationApplier
@@ -30,4 +33,5 @@ private:
     void verifyNoOverlappingRangesExist(const OffsetRange& r);
 };
 
+}
 #endif // CPPMANIP_01077C995F92441DB2604431793CC665_HPP

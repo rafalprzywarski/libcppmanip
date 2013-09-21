@@ -5,6 +5,9 @@
 #include <boost/range/algorithm/find.hpp>
 #include <boost/range/algorithm/count.hpp>
 
+namespace cppmanip
+{
+
 namespace
 {
 
@@ -135,4 +138,6 @@ LocalVariableLocator::Variables NaiveLocalVariableLocator::findVariablesDeclared
     Variables result;
     boost::push_back(result, used | boost::adaptors::filtered(isDeclared));
     return result;
+}
+
 }

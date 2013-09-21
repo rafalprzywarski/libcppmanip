@@ -4,6 +4,11 @@
 #include <clang/AST/ASTContext.h>
 #include <clang/AST/RecursiveASTVisitor.h>
 
+namespace cppmanip
+{
+namespace test
+{
+
 namespace
 {
 
@@ -75,4 +80,7 @@ ParsedFunction::~ParsedFunction() {
 clang::StmtRange ParsedFunction::stmts()
 {
     return range;
+}
+
+}
 }

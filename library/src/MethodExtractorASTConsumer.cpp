@@ -8,6 +8,9 @@
 #include "NaiveLocalVariableLocator.hpp"
 #include <clang/AST/ASTContext.h>
 
+namespace cppmanip
+{
+
 void MethodExtractorASTConsumer::HandleTranslationUnit(clang::ASTContext& ctx)
 {
     SourceExtractor sourceExtractor(ctx.getSourceManager());
@@ -17,4 +20,6 @@ void MethodExtractorASTConsumer::HandleTranslationUnit(clang::ASTContext& ctx)
     DelayedMethodExtractor extractor(sourceExtractor, sourceOperations, printer, localVariableLocator);
     MethodExtractorVisitor visitor(extractedMethodName, extractor, stmtLocator);
     visitor.TraverseDecl(ctx.getTranslationUnitDecl());
+}
+
 }

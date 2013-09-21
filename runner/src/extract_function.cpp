@@ -12,7 +12,7 @@ using namespace cppmanip::runner;
 const std::string REPLACEMENTS_FILE = "replacements.xml";
 const std::string ERROR_FILE = "errors.xml";
 
-void saveReplacements(SourceReplacements replacements)
+void saveReplacements(cppmanip::SourceReplacements replacements)
 {
     std::ofstream of(REPLACEMENTS_FILE);
     boost::archive::xml_oarchive oa(of);
@@ -34,17 +34,17 @@ ExtractFunctionRequest parseRequest(int argc, const char** argv)
 
 void extractFunctions(ExtractFunctionRequest req)
 {
-    SourceReplacements allReplacements;
+    cppmanip::SourceReplacements allReplacements;
     try
     {
         for (auto loc : req.locations)
         {
-            auto replacements = extractFunctionInFile(loc.extractedMethodName, loc.sourceSelection, req.sourceFilename);
+            auto replacements = cppmanip::extractFunctionInFile(loc.extractedMethodName, loc.sourceSelection, req.sourceFilename);
             boost::push_back(allReplacements, replacements);
         }
         saveReplacements(allReplacements);
     }
-    catch (const ExtractMethodError& e)
+    catch (const cppmanip::ExtractMethodError& e)
     {
         saveError(e.what());
     }

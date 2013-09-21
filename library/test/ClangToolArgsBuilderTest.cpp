@@ -1,6 +1,9 @@
 #include <ClangToolArgsBuilder.hpp>
 #include <gtest/gtest.h>
 
+namespace cppmanip
+{
+
 struct ClangToolArgsBuilderTest : testing::Test
 {
     ClangToolArgsBuilder builder;
@@ -17,4 +20,6 @@ TEST_F(ClangToolArgsBuilderTest, should_pass_source_file_name_as_the_first_argum
 {
     builder.setSourceFilename("source");
     expectArgs({ "", "source", "--" });
+}
+
 }

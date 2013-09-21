@@ -2,6 +2,9 @@
 #define CPPMANIP_D2CBE39E835843F3956DC75AC0955354_HPP
 #include <cppmanip/SourceReplacement.hpp>
 
+namespace cppmanip
+{
+
 class OffsetConverter
 {
 public:
@@ -14,4 +17,5 @@ private:
     unsigned int calcRow(unsigned int offset) const ;
 };
 
+}
 #endif // CPPMANIP_D2CBE39E835843F3956DC75AC0955354_HPP

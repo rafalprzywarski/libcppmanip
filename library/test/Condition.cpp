@@ -1,5 +1,10 @@
 #include "Condition.hpp"
 
+namespace cppmanip
+{
+namespace test
+{
+
 Condition::Condition()
     : ready(false) { }
 
@@ -17,4 +22,7 @@ void Condition::wait()
     boost::unique_lock<boost::mutex> lock(mutex);
     while (!ready)
         cond.wait(lock);
+}
+
+}
 }

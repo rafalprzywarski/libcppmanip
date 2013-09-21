@@ -4,6 +4,9 @@
 #include <vector>
 #include <cppmanip/SourceLocation.hpp>
 
+namespace cppmanip
+{
+
 struct SourceReplacement
 {
     SourceLocation from, to;
@@ -12,4 +15,5 @@ struct SourceReplacement
 
 typedef std::vector<SourceReplacement> SourceReplacements;
 
+}
 #endif // CPPMANIP_87BF0ADA8D254F05ADB329BD628E8995_HPP

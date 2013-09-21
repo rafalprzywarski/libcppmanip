@@ -8,6 +8,9 @@
 #include <unordered_set>
 #include <boost/algorithm/string/join.hpp>
 
+namespace cppmanip
+{
+
 DelayedMethodExtractor::DelayedMethodExtractor(
     SourceExtractor& sourceExtractor, TextOperationApplier& sourceOperations, FunctionPrinter& functionPrinter,
     LocalVariableLocator& localVariableLocator)
@@ -69,5 +72,7 @@ void DelayedMethodExtractor::failIfVariablesAreDeclaredByAndUsedAfterStmts(
     if (!usedVars.empty())
         throw ExtractMethodError("Cannot extract \'" + extractedFunctionName +
             "\'. Following variables are in use after the selected statements: " + boost::algorithm::join(getNames(usedVars), ", "));
+
+}
 
 }
