@@ -1,4 +1,4 @@
-#include "CommandLineParser.hpp"
+#include <cppmanip/runner/CommandLineParser.hpp>
 #include <CppManip.hpp>
 #include <ExtractMethodError.hpp>
 #include <stdexcept>
@@ -6,7 +6,9 @@
 #include <boost/range/algorithm_ext/push_back.hpp>
 #include <boost/archive/xml_oarchive.hpp>
 #include <fstream>
-#include <SourceReplacementSerialization.hpp>
+#include <cppmanip/SourceReplacementSerialization.hpp>
+
+using namespace cppmanip::runner;
 
 const std::string REPLACEMENTS_FILE = "replacements.xml";
 const std::string ERROR_FILE = "errors.xml";

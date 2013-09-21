@@ -4,6 +4,11 @@
 #include <string>
 #include <vector>
 
+namespace cppmanip
+{
+namespace runner
+{
+
 struct ExtractFunctionRequest
 {
     struct Location
@@ -22,5 +27,8 @@ public:
 private:
     static unsigned to_u(const char *s);
 };
+
+}
+}
 
 #endif // COMMANDLINEPARSER_HPP

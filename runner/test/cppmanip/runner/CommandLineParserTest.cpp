@@ -1,5 +1,10 @@
 #include <gtest/gtest.h>
-#include "../src/CommandLineParser.hpp"
+#include <cppmanip/runner/CommandLineParser.hpp>
+
+namespace cppmanip
+{
+namespace runner
+{
 
 struct CommandLineParserTest : testing::Test
 {
@@ -30,3 +35,5 @@ TEST_F(CommandLineParserTest, should_parse_all_subsequent_request)
     ASSERT_EQ(21, req.locations[1].sourceSelection.from.row);
 }
 
+}
+}

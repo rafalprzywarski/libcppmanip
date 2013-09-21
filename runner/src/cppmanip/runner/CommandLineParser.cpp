@@ -2,6 +2,11 @@
 #include <sstream>
 #include <boost/lexical_cast.hpp>
 
+namespace cppmanip
+{
+namespace runner
+{
+
 ExtractFunctionRequest CommandLineParser::parseExtractFunction(int argc, const char** argv) 
 {
     ExtractFunctionRequest req;
@@ -22,4 +27,7 @@ ExtractFunctionRequest CommandLineParser::parseExtractFunction(int argc, const c
 unsigned int CommandLineParser::to_u(const char* s) 
 {
     return boost::lexical_cast<unsigned>(s);
+}
+
+}
 }

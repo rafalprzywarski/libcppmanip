@@ -13,12 +13,12 @@ link_directories("${PROJECT_SOURCE_DIR}/../gmock-1.6.0/build/gtest")
 link_directories("${PROJECT_SOURCE_DIR}/../gmock-1.6.0/build")
 
 add_library(cppmaniprunnercore STATIC
-    src/CommandLineParser.cpp
+    src/cppmanip/runner/CommandLineParser.cpp
 )
 
 add_executable(cppmaniprunnertest
     test/main.cpp
-    test/CommandLineParserTest.cpp
+    test/cppmanip/runner/CommandLineParserTest.cpp
 )
 
 target_link_libraries(cppmaniprunnertest cppmaniprunnercore gtest gmock pthread)
