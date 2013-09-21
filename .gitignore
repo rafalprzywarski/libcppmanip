@@ -5,4 +5,5 @@
 *~
 .*
 !.gitignore
+!.rspec
 ci_test_results

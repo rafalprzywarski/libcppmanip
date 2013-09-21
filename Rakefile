@@ -30,12 +30,15 @@ task :libcppmanip_runner => :install_libcppmanip do
   sh "#{RUNNER_BUILD_DIRECTORY}/cppmaniprunnertest"
 end
 
+task :steps_tests do
+  sh 'rspec features'
+end
 
-task :acceptance_tests => :libcppmanip_runner do
+task :acceptance_tests => [ :libcppmanip_runner, :steps_tests ] do
   sh 'cucumber -p acceptance_tests'
 end
 
-task :wip => :libcppmanip_runner do
+task :wip => [ :libcppmanip_runner, :steps_tests ] do
   sh 'cucumber -p wip'
 end
 
