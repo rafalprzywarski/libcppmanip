@@ -24,20 +24,10 @@ TEST_F(OffsetRangeTest, should_be_degenerate_by_default)
     ASSERT_TRUE(OffsetRange().degenerate());
 }
 
-TEST_F(OffsetRangeTest, should_have_zero_length_by_default)
-{
-    ASSERT_EQ(0, OffsetRange().length());
-}
-
 TEST_F(OffsetRangeTest, should_detect_degenerate_ranges)
 {
     ASSERT_TRUE(OffsetRange(2, 2).degenerate());
     ASSERT_FALSE(OffsetRange(3, 5).degenerate());
-}
-
-TEST_F(OffsetRangeTest, should_compute_its_length)
-{
-    ASSERT_EQ(5u, OffsetRange(2, 7).length());
 }
 
 TEST_F(OffsetRangeTest, should_fail_when_trying_to_construct_an_invalid_range)

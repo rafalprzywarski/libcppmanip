@@ -23,7 +23,7 @@ void TextOperationApplier::removeTextInRange(unsigned int from, unsigned int to)
     verifyNoOverlappingRangesExist(range);
     if (range.degenerate())
         return;
-    replacements[from].setRemovalLength(range.length());
+    replacements[from].setRemovalEnd(to);
 }
 void TextOperationApplier::verifyNoOverlappingRangesExist(const OffsetRange& r)
 {
@@ -33,20 +33,24 @@ void TextOperationApplier::verifyNoOverlappingRangesExist(const OffsetRange& r)
 }
 void TextOperationApplier::Replacement::applyAtOffset(unsigned int offset, TextReplacementListener& listner) const
 {
-    listner.replaceWithTextInRange(insertionText, offset, offset + removalLength);
+    listner.replaceWithTextInRange(insertionText, offset, getRemovalEnd(offset));
 }
 
 void TextOperationApplier::Replacement::appendInsertionText(const std::string& s)
 {
     insertionText += s;
 }
-void TextOperationApplier::Replacement::setRemovalLength(unsigned int len)
+void TextOperationApplier::Replacement::setRemovalEnd(unsigned int end)
 {
-    removalLength = len;
+    removalEnd = end;
 }
 bool TextOperationApplier::Replacement::overlapsWithRangeAtOffset(const OffsetRange& r, unsigned int offset) const
 {
-    return OffsetRange(offset, offset + removalLength).overlapsWith(r);
+    return OffsetRange(offset, getRemovalEnd(offset)).overlapsWith(r);
+}
+unsigned int TextOperationApplier::Replacement::getRemovalEnd(unsigned int offset) const
+{
+    return removalEnd.get_value_or(offset);
 }
 
 }

@@ -19,7 +19,6 @@ public:
             throw std::invalid_argument("invalid range");
     }
     bool degenerate() const { return from == to; }
-    unsigned length() const { return to - from; }
     bool overlapsWith(const OffsetRange& right) const
     {
         if (right.from < from)

@@ -2,6 +2,7 @@
 #define CPPMANIP_01077C995F92441DB2604431793CC665_HPP
 #include <string>
 #include <map>
+#include <boost/optional.hpp>
 #include "TextReplacementListener.hpp"
 
 namespace cppmanip
@@ -19,14 +20,14 @@ private:
     class Replacement
     {
     public:
-        Replacement() : removalLength(0) { }
         void appendInsertionText(const std::string& s);
-        void setRemovalLength(unsigned len);
+        void setRemovalEnd(unsigned end);
         bool overlapsWithRangeAtOffset(const OffsetRange& r, unsigned offset) const;
         void applyAtOffset(unsigned offset, TextReplacementListener& listner) const;
     private:
-        unsigned removalLength;
+        boost::optional<unsigned> removalEnd;
         std::string insertionText;
+        unsigned getRemovalEnd(unsigned offset) const;
     };
     std::map<unsigned, Replacement, std::greater<unsigned> > replacements;
 
