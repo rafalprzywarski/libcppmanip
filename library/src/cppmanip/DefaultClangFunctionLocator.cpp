@@ -1,4 +1,5 @@
 #include "DefaultClangFunctionLocator.hpp"
+#include <cppmanip/ExtractMethodError.hpp>
 #include <clang/AST/RecursiveASTVisitor.h>
 #include <clang/AST/ASTContext.h>
 
@@ -40,7 +41,7 @@ clang::FunctionDecl& DefaultClangFunctionLocator::getFunctionContainingSelection
     Visitor v(selection);
     v.TraverseDecl(context.getTranslationUnitDecl());
     if (!v.getFoundDecl())
-        throw std::runtime_error("You suck!");
+        throw ExtractMethodError("Selection not found");
     return *v.getFoundDecl();
 }
 
