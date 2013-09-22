@@ -10,7 +10,7 @@ namespace cppmanip
 class TranslationUnitFunctionExtractorFactory
 {
 public:
-    std::shared_ptr<TranslationUnitHandler> createFunctionExtractor(
+    TranslationUnitHandlerPtr createFunctionExtractor(
         const std::string& extractedMethodName, OffsetRange selection, OffsetBasedTextModifier& sourceOperations);
 };
 

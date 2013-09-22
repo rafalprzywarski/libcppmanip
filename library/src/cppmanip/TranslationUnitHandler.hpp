@@ -12,5 +12,7 @@ public:
     virtual void handleTranslationUnit(clang::ASTContext& ctx) = 0;
 };
 
+typedef std::shared_ptr<TranslationUnitHandler> TranslationUnitHandlerPtr;
+
 }
 #endif // CPPMANIP_669DE9B8657142C39CC3D13F4EB849E8_HPP

@@ -21,12 +21,8 @@ add_library(cppmanip SHARED
     src/cppmanip/io/TextFileOps.cpp
     src/cppmanip/ClangToolArgsBuilder.cpp
     src/cppmanip/CppManip.cpp
-    src/cppmanip/MethodExtractorASTConsumer.cpp
-    src/cppmanip/MethodExtractorFrontendAction.cpp
-    src/cppmanip/MethodExtractorFrontendActionFactory.cpp
     src/cppmanip/PrettyFunctionPrinter.cpp
     src/cppmanip/NaiveStatementLocator.cpp
-    src/cppmanip/MethodExtractorVisitor.cpp
     src/cppmanip/DelayedMethodExtractor.cpp
     src/cppmanip/NaiveLocalVariableLocator.cpp
     src/cppmanip/TextReplacementRecorder.cpp
@@ -35,9 +31,9 @@ add_library(cppmanip SHARED
     src/cppmanip/ClangFunctionExtractor.cpp
     src/cppmanip/ClangFunctionExtractorFactory.cpp
     src/cppmanip/DefaultClangFunctionLocator.cpp
-    src/cppmanip/DefaultClangFunctionLocatorFactory.cpp
     src/cppmanip/TranslationUnitFunctionExtractor.cpp
     src/cppmanip/TranslationUnitFunctionExtractorFactory.cpp
+    src/cppmanip/runTranslationUnitHandlerOnFile.cpp
 )
 
 target_link_libraries(cppmanip LINK_PRIVATE

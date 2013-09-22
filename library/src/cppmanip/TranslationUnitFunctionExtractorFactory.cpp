@@ -9,7 +9,7 @@
 namespace cppmanip
 {
 
-std::shared_ptr<TranslationUnitHandler> TranslationUnitFunctionExtractorFactory::createFunctionExtractor(
+TranslationUnitHandlerPtr TranslationUnitFunctionExtractorFactory::createFunctionExtractor(
     const std::string& extractedMethodName, OffsetRange selection, OffsetBasedTextModifier& sourceOperations)
 {
     struct WithDeps
