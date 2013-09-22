@@ -1,5 +1,4 @@
 #include "TextOperationApplier.hpp"
-#include "OffsetRange.hpp"
 #include <stdexcept>
 
 namespace cppmanip

@@ -4,11 +4,10 @@
 #include <map>
 #include <boost/optional.hpp>
 #include "TextReplacementListener.hpp"
+#include "PositionRange.hpp"
 
 namespace cppmanip
 {
-
-class OffsetRange;
 
 class TextOperationApplier
 {
@@ -18,6 +17,7 @@ public:
     void insertTextAt(const std::string& text, Position pos);
     void removeTextInRange(Position from, Position to);
 private:
+    typedef PositionRange<Position> OffsetRange;
     class Replacement
     {
     public:
