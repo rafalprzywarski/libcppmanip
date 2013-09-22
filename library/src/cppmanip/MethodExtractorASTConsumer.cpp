@@ -18,7 +18,7 @@ void MethodExtractorASTConsumer::HandleTranslationUnit(clang::ASTContext& ctx)
 
     SourceExtractor sourceExtractor(ctx.getSourceManager());
     PrettyFunctionPrinter printer;
-    NaiveStatementLocator stmtLocator(sourceExtractor, selection);
+    NaiveStatementLocator stmtLocator(selection);
     NaiveLocalVariableLocator localVariableLocator;
     DelayedMethodExtractor extractor(sourceExtractor, sourceOperations, printer, localVariableLocator);
     auto locator = functionLocatorFactory.createFunctionLocator(selection);
