@@ -49,18 +49,6 @@ Then /^it should fail with a message "(.*?)"$/ do |expectedMessage|
   @error.should eq(expectedMessage), "cppmanip should have failed with message: #{expectedMessage}"
 end
 
-Given /^libcppmanip repository$/ do
-    #we are in it
-end
-
-When /^I install it$/ do
-  pending # express the regexp above with the code you wish you had
-end
-
-Then /^another project using it should compile and link$/ do
-  pending # express the regexp above with the code you wish you had
-end
-
 Then /^there should be (\d+) changes$/ do |changeCount|
   @replacements.count.should eq(changeCount)
 end
