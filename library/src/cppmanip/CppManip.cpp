@@ -1,7 +1,7 @@
 #include "CppManip.hpp"
 #include <clang/Tooling/CommonOptionsParser.h>
 #include <clang/Tooling/Tooling.h>
-#include "TextFileOps.hpp"
+#include "io/TextFileOps.hpp"
 #include "ClangToolArgsBuilder.hpp"
 #include "MethodExtractorFrontendActionFactory.hpp"
 #include "TextOperationApplier.hpp"
@@ -43,7 +43,7 @@ SourceReplacements recordReplacements(const TextOperationApplier& sourceOperatio
 
 SourceReplacements extractFunctionInFile(const std::string& functionName, SourceSelection selection, const std::string& filename)
 {
-    std::string source = loadTextFromFile(filename);
+    std::string source = io::loadTextFromFile(filename);
     TextOperationApplier sourceOperations;
     MethodExtractorFrontendActionFactory factory(functionName, getSourceRange(selection, source), sourceOperations);
     performFrontendActionForFile(factory, filename);
