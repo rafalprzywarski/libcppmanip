@@ -5,7 +5,7 @@
 namespace cppmanip
 {
 
-void TextOperationApplier::apply(TextReplacementListener& replacer)
+void TextOperationApplier::apply(cppmanip::TextReplacementListener& replacer) const
 {
     for (auto const& it : replacements)
         it.second.applyAtOffset(it.first, replacer);

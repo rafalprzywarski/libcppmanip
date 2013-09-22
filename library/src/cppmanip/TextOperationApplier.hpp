@@ -12,7 +12,7 @@ class OffsetRange;
 class TextOperationApplier
 {
 public:
-    void apply(TextReplacementListener& replacer);
+    void apply(TextReplacementListener& replacer) const;
     void insertTextAt(const std::string& text, unsigned offset);
     void removeTextInRange(unsigned from, unsigned to);
 private:

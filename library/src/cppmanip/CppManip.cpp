@@ -24,20 +24,30 @@ void performFrontendActionForFile(clang::tooling::FrontendActionFactory& actionF
     tool.run(&actionFactory);
 }
 
-SourceReplacements extractFunctionInFile(const std::string& functionName, SourceSelection selection, const std::string& filename)
+SourceRange getSourceRange(SourceSelection selection, const std::string& source)
 {
-    TextOperationApplier sourceOperations;
-    std::string source = loadTextFromFile(filename);
     SourceLocationConverter sourceLocationConverter(source);
     SourceRange range;
     range.from = sourceLocationConverter.getOffsetFromLocation(selection.from);
     range.to = sourceLocationConverter.getOffsetFromLocation(selection.to);
-    MethodExtractorFrontendActionFactory factory(functionName, range, sourceOperations);
-    performFrontendActionForFile(factory, filename);
+    return range;
+}
+
+SourceReplacements recordReplacements(const TextOperationApplier& sourceOperations, const std::string& source)
+{
     OffsetConverter offsetCoverter(source);
     TextReplacementRecorder recorder(std::bind(&OffsetConverter::getLocationFromOffset, &offsetCoverter, std::placeholders::_1));
     sourceOperations.apply(recorder);
     return recorder.getReplacements();
+}
+
+SourceReplacements extractFunctionInFile(const std::string& functionName, SourceSelection selection, const std::string& filename)
+{
+    std::string source = loadTextFromFile(filename);
+    TextOperationApplier sourceOperations;
+    MethodExtractorFrontendActionFactory factory(functionName, getSourceRange(selection, source), sourceOperations);
+    performFrontendActionForFile(factory, filename);
+    return recordReplacements(sourceOperations, source);
 }
 
 }
