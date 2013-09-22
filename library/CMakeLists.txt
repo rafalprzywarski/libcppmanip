@@ -29,7 +29,6 @@ add_library(cppmanip SHARED
     src/cppmanip/MethodExtractorVisitor.cpp
     src/cppmanip/DelayedMethodExtractor.cpp
     src/cppmanip/NaiveLocalVariableLocator.cpp
-    src/cppmanip/TextReplacer.cpp
     src/cppmanip/TextReplacementRecorder.cpp
     src/cppmanip/OffsetConverter.cpp
     src/cppmanip/SourceLocationConverter.cpp

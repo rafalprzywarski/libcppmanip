@@ -5,11 +5,15 @@
 namespace cppmanip
 {
 
-class TextReplacer : public TextReplacementListener<unsigned>
+template <typename Position>
+class TextReplacer : public TextReplacementListener<Position>
 {
 public:
     explicit TextReplacer(const std::string& text) : text(text) { }
-    void replaceWithTextInRange(const std::string& replacement, unsigned from, unsigned to);
+    void replaceWithTextInRange(const std::string& replacement, Position from, Position to)
+    {
+        text = text.substr(0, from) + replacement + text.substr(to);
+    }
     std::string getText() const { return text; }
 private:
     std::string text;

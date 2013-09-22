@@ -18,7 +18,7 @@ struct TextOperationApplierTest : testing::Test
     
     void expectTextFrom(const std::string& expected, const std::string& original)
     {
-        TextReplacer replacer(original);
+        TextReplacer<unsigned> replacer(original);
         applier.apply(replacer);
         ASSERT_EQ(expected, replacer.getText());
     }
