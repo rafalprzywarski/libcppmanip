@@ -7,8 +7,8 @@ void TextReplacementRecorder::replaceWithTextInRange(const std::string& replacem
 {
     SourceReplacement r;
     r.text = replacement;
-    r.from = getOffsetFromSourceLocation(from);
-    r.to = getOffsetFromSourceLocation(to);
+    r.from = getSourceLocationFromOffset(from);
+    r.to = getSourceLocationFromOffset(to);
     replacements.push_back(r);
 }
 

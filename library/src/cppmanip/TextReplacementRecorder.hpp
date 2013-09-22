@@ -11,12 +11,12 @@ class TextReplacementRecorder : public TextReplacementListener
 {
 public:
     typedef std::function<SourceLocation(unsigned)> OffsetToSourceLocation;
-    TextReplacementRecorder(OffsetToSourceLocation getOffsetFromSourceLocation)
-        : getOffsetFromSourceLocation(getOffsetFromSourceLocation) { }
+    TextReplacementRecorder(OffsetToSourceLocation getSourceLocationFromOffset)
+        : getSourceLocationFromOffset(getSourceLocationFromOffset) { }
     virtual void replaceWithTextInRange(const std::string& replacement, unsigned int from, unsigned int to);
     SourceReplacements getReplacements() const;
 private:
-    OffsetToSourceLocation getOffsetFromSourceLocation;
+    OffsetToSourceLocation getSourceLocationFromOffset;
     SourceReplacements replacements;
 };
 
