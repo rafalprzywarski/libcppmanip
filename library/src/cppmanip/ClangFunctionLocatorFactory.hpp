@@ -9,7 +9,7 @@ class ClangFunctionLocatorFactory
 {
 public:
     virtual ~ClangFunctionLocatorFactory() { }
-    virtual std::shared_ptr<ClangFunctionLocator> createFunctionLocator(clang::ASTContext& context) = 0;
+    virtual std::shared_ptr<ClangFunctionLocator> createFunctionLocator(OffsetRange selection) = 0;
 };
 
 }

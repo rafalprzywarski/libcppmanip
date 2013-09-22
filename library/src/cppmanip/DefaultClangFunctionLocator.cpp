@@ -36,7 +36,7 @@ private:
 
 }
 
-clang::FunctionDecl& DefaultClangFunctionLocator::getFunctionContainingSelection(OffsetRange selection)
+clang::FunctionDecl& DefaultClangFunctionLocator::getFunction(clang::ASTContext& context)
 {
     Visitor v(selection);
     v.TraverseDecl(context.getTranslationUnitDecl());

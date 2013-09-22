@@ -8,10 +8,10 @@ namespace cppmanip
 class DefaultClangFunctionLocator : public ClangFunctionLocator
 {
 public:
-    DefaultClangFunctionLocator(clang::ASTContext& context) : context(context) { }
-    virtual clang::FunctionDecl& getFunctionContainingSelection(OffsetRange selection);
+    DefaultClangFunctionLocator(OffsetRange selection) : selection(selection) { }
+    virtual clang::FunctionDecl& getFunction(clang::ASTContext& context);
 private:
-    clang::ASTContext& context;
+    OffsetRange selection;
 };
 
 }

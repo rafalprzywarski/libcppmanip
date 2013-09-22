@@ -11,20 +11,20 @@ namespace cppmanip
 struct DefaultClangFunctionLocatorTest : testing::Test
 {
     std::unique_ptr<test::ParsedFunction> func;
-    std::unique_ptr<DefaultClangFunctionLocator> locator;
     void parse(const std::string& source)
     {
         func.reset(new test::ParsedFunction(source));
-        locator.reset(new DefaultClangFunctionLocator(func->getASTContext()));
     }
     void assertFunctionContainsSelection(const std::string& name, unsigned from, unsigned to)
     {
-        ASSERT_EQ(name, locator->getFunctionContainingSelection(OffsetRange(from, to)).getNameAsString())
+        DefaultClangFunctionLocator locator(OffsetRange(from, to));
+        ASSERT_EQ(name, locator.getFunction(func->getASTContext()).getNameAsString())
             << "[" << from << ", " << to << ")";
     }
     void assertFailsForSelection(unsigned from, unsigned to)
     {
-        ASSERT_THROW(locator->getFunctionContainingSelection(OffsetRange(from, to)), ExtractMethodError)
+        DefaultClangFunctionLocator locator(OffsetRange(from, to));
+        ASSERT_THROW(locator.getFunction(func->getASTContext()), ExtractMethodError)
             << "[" << from << ", " << to << ")";
     }
 };

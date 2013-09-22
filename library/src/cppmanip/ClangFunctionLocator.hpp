@@ -9,7 +9,7 @@ class ClangFunctionLocator
 {
 public:
     virtual ~ClangFunctionLocator() { }
-    virtual clang::FunctionDecl& getFunctionContainingSelection(OffsetRange selection) = 0;
+    virtual clang::FunctionDecl& getFunction(clang::ASTContext& context) = 0;
 };
 
 }

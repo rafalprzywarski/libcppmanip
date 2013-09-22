@@ -21,8 +21,8 @@ void MethodExtractorASTConsumer::HandleTranslationUnit(clang::ASTContext& ctx)
     NaiveStatementLocator stmtLocator(sourceExtractor, selection);
     NaiveLocalVariableLocator localVariableLocator;
     DelayedMethodExtractor extractor(sourceExtractor, sourceOperations, printer, localVariableLocator);
-    auto locator = functionLocatorFactory.createFunctionLocator(ctx);
-    auto& f = locator->getFunctionContainingSelection(selection);
+    auto locator = functionLocatorFactory.createFunctionLocator(selection);
+    auto& f = locator->getFunction(ctx);
     auto stmts = stmtLocator.findStatementsInFunction(f);
     extractor.extractStatmentsFromFunctionIntoNewFunction(stmts, f, extractedMethodName);
 }

@@ -8,7 +8,7 @@ namespace cppmanip
 class DefaultClangFunctionLocatorFactory : public ClangFunctionLocatorFactory
 {
 public:
-    virtual std::shared_ptr<ClangFunctionLocator> createFunctionLocator(clang::ASTContext& context);
+    virtual std::shared_ptr<ClangFunctionLocator> createFunctionLocator(OffsetRange selection);
 };
 
 }

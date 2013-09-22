@@ -4,9 +4,9 @@
 namespace cppmanip
 {
 
-std::shared_ptr<ClangFunctionLocator> DefaultClangFunctionLocatorFactory::createFunctionLocator(clang::ASTContext& context)
+std::shared_ptr<ClangFunctionLocator> DefaultClangFunctionLocatorFactory::createFunctionLocator(OffsetRange selection)
 {
-    return std::make_shared<DefaultClangFunctionLocator>(context);
+    return std::make_shared<DefaultClangFunctionLocator>(selection);
 }
 
 }
