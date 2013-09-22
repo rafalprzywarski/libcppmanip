@@ -138,7 +138,7 @@ Feature: As a developer I want to extract code into methods to make my code more
         """
         When I run function extraction from "int j = 9" to "j += 5" with name "good"
         Then there should be a replacement with "good();"
-    @wip
+    @done
     Scenario: Method extraction should not add empty line at the end of method body when extracting a variable declaration. Newline should be added after extracted method call.
         Given source code:
         """
