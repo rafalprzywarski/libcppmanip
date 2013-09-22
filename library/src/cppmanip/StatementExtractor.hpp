@@ -6,12 +6,12 @@
 namespace cppmanip
 {
 
-class MethodExtractor
+class StatementExtractor
 {
 public:
-    virtual ~MethodExtractor() { }
-    virtual void extractStatmentsFromFunctionIntoNewFunction(
-        clang::StmtRange stmts, const clang::FunctionDecl& originalFunction, const std::string& extractedFunctionName) = 0;
+    virtual ~StatementExtractor() { }
+    virtual void extractStatmentsFromFunction(
+        clang::StmtRange stmts, const clang::FunctionDecl& originalFunction) = 0;
 };
 
 }

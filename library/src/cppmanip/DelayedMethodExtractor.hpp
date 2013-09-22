@@ -1,22 +1,21 @@
 #ifndef CPPMANIP_799523E01B0442A6ABBA2BFB7EF4F97A_HPP
 #define CPPMANIP_799523E01B0442A6ABBA2BFB7EF4F97A_HPP
-#include "MethodExtractor.hpp"
 #include "FunctionPrinter.hpp"
 #include "LocalVariableLocator.hpp"
 #include "TextModifier.hpp"
 #include "SourceExtractor.hpp"
+#include "StatementExtractor.hpp"
 
 namespace cppmanip
 {
 
-class DelayedMethodExtractor : public MethodExtractor
+class DelayedMethodExtractor : public StatementExtractor
 {
 public:
     DelayedMethodExtractor(
-        OffsetBasedTextModifier& sourceOperations, FunctionPrinter& functionPrinter, LocalVariableLocator& localVariableLocator);
+        OffsetBasedTextModifier& sourceOperations, FunctionPrinter& functionPrinter, LocalVariableLocator& localVariableLocator, const std::string& extractedFunctionName);
 
-    void extractStatmentsFromFunctionIntoNewFunction(
-        clang::StmtRange stmts, const clang::FunctionDecl& originalFunction, const std::string& extractedFunctionName);
+    void extractStatmentsFromFunction(clang::StmtRange stmts, const clang::FunctionDecl& originalFunction);
 
 private:
 
@@ -25,6 +24,7 @@ private:
     OffsetBasedTextModifier& sourceOperations;
     FunctionPrinter& functionPrinter;
     LocalVariableLocator& localVariableLocator;
+    std::string extractedFunctionName;
 
     void printExtractedFunction(clang::SourceLocation at, const std::string& name, const Variables& variables, clang::SourceRange stmtsRange, SourceExtractor& sourceExtractor);
     void replaceStatementsWithFunctionCall(clang::SourceRange stmtsRange, const std::string& functionName, const Variables& variables, SourceExtractor& sourceExtractor);

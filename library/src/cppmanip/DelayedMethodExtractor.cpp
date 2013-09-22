@@ -12,11 +12,10 @@ namespace cppmanip
 {
 
 DelayedMethodExtractor::DelayedMethodExtractor(OffsetBasedTextModifier& sourceOperations, FunctionPrinter& functionPrinter,
-    LocalVariableLocator& localVariableLocator)
-    : sourceOperations(sourceOperations), functionPrinter(functionPrinter), localVariableLocator(localVariableLocator) { }
+    LocalVariableLocator& localVariableLocator, const std::string& extractedFunctionName)
+    : sourceOperations(sourceOperations), functionPrinter(functionPrinter), localVariableLocator(localVariableLocator), extractedFunctionName(extractedFunctionName) { }
 
-void DelayedMethodExtractor::extractStatmentsFromFunctionIntoNewFunction(
-    clang::StmtRange stmts, const clang::FunctionDecl& originalFunction, const std::string& extractedFunctionName)
+void DelayedMethodExtractor::extractStatmentsFromFunction(clang::StmtRange stmts, const clang::FunctionDecl& originalFunction)
 {
     SourceExtractor sourceExtractor(originalFunction.getASTContext().getSourceManager());
     auto stmtsRange = sourceExtractor.getCorrectSourceRange(stmts);

@@ -1,12 +1,14 @@
 #include "MethodExtractorASTConsumer.hpp"
 #include "SourceExtractor.hpp"
-#include "MethodExtractor.hpp"
 #include "PrettyFunctionPrinter.hpp"
 #include "NaiveStatementLocator.hpp"
 #include "DelayedMethodExtractor.hpp"
 #include "MethodExtractorVisitor.hpp"
 #include "NaiveLocalVariableLocator.hpp"
 #include "DefaultClangFunctionLocatorFactory.hpp"
+#include "DefaultClangFunctionLocator.hpp"
+#include "makeWithDependencies.hpp"
+#include "TranslationUnitFunctionExtractorFactory.hpp"
 #include <clang/AST/ASTContext.h>
 
 namespace cppmanip
@@ -14,16 +16,8 @@ namespace cppmanip
 
 void MethodExtractorASTConsumer::HandleTranslationUnit(clang::ASTContext& ctx)
 {
-    DefaultClangFunctionLocatorFactory functionLocatorFactory;
-
-    PrettyFunctionPrinter printer;
-    NaiveStatementLocator stmtLocator(selection);
-    NaiveLocalVariableLocator localVariableLocator;
-    DelayedMethodExtractor extractor(sourceOperations, printer, localVariableLocator);
-    auto locator = functionLocatorFactory.createFunctionLocator(selection);
-    auto& f = locator->getFunction(ctx);
-    auto stmts = stmtLocator.findStatementsInFunction(f);
-    extractor.extractStatmentsFromFunctionIntoNewFunction(stmts, f, extractedMethodName);
+    auto functionExtractor = TranslationUnitFunctionExtractorFactory().createFunctionExtractor(extractedMethodName, selection, sourceOperations);
+    functionExtractor->handleTranslationUnit(ctx);
 }
 
 }

@@ -36,6 +36,8 @@ add_library(cppmanip SHARED
     src/cppmanip/ClangFunctionExtractorFactory.cpp
     src/cppmanip/DefaultClangFunctionLocator.cpp
     src/cppmanip/DefaultClangFunctionLocatorFactory.cpp
+    src/cppmanip/TranslationUnitFunctionExtractor.cpp
+    src/cppmanip/TranslationUnitFunctionExtractorFactory.cpp
 )
 
 target_link_libraries(cppmanip LINK_PRIVATE
