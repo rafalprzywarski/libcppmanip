@@ -32,6 +32,8 @@ add_library(cppmanip SHARED
     src/cppmanip/TextReplacementRecorder.cpp
     src/cppmanip/OffsetConverter.cpp
     src/cppmanip/SourceLocationConverter.cpp
+    src/cppmanip/ClangFunctionExtractor.cpp
+    src/cppmanip/ClangFunctionExtractorFactory.cpp
 )
 
 target_link_libraries(cppmanip LINK_PRIVATE
