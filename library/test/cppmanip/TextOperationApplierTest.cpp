@@ -8,7 +8,7 @@ namespace cppmanip
 
 struct TextOperationApplierTest : testing::Test
 {
-    TextOperationApplier applier;
+    TextOperationApplier<unsigned> applier;
     
     void shouldFailTryingToRemove(unsigned from, unsigned to)
     {

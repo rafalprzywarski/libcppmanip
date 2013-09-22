@@ -33,7 +33,7 @@ SourceRange getSourceRange(SourceSelection selection, const std::string& source)
     return range;
 }
 
-SourceReplacements recordReplacements(const TextOperationApplier& sourceOperations, const std::string& source)
+SourceReplacements recordReplacements(const OffsetBasedTextOperationApplier& sourceOperations, const std::string& source)
 {
     OffsetConverter offsetCoverter(source);
     TextReplacementRecorder recorder(std::bind(&OffsetConverter::getLocationFromOffset, &offsetCoverter, std::placeholders::_1));
@@ -44,7 +44,7 @@ SourceReplacements recordReplacements(const TextOperationApplier& sourceOperatio
 SourceReplacements extractFunctionInFile(const std::string& functionName, SourceSelection selection, const std::string& filename)
 {
     std::string source = io::loadTextFromFile(filename);
-    TextOperationApplier sourceOperations;
+    OffsetBasedTextOperationApplier sourceOperations;
     MethodExtractorFrontendActionFactory factory(functionName, getSourceRange(selection, source), sourceOperations);
     performFrontendActionForFile(factory, filename);
     return recordReplacements(sourceOperations, source);

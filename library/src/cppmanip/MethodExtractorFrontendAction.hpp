@@ -2,23 +2,22 @@
 #define CPPMANIP_F700977BB33C4599BFB514B446B105AF_HPP
 #include <clang/Frontend/FrontendAction.h>
 #include "OffsetRange.hpp"
+#include "TextModifier.hpp"
 
 namespace cppmanip
 {
-
-class TextOperationApplier;
 
 class MethodExtractorFrontendAction : public clang::ASTFrontendAction
 {
 public:
     MethodExtractorFrontendAction(
-        const std::string& extractedMethodName, OffsetRange selection, TextOperationApplier& sourceOperations)
+        const std::string& extractedMethodName, OffsetRange selection, OffsetBasedTextModifier& sourceOperations)
         : extractedMethodName(extractedMethodName), selection(selection), sourceOperations(sourceOperations) { }
     virtual clang::ASTConsumer* CreateASTConsumer(clang::CompilerInstance&, clang::StringRef);
 private:
     std::string extractedMethodName;
     OffsetRange selection;
-    TextOperationApplier& sourceOperations;
+    OffsetBasedTextModifier& sourceOperations;
 };
 
 }

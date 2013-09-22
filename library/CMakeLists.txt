@@ -19,7 +19,6 @@ link_directories("${PROJECT_SOURCE_DIR}/../gmock-1.6.0/build")
 add_library(cppmanip SHARED
     src/cppmanip/SourceExtractor.cpp
     src/cppmanip/io/TextFileOps.cpp
-    src/cppmanip/TextOperationApplier.cpp
     src/cppmanip/ClangToolArgsBuilder.cpp
     src/cppmanip/CppManip.cpp
     src/cppmanip/MethodExtractorASTConsumer.cpp

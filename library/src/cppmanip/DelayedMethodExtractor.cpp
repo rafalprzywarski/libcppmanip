@@ -1,6 +1,5 @@
 #include "DelayedMethodExtractor.hpp"
 #include "SourceExtractor.hpp"
-#include "TextOperationApplier.hpp"
 #include "FunctionPrinter.hpp"
 #include <cppmanip/ExtractMethodError.hpp>
 #include <clang/AST/Expr.h>
@@ -12,7 +11,7 @@ namespace cppmanip
 {
 
 DelayedMethodExtractor::DelayedMethodExtractor(
-    SourceExtractor& sourceExtractor, TextOperationApplier& sourceOperations, FunctionPrinter& functionPrinter,
+    SourceExtractor& sourceExtractor, OffsetBasedTextModifier& sourceOperations, FunctionPrinter& functionPrinter,
     LocalVariableLocator& localVariableLocator)
     : sourceExtractor(sourceExtractor), sourceOperations(sourceOperations), functionPrinter(functionPrinter),
     localVariableLocator(localVariableLocator) { }

@@ -3,17 +3,16 @@
 #include <clang/Tooling/Tooling.h>
 #include "SourceRange.hpp"
 #include "OffsetRange.hpp"
+#include "TextModifier.hpp"
 
 namespace cppmanip
 {
-
-class TextOperationApplier;
 
 class MethodExtractorFrontendActionFactory : public clang::tooling::FrontendActionFactory
 {
 public:
     MethodExtractorFrontendActionFactory(
-        const std::string& extractedMethodName, SourceRange selection, TextOperationApplier& sourceOperations)
+        const std::string& extractedMethodName, SourceRange selection, OffsetBasedTextModifier& sourceOperations)
         : extractedMethodName(extractedMethodName), selection(selection.from, selection.to),
         sourceOperations(sourceOperations) { }
 
@@ -22,7 +21,7 @@ public:
 private:
     std::string extractedMethodName;
     OffsetRange selection;
-    TextOperationApplier& sourceOperations;
+    OffsetBasedTextModifier& sourceOperations;
 };
 
 }

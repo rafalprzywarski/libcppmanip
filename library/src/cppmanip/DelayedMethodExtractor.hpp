@@ -3,17 +3,17 @@
 #include "MethodExtractor.hpp"
 #include "FunctionPrinter.hpp"
 #include "LocalVariableLocator.hpp"
+#include "TextModifier.hpp"
 
 namespace cppmanip
 {
 
-class TextOperationApplier;
 class SourceExtractor;
 class DelayedMethodExtractor : public MethodExtractor
 {
 public:
     DelayedMethodExtractor(
-        SourceExtractor& sourceExtractor, TextOperationApplier& sourceOperations, FunctionPrinter& functionPrinter,
+        SourceExtractor& sourceExtractor, OffsetBasedTextModifier& sourceOperations, FunctionPrinter& functionPrinter,
         LocalVariableLocator& localVariableLocator);
 
     void extractStatmentsFromFunctionIntoNewFunction(
@@ -24,7 +24,7 @@ private:
     typedef LocalVariableLocator::Variables Variables;
 
     SourceExtractor& sourceExtractor;
-    TextOperationApplier& sourceOperations;
+    OffsetBasedTextModifier& sourceOperations;
     FunctionPrinter& functionPrinter;
     LocalVariableLocator& localVariableLocator;
 
