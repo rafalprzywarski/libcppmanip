@@ -1,12 +1,19 @@
 #include "ClangFunctionExtractorFactory.hpp"
 #include "ClangFunctionExtractor.hpp"
+#include "TextOperationApplier.hpp"
+#include "makeWithDependencies.hpp"
 
 namespace cppmanip
 {
 
 std::shared_ptr<FunctionExtractor> ClangFunctionExtractorFactory::createFunctionExtractor()
 {
-    return std::make_shared<ClangFunctionExtractor>();
+    struct WithDeps
+    {
+        OffsetBasedTextOperationApplier textModifier;
+        ClangFunctionExtractor extractor{textModifier};
+    };
+    return makeWithDependencies(&WithDeps::extractor);
 }
 
 }

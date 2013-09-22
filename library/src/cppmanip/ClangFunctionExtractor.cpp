@@ -2,7 +2,6 @@
 #include "ClangToolArgsBuilder.hpp"
 #include "SourceRange.hpp"
 #include "SourceLocationConverter.hpp"
-#include "TextOperationApplier.hpp"
 #include "OffsetConverter.hpp"
 #include "TextReplacementRecorder.hpp"
 #include "io/TextFileOps.hpp"
@@ -33,7 +32,7 @@ SourceRange getSourceRange(SourceSelection selection, const std::string& source)
     return range;
 }
 
-SourceReplacements recordReplacements(const OffsetBasedTextOperationApplier& sourceOperations, const std::string& source)
+SourceReplacements recordReplacements(const OffsetBasedTextModifier& sourceOperations, const std::string& source)
 {
     OffsetConverter offsetCoverter(source);
     TextReplacementRecorder recorder(std::bind(&OffsetConverter::getLocationFromOffset, &offsetCoverter, std::placeholders::_1));
@@ -44,10 +43,9 @@ SourceReplacements recordReplacements(const OffsetBasedTextOperationApplier& sou
 SourceReplacements ClangFunctionExtractor::extractFunctionInFile(const std::string& functionName, SourceSelection selection, const std::string& filename)
 {
     std::string source = io::loadTextFromFile(filename);
-    OffsetBasedTextOperationApplier sourceOperations;
-    MethodExtractorFrontendActionFactory factory(functionName, getSourceRange(selection, source), sourceOperations);
+    MethodExtractorFrontendActionFactory factory(functionName, getSourceRange(selection, source), textModifier);
     performFrontendActionForFile(factory, filename);
-    return recordReplacements(sourceOperations, source);
+    return recordReplacements(textModifier, source);
 }
 
 }
