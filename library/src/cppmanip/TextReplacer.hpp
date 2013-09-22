@@ -5,7 +5,7 @@
 namespace cppmanip
 {
 
-class TextReplacer : public TextReplacementListener
+class TextReplacer : public TextReplacementListener<unsigned>
 {
 public:
     explicit TextReplacer(const std::string& text) : text(text) { }

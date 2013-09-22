@@ -4,7 +4,7 @@
 namespace cppmanip
 {
 
-void TextOperationApplier::apply(cppmanip::TextReplacementListener& replacer) const
+void TextOperationApplier::apply(TextReplacementListener<Position>& replacer) const
 {
     for (auto const& it : replacements)
         it.second.applyAt(it.first, replacer);
@@ -30,7 +30,7 @@ void TextOperationApplier::verifyNoOverlappingRangesExist(const OffsetRange& r)
         if (rep.second.overlapsWithRangeAt(r, rep.first))
             throw std::invalid_argument("TextOperationApplier: overlapping range");
 }
-void TextOperationApplier::Replacement::applyAt(Position offset, TextReplacementListener& listner) const
+void TextOperationApplier::Replacement::applyAt(Position offset, TextReplacementListener<Position>& listner) const
 {
     listner.replaceWithTextInRange(insertionText, offset, getRemovalEnd(offset));
 }

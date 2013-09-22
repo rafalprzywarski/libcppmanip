@@ -5,11 +5,12 @@
 namespace cppmanip
 {
 
+template <typename Position>
 class TextReplacementListener
 {
 public:
     virtual ~TextReplacementListener() { }
-    virtual void replaceWithTextInRange(const std::string& replacement, unsigned from, unsigned to) = 0;
+    virtual void replaceWithTextInRange(const std::string& replacement, Position from, Position to) = 0;
 };
 
 }

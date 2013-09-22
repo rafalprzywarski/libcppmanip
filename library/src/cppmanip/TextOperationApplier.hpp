@@ -13,7 +13,7 @@ class TextOperationApplier
 {
 public:
     typedef unsigned Position;
-    void apply(TextReplacementListener& replacer) const;
+    void apply(TextReplacementListener<Position>& replacer) const;
     void insertTextAt(const std::string& text, Position pos);
     void removeTextInRange(Position from, Position to);
 private:
@@ -24,7 +24,7 @@ private:
         void appendInsertionText(const std::string& s);
         void setRemovalEnd(Position end);
         bool overlapsWithRangeAt(const OffsetRange& r, Position pos) const;
-        void applyAt(cppmanip::TextOperationApplier::Position pos, cppmanip::TextReplacementListener& listner) const;
+        void applyAt(Position pos, TextReplacementListener<Position>& listner) const;
     private:
         boost::optional<Position> removalEnd;
         std::string insertionText;

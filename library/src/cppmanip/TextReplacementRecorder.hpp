@@ -7,7 +7,7 @@
 namespace cppmanip
 {
 
-class TextReplacementRecorder : public TextReplacementListener
+class TextReplacementRecorder : public TextReplacementListener<unsigned>
 {
 public:
     typedef std::function<SourceLocation(unsigned)> OffsetToSourceLocation;
