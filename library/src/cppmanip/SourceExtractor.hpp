@@ -23,7 +23,7 @@ template <typename Node>
 inline unsigned extraCharsHack(const Node&) { return 0; }
 
 template <>
-inline unsigned extraCharsHack<clang::Stmt>(const clang::Stmt&) { return 1; } // semicolon
+inline unsigned extraCharsHack<clang::Stmt>(const clang::Stmt& s) { return !clang::isa<clang::DeclStmt>(s); } // semicolon
 
 }
 

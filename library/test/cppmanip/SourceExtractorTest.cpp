@@ -27,4 +27,13 @@ TEST_F(SourceExtractorTest, shouldFindCorrectSourceRangeForFunctionCalls)
     ASSERT_EQ(source.find("/*end*/"), extractor->getOffset(r.getEnd()));
 }
 
+TEST_F(SourceExtractorTest, should_find_correct_source_range_for_a_local_variable_declaration)
+{
+    std::string source = "void f() { int x ;/*end*/ }";
+    parse(source);
+    auto r = extractor->getCorrectSourceRange(**func->stmts());
+    ASSERT_EQ(source.find("int x"), extractor->getOffset(r.getBegin()));
+    ASSERT_EQ(source.find("/*end*/"), extractor->getOffset(r.getEnd()));
+}
+
 }
