@@ -1,8 +1,21 @@
 #include "SourceExtractor.hpp"
 #include <clang/AST/Decl.h>
+#include <clang/AST/Expr.h>
+#include <clang/AST/ExprCXX.h>
 
 namespace cppmanip
 {
+
+namespace
+{
+
+unsigned extraCharsHack(const clang::Stmt& s) // semicolon
+{
+    return clang::isa<clang::ForStmt>(s) || clang::isa<clang::CallExpr>(s);
+}
+
+}
+
 
 clang::SourceRange SourceExtractor::getCorrectSourceRange(clang::StmtRange stmts)
 {
@@ -50,6 +63,50 @@ std::string SourceExtractor::getVarName(const clang::VarDecl& d)
 std::string SourceExtractor::getVarDecl(const clang::VarDecl& d)
 {
     return d.getType().getAsString() + " " + d.getNameAsString();
+}
+
+clang::SourceRange SourceExtractor::getCorrectSourceRange(const clang::FunctionDecl& node)
+{
+    auto spelling = getSpellingRange(node);
+    auto sourceLength = getSourceLength(spelling, node);
+    return {spelling.getBegin(), spelling.getBegin().getLocWithOffset(sourceLength)};
+}
+
+clang::SourceRange SourceExtractor::getCorrectSourceRange(const clang::Stmt& node)
+{
+    auto spelling = getSpellingRange(node);
+    auto sourceLength = getSourceLength(spelling, node);
+    return {spelling.getBegin(), spelling.getBegin().getLocWithOffset(sourceLength)};
+}
+
+template <typename Node>
+clang::SourceRange SourceExtractor::getSpellingRange(const Node& n)
+{
+    auto r = clang::SourceRange(
+        sourceManager.getSpellingLoc(n.getSourceRange().getBegin()),
+        sourceManager.getSpellingLoc(n.getSourceRange().getEnd()));
+    if (r.isInvalid())
+        throw std::runtime_error("cannot get spelling range");
+    return r;
+}
+
+unsigned int SourceExtractor::getSourceLength(clang::SourceRange spelling, const clang::FunctionDecl& node)
+{
+    auto start = getOffset(spelling.getBegin());
+    auto end = getOffset(spelling.getEnd());
+    if (end < start)
+        throw std::runtime_error("invalid decomposed range, probably because of macros");
+    return end - start;
+}
+
+unsigned int SourceExtractor::getSourceLength(clang::SourceRange spelling, const clang::Stmt& node)
+{
+    auto start = getOffset(spelling.getBegin());
+    auto end = sourceManager.getDecomposedLoc(
+        clang::Lexer::getLocForEndOfToken(spelling.getEnd(), 0, sourceManager, clang::LangOptions())).second;
+    if (end < start)
+        throw std::runtime_error("invalid decomposed range, probably because of macros");
+    return end - start + extraCharsHack(node);
 }
 
 }
