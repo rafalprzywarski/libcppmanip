@@ -51,4 +51,10 @@ TEST_F(DefaultClangFunctionLocatorTest, should_search_through_all_the_functions)
     ASSERT_NO_THROW(assertFunctionContainsSelection("g", 27, 35));
 }
 
+TEST_F(DefaultClangFunctionLocatorTest, should_ignore_functions_without_bodies)
+{
+    parse("void f(); void g(); void h() { }");
+    ASSERT_NO_THROW(assertFunctionContainsSelection("h", 30, 30));
+}
+
 }

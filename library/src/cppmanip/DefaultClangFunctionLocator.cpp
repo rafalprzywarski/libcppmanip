@@ -15,7 +15,7 @@ public:
     Visitor(OffsetRange selection) : selection(selection), foundDecl() { }
     bool VisitFunctionDecl(clang::FunctionDecl* decl)
     {
-        if (!getBodyRange(decl).overlapsWith(selection))
+        if (!decl->hasBody() || !getBodyRange(decl).overlapsWith(selection))
             return true;
         foundDecl = decl;
         return false;
