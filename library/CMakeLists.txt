@@ -34,6 +34,7 @@ add_library(cppmanip SHARED
     src/cppmanip/SourceLocationConverter.cpp
     src/cppmanip/ClangFunctionExtractor.cpp
     src/cppmanip/ClangFunctionExtractorFactory.cpp
+    src/cppmanip/DefaultClangFunctionLocator.cpp
 )
 
 target_link_libraries(cppmanip LINK_PRIVATE
@@ -65,6 +66,7 @@ add_executable(cppmaniptest
     test/cppmanip/TextReplacementRecorderTest.cpp
     test/cppmanip/OffsetConverterTest.cpp
     test/cppmanip/SourceLocationConverterTest.cpp
+    test/cppmanip/DefaultClangFunctionLocatorTest.cpp
 ) 
 
 target_link_libraries(cppmaniptest cppmanip gtest gmock boost_thread boost_system pthread)
