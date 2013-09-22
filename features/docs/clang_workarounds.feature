@@ -1,4 +1,4 @@
-Feature: As I developer I want to use this library despite clang sortcomings
+Feature: As I developer I want to use this library despite clang shortcomings
     @done
     Scenario: Extract method should run more than once
         Given source code:
