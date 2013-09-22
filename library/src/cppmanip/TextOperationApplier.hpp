@@ -13,23 +13,24 @@ class OffsetRange;
 class TextOperationApplier
 {
 public:
+    typedef unsigned Position;
     void apply(TextReplacementListener& replacer) const;
-    void insertTextAt(const std::string& text, unsigned offset);
-    void removeTextInRange(unsigned from, unsigned to);
+    void insertTextAt(const std::string& text, Position pos);
+    void removeTextInRange(Position from, Position to);
 private:
     class Replacement
     {
     public:
         void appendInsertionText(const std::string& s);
-        void setRemovalEnd(unsigned end);
-        bool overlapsWithRangeAtOffset(const OffsetRange& r, unsigned offset) const;
-        void applyAtOffset(unsigned offset, TextReplacementListener& listner) const;
+        void setRemovalEnd(Position end);
+        bool overlapsWithRangeAt(const OffsetRange& r, Position pos) const;
+        void applyAt(cppmanip::TextOperationApplier::Position pos, cppmanip::TextReplacementListener& listner) const;
     private:
-        boost::optional<unsigned> removalEnd;
+        boost::optional<Position> removalEnd;
         std::string insertionText;
-        unsigned getRemovalEnd(unsigned offset) const;
+        Position getRemovalEnd(Position pos) const;
     };
-    std::map<unsigned, Replacement, std::greater<unsigned> > replacements;
+    std::map<Position, Replacement, std::greater<Position> > replacements;
 
     void verifyNoOverlappingRangesExist(const OffsetRange& r);
 };
