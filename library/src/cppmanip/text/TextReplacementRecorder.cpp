@@ -2,6 +2,8 @@
 
 namespace cppmanip
 {
+namespace text
+{
 
 void TextReplacementRecorder::replaceWithTextInRange(const std::string& replacement, unsigned int from, unsigned int to)
 {
@@ -17,4 +19,5 @@ SourceReplacements TextReplacementRecorder::getReplacements() const
     return replacements;
 }
 
+}
 }

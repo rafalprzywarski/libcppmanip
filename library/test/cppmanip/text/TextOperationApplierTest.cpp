@@ -1,9 +1,11 @@
 #include <gtest/gtest.h>
-#include <cppmanip/TextOperationApplier.hpp>
-#include <cppmanip/TextReplacer.hpp>
+#include <cppmanip/text/TextOperationApplier.hpp>
+#include <cppmanip/text/TextReplacer.hpp>
 #include <stdexcept>
 
 namespace cppmanip
+{
+namespace text
 {
 
 struct TextOperationApplierTest : testing::Test
@@ -120,4 +122,5 @@ TEST_F(TextOperationApplierTest, should_fail_trying_to_insert_text_into_a_remova
     ASSERT_THROW(applier.insertTextAt("a", 3), std::invalid_argument);
 }
 
+}
 }

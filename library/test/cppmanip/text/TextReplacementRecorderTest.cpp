@@ -1,4 +1,4 @@
-#include <cppmanip/TextReplacementRecorder.hpp>
+#include <cppmanip/text/TextReplacementRecorder.hpp>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <functional>
@@ -8,6 +8,8 @@ using namespace testing;
 #define ALLOWING_CALL EXPECT_CALL
 
 namespace cppmanip
+{
+namespace text
 {
 
 struct TextReplacementRecorderTest : testing::Test
@@ -60,4 +62,5 @@ TEST_F(TextReplacementRecorderTest, should_record_all_replacements)
     ASSERT_EQ("c", replacements[2].text);
 }
 
+}
 }

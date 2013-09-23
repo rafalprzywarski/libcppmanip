@@ -2,9 +2,9 @@
 #define CPPMANIP_799523E01B0442A6ABBA2BFB7EF4F97A_HPP
 #include "FunctionPrinter.hpp"
 #include "LocalVariableLocator.hpp"
-#include "TextModifier.hpp"
 #include "SourceExtractor.hpp"
 #include "StatementExtractor.hpp"
+#include "text/TextModifier.hpp"
 
 namespace cppmanip
 {
@@ -13,7 +13,7 @@ class DelayedMethodExtractor : public StatementExtractor
 {
 public:
     DelayedMethodExtractor(
-        OffsetBasedTextModifier& sourceOperations, FunctionPrinter& functionPrinter, LocalVariableLocator& localVariableLocator, const std::string& extractedFunctionName);
+        text::OffsetBasedTextModifier& sourceOperations, FunctionPrinter& functionPrinter, LocalVariableLocator& localVariableLocator, const std::string& extractedFunctionName);
 
     void extractStatmentsFromFunction(clang::StmtRange stmts, const clang::FunctionDecl& originalFunction);
 
@@ -21,7 +21,7 @@ private:
 
     typedef LocalVariableLocator::Variables Variables;
 
-    OffsetBasedTextModifier& sourceOperations;
+    text::OffsetBasedTextModifier& sourceOperations;
     FunctionPrinter& functionPrinter;
     LocalVariableLocator& localVariableLocator;
     std::string extractedFunctionName;

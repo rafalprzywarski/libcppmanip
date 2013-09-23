@@ -4,6 +4,8 @@
 
 namespace cppmanip
 {
+namespace text
+{
 
 template <typename Position>
 class TextReplacer : public TextReplacementListener<Position>
@@ -19,5 +21,6 @@ private:
     std::string text;
 };
 
+}
 }
 #endif // CPPMANIP_D9C114835E7740F0946533374E15CE6D_HPP

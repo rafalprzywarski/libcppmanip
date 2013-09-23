@@ -6,6 +6,8 @@
 
 namespace cppmanip
 {
+namespace text
+{
 
 class TextReplacementRecorder : public TextReplacementListener<unsigned>
 {
@@ -20,5 +22,6 @@ private:
     SourceReplacements replacements;
 };
 
+}
 }
 #endif // CPPMANIP_5D669DAA80544067971378BD1ED150FA_HPP

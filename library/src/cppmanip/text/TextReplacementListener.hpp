@@ -4,6 +4,8 @@
 
 namespace cppmanip
 {
+namespace text
+{
 
 template <typename Position>
 class TextReplacementListener
@@ -13,5 +15,6 @@ public:
     virtual void replaceWithTextInRange(const std::string& replacement, Position from, Position to) = 0;
 };
 
+}
 }
 #endif // CPPMANIP_5994AB87DE5B483B948FD9AB2776346A_HPP

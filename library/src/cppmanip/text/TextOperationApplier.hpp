@@ -5,10 +5,12 @@
 #include <stdexcept>
 #include <boost/optional.hpp>
 #include "TextReplacementListener.hpp"
-#include "PositionRange.hpp"
 #include "TextModifier.hpp"
+#include <cppmanip/PositionRange.hpp>
 
 namespace cppmanip
+{
+namespace text
 {
 
 template <typename Position>
@@ -74,5 +76,6 @@ private:
 
 typedef TextOperationApplier<unsigned> OffsetBasedTextOperationApplier;
 
+}
 }
 #endif // CPPMANIP_01077C995F92441DB2604431793CC665_HPP

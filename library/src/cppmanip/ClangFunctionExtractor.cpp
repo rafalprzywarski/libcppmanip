@@ -1,10 +1,10 @@
 #include "ClangFunctionExtractor.hpp"
 #include "SourceLocationConverter.hpp"
 #include "OffsetConverter.hpp"
-#include "TextReplacementRecorder.hpp"
 #include "io/TextFileOps.hpp"
 #include "TranslationUnitFunctionExtractorFactory.hpp"
 #include "clangutil/runTranslationUnitHandlerOnFile.hpp"
+#include "text/TextReplacementRecorder.hpp"
 
 namespace cppmanip
 {
@@ -17,10 +17,10 @@ OffsetRange getSourceRange(SourceSelection selection, const std::string& source)
         sourceLocationConverter.getOffsetFromLocation(selection.to));
 }
 
-SourceReplacements recordReplacements(const OffsetBasedTextModifier& sourceOperations, const std::string& source)
+SourceReplacements recordReplacements(const text::OffsetBasedTextModifier& sourceOperations, const std::string& source)
 {
     OffsetConverter offsetCoverter(source);
-    TextReplacementRecorder recorder(std::bind(&OffsetConverter::getLocationFromOffset, &offsetCoverter, std::placeholders::_1));
+    text::TextReplacementRecorder recorder(std::bind(&OffsetConverter::getLocationFromOffset, &offsetCoverter, std::placeholders::_1));
     sourceOperations.apply(recorder);
     return recorder.getReplacements();
 }

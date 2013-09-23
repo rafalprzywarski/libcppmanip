@@ -11,7 +11,7 @@
 namespace cppmanip
 {
 
-DelayedMethodExtractor::DelayedMethodExtractor(OffsetBasedTextModifier& sourceOperations, FunctionPrinter& functionPrinter,
+DelayedMethodExtractor::DelayedMethodExtractor(text::OffsetBasedTextModifier& sourceOperations, FunctionPrinter& functionPrinter,
     LocalVariableLocator& localVariableLocator, const std::string& extractedFunctionName)
     : sourceOperations(sourceOperations), functionPrinter(functionPrinter), localVariableLocator(localVariableLocator), extractedFunctionName(extractedFunctionName) { }
 
