@@ -24,6 +24,17 @@ public:
             clang::Lexer::findLocationAfterToken(s->getLocEnd(), clang::tok::semi, sourceManager, clang::LangOptions(), false));
         return false;
     }
+    bool VisitForStmt(clang::ForStmt *s)
+    {
+        if (!clang::isa<clang::NullStmt>(s->getBody()))
+            range = toLocationRange(
+                s->getLocStart(),
+                clang::Lexer::findLocationAfterToken(s->getLocEnd(), clang::tok::semi, sourceManager, clang::LangOptions(), false));
+        else
+            range = toLocationRange(
+                s->getLocStart(),
+                clang::Lexer::getLocForEndOfToken(s->getLocEnd(), 0, sourceManager, clang::LangOptions()));
+    }
     LocationRange getRange() const { return range; }
 private:
     LocationRange range;
