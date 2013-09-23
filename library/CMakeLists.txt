@@ -33,6 +33,7 @@ add_library(cppmanip SHARED
     src/cppmanip/TranslationUnitFunctionExtractor.cpp
     src/cppmanip/TranslationUnitFunctionExtractorFactory.cpp
     src/cppmanip/clangutil/runTranslationUnitHandlerOnFile.cpp
+    src/cppmanip/DefaultStatementLocator.cpp
 )
 
 target_link_libraries(cppmanip LINK_PRIVATE
@@ -65,6 +66,7 @@ add_executable(cppmaniptest
     test/cppmanip/OffsetConverterTest.cpp
     test/cppmanip/DefaultFunctionLocatorTest.cpp
     test/cppmanip/SourceLocationOperatorsTest.cpp
+    test/cppmanip/DefaultStatementLocatorTest.cpp
 ) 
 
 target_link_libraries(cppmaniptest cppmanip gtest gmock boost_thread boost_system pthread)

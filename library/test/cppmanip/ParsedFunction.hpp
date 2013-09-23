@@ -15,12 +15,13 @@ class ParsedFunction : boost::noncopyable
 public:
     ParsedFunction(const std::string& source);
     ~ParsedFunction();
+    clang::FunctionDecl *getFunction();
     clang::StmtRange stmts();
     clang::ASTContext& getASTContext() { return *astContext; }
 private:
     std::string sourceForTwine;
     Condition parsed, canFinish;
-    clang::StmtRange range;
+    clang::FunctionDecl *function;
     clang::ASTContext *astContext;
     boost::thread thread;
 };

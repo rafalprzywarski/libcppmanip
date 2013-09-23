@@ -15,27 +15,27 @@ namespace
 class FunctionDeclVisitor : public clang::RecursiveASTVisitor<FunctionDeclVisitor>
 {
 public:
-    FunctionDeclVisitor(clang::StmtRange& range)
-        : range(range) { }
+    FunctionDeclVisitor(clang::FunctionDecl *& function)
+        : function(function) { }
     bool VisitFunctionDecl(clang::FunctionDecl* decl)
     {
         if (!decl->hasBody())
             return true;
-        range = decl->getBody()->children();
+        function = decl;
         return false;
     }
 private:
-    clang::StmtRange& range;
+    clang::FunctionDecl *& function;
 };
 
 class ParseFunctionASTConsumer : public clang::ASTConsumer
 {
 public:
-    ParseFunctionASTConsumer(clang::ASTContext *&astContext, clang::StmtRange& range, Notifier& parsed, Waiter& canFinish)
-        : astContext(astContext), range(range), parsed(parsed), canFinish(canFinish) { }
+    ParseFunctionASTConsumer(clang::ASTContext *&astContext, clang::FunctionDecl *& function, Notifier& parsed, Waiter& canFinish)
+        : astContext(astContext), function(function), parsed(parsed), canFinish(canFinish) { }
     virtual void HandleTranslationUnit(clang::ASTContext& Ctx)
     {
-        FunctionDeclVisitor vv(range);
+        FunctionDeclVisitor vv(function);
         vv.TraverseDecl(Ctx.getTranslationUnitDecl());
         astContext = &Ctx;
         parsed.notify();
@@ -43,7 +43,7 @@ public:
     }
 private:
     clang::ASTContext *&astContext;
-    clang::StmtRange& range;
+    clang::FunctionDecl *& function;
     Notifier& parsed;
     Waiter& canFinish;
 };
@@ -51,15 +51,15 @@ private:
 class ParseFunctionFrontendAction : public clang::ASTFrontendAction
 {
 public:
-    ParseFunctionFrontendAction(clang::ASTContext *&astContext, clang::StmtRange& range, Notifier& parsed, Waiter& canFinish)
-        : astContext(astContext), range(range), parsed(parsed), canFinish(canFinish) { }
+    ParseFunctionFrontendAction(clang::ASTContext *&astContext, clang::FunctionDecl *& function, Notifier& parsed, Waiter& canFinish)
+        : astContext(astContext), function(function), parsed(parsed), canFinish(canFinish) { }
     virtual clang::ASTConsumer* CreateASTConsumer(clang::CompilerInstance& CI, llvm::StringRef InFile)
     {
-        return new ParseFunctionASTConsumer(astContext, range, parsed, canFinish);
+        return new ParseFunctionASTConsumer(astContext, function, parsed, canFinish);
     }
 private:
     clang::ASTContext *&astContext;
-    clang::StmtRange& range;
+    clang::FunctionDecl *& function;
     Notifier& parsed;
     Waiter& canFinish;
 };
@@ -68,7 +68,7 @@ private:
 
 ParsedFunction::ParsedFunction(const std::string& source)
     : sourceForTwine(source),
-    thread([&]{ clang::tooling::runToolOnCode(new ParseFunctionFrontendAction(astContext, range, parsed, canFinish), sourceForTwine); })
+    thread([&]{ clang::tooling::runToolOnCode(new ParseFunctionFrontendAction(astContext, function, parsed, canFinish), sourceForTwine); })
 {
     parsed.wait();
 }
@@ -78,9 +78,14 @@ ParsedFunction::~ParsedFunction() {
     thread.join();
 }
 
+clang::FunctionDecl* ParsedFunction::getFunction()
+{
+    return function;
+}
+
 clang::StmtRange ParsedFunction::stmts()
 {
-    return range;
+    return function->getBody()->children();
 }
 
 }
