@@ -27,7 +27,6 @@ add_library(cppmanip SHARED
     src/cppmanip/NaiveLocalVariableLocator.cpp
     src/cppmanip/text/TextReplacementRecorder.cpp
     src/cppmanip/OffsetConverter.cpp
-    src/cppmanip/SourceLocationConverter.cpp
     src/cppmanip/ClangFunctionExtractor.cpp
     src/cppmanip/ClangFunctionExtractorFactory.cpp
     src/cppmanip/DefaultClangFunctionLocator.cpp
@@ -64,7 +63,6 @@ add_executable(cppmaniptest
     test/cppmanip/SourceExtractorTest.cpp
     test/cppmanip/text/TextReplacementRecorderTest.cpp
     test/cppmanip/OffsetConverterTest.cpp
-    test/cppmanip/SourceLocationConverterTest.cpp
     test/cppmanip/DefaultClangFunctionLocatorTest.cpp
     test/cppmanip/SourceLocationOperatorsTest.cpp
 ) 

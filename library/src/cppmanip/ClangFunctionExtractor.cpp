@@ -1,5 +1,4 @@
 #include "ClangFunctionExtractor.hpp"
-#include "SourceLocationConverter.hpp"
 #include "OffsetConverter.hpp"
 #include "io/TextFileOps.hpp"
 #include "TranslationUnitFunctionExtractorFactory.hpp"
