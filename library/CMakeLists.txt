@@ -66,6 +66,7 @@ add_executable(cppmaniptest
     test/cppmanip/OffsetConverterTest.cpp
     test/cppmanip/SourceLocationConverterTest.cpp
     test/cppmanip/DefaultClangFunctionLocatorTest.cpp
+    test/cppmanip/SourceLocationOperatorsTest.cpp
 ) 
 
 target_link_libraries(cppmaniptest cppmanip gtest gmock boost_thread boost_system pthread)
