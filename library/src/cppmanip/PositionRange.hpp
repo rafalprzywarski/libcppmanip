@@ -1,6 +1,7 @@
 #ifndef CPPMANIP_143F175862E14387A557B8C4624C6193_HPP
 #define CPPMANIP_143F175862E14387A557B8C4624C6193_HPP
 #include <stdexcept>
+#include <ostream>
 
 namespace cppmanip
 {
@@ -25,6 +26,14 @@ public:
         if (right.from < from)
             return right.overlapsWith(*this);
         return !(right.to == from) && (right.from < to);
+    }
+    bool operator==(const PositionRange<Position>& right) const
+    {
+        return from == right.from && to == right.to;
+    }
+    friend std::ostream& operator<<(std::ostream& os, const PositionRange<Position>& p)
+    {
+        return os << "[" << p.from << "; " << p.to << ")";
     }
 private:
     Position from, to;

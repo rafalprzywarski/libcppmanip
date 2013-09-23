@@ -62,4 +62,11 @@ TEST_F(OffsetRangeTest, should_detect_overlapping_ranges)
     expectOverlapping({1, 5}, {2, 5}, "common ending");
 }
 
+TEST_F(OffsetRangeTest, ranges_are_equal_iff_they_have_the_same_bounds)
+{
+    ASSERT_TRUE(OffsetRange(2, 5) == OffsetRange(2, 5));
+    ASSERT_FALSE(OffsetRange(2, 3) == OffsetRange(2, 5));
+    ASSERT_FALSE(OffsetRange(1, 5) == OffsetRange(2, 5));
+}
+
 }
