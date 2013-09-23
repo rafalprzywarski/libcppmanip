@@ -48,7 +48,7 @@ struct getStmtRangeTest : testing::TestWithParam<Stmt>
 
     LocationRange getStmtRangeFromSourceExtractor(const std::string& stmt)
     {
-        parse(extraDeclarations + " void f() { " + stmt + " }");
+        parse(extraDeclarations + " void dummy_function__() { " + stmt + " }");
         return getStmtRange(func->getDecl()->getASTContext().getSourceManager(), **func->stmts());
     }
 
@@ -72,7 +72,10 @@ INSTANTIATE_TEST_CASE_P(
     getStmtRangeTest,
     Values(
         Stmt("int x;"),
-        Stmt("int x  ;")
+        Stmt("int x  ;"),
+        Stmt("int z = 7;"),
+        Stmt("int z = f();").withExtraDecl("int f();"),
+        Stmt("float f(3.0f);")
 ));
 
 }
