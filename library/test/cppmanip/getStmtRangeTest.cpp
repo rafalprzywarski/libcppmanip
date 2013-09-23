@@ -46,10 +46,15 @@ struct getStmtRangeTest : testing::TestWithParam<Stmt>
         extraDeclarations = decls;
     }
 
-    LocationRange getStmtRangeFromSourceExtractor(const std::string& stmt)
+    LocationRange getRangeFromSource(const std::string& source)
     {
-        parse(extraDeclarations + " void dummy_function__() { " + stmt + " }");
+        parse(source);
         return getStmtRange(func->getDecl()->getASTContext().getSourceManager(), **func->stmts());
+    }
+
+    LocationRange getRageFromStmt(const std::string& stmt)
+    {
+        return getRangeFromSource(extraDeclarations + " void dummy_function__() { " + stmt + " }");
     }
 
     void expectStmtRangeIs(LocationRange range, const std::string& phrase)
@@ -60,10 +65,16 @@ struct getStmtRangeTest : testing::TestWithParam<Stmt>
     }
 };
 
+TEST_F(getStmtRangeTest, should_handle_multiline_statements)
+{
+    auto range = getRangeFromSource("void dummy_function__() {\n  int\n x;\n}");
+    ASSERT_EQ(LocationRange(rowCol(1, 2), rowCol(2, 3)), range);
+}
+
 TEST_P(getStmtRangeTest, should_find_correct_source_range_for_a_statement)
 {
     setExtraDeclarations(GetParam().extraDecl);
-    auto range = getStmtRangeFromSourceExtractor(GetParam().stmt);
+    auto range = getRageFromStmt(GetParam().stmt);
     expectStmtRangeIs(range, GetParam().stmt);
 }
 

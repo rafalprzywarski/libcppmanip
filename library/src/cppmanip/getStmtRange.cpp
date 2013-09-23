@@ -35,8 +35,8 @@ private:
     LocationRange toLocationRange(clang::SourceLocation b, clang::SourceLocation e)
     {
         return LocationRange(
-            rowCol(0, toZeroBased(sourceManager.getSpellingColumnNumber(b))),
-            rowCol(0, toZeroBased(sourceManager.getSpellingColumnNumber(e))));
+            rowCol(toZeroBased(sourceManager.getSpellingLineNumber(b)), toZeroBased(sourceManager.getSpellingColumnNumber(b))),
+            rowCol(toZeroBased(sourceManager.getSpellingLineNumber(e)), toZeroBased(sourceManager.getSpellingColumnNumber(e))));
     }
     void getRange(clang::Stmt *s)
     {
