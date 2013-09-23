@@ -12,28 +12,20 @@ public:
         : sourceManager(sourceManager) { }
     bool VisitDeclStmt(clang::DeclStmt *s)
     {
-        range = toLocationRange(
-            s->getLocStart(),
-            clang::Lexer::getLocForEndOfToken(s->getLocEnd(), 0, sourceManager, clang::LangOptions()));
+        getRange(s);
         return false;
     }
     bool VisitCallExpr(clang::CallExpr *s)
     {
-        range = toLocationRange(
-            s->getLocStart(),
-            clang::Lexer::findLocationAfterToken(s->getLocEnd(), clang::tok::semi, sourceManager, clang::LangOptions(), false));
+        getRangeTillSemicolon(s);
         return false;
     }
     bool VisitForStmt(clang::ForStmt *s)
     {
         if (!clang::isa<clang::NullStmt>(s->getBody()))
-            range = toLocationRange(
-                s->getLocStart(),
-                clang::Lexer::findLocationAfterToken(s->getLocEnd(), clang::tok::semi, sourceManager, clang::LangOptions(), false));
+            getRangeTillSemicolon(s);
         else
-            range = toLocationRange(
-                s->getLocStart(),
-                clang::Lexer::getLocForEndOfToken(s->getLocEnd(), 0, sourceManager, clang::LangOptions()));
+            getRange(s);
     }
     LocationRange getRange() const { return range; }
 private:
@@ -45,6 +37,18 @@ private:
         return LocationRange(
             rowCol(0, toZeroBased(sourceManager.getSpellingColumnNumber(b))),
             rowCol(0, toZeroBased(sourceManager.getSpellingColumnNumber(e))));
+    }
+    void getRange(clang::Stmt *s)
+    {
+        range = toLocationRange(
+            s->getLocStart(),
+            clang::Lexer::getLocForEndOfToken(s->getLocEnd(), 0, sourceManager, clang::LangOptions()));
+    }
+    void getRangeTillSemicolon(clang::Stmt *s)
+    {
+        range = toLocationRange(
+            s->getLocStart(),
+            clang::Lexer::findLocationAfterToken(s->getLocEnd(), clang::tok::semi, sourceManager, clang::LangOptions(), false));
     }
 };
 
