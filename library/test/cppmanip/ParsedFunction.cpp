@@ -78,7 +78,7 @@ ParsedFunction::~ParsedFunction() {
     thread.join();
 }
 
-clang::FunctionDecl* ParsedFunction::getFunction()
+clang::FunctionDecl* ParsedFunction::getDecl()
 {
     return function;
 }

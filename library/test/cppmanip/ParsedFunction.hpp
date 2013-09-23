@@ -15,7 +15,7 @@ class ParsedFunction : boost::noncopyable
 public:
     ParsedFunction(const std::string& source);
     ~ParsedFunction();
-    clang::FunctionDecl *getFunction();
+    clang::FunctionDecl *getDecl();
     clang::StmtRange stmts();
     clang::ASTContext& getASTContext() { return *astContext; }
 private:

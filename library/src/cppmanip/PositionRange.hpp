@@ -12,7 +12,7 @@ template <typename Position>
 class PositionRange
 {
 public:
-    PositionRange() : from(0), to(0) { }
+    PositionRange() : from(), to() { }
     PositionRange(Position from, Position to)
         : from(from), to(to)
     {
