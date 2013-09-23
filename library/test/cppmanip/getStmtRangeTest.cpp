@@ -75,7 +75,9 @@ INSTANTIATE_TEST_CASE_P(
         Stmt("int x  ;"),
         Stmt("int z = 7;"),
         Stmt("int z = f();").withExtraDecl("int f();"),
-        Stmt("float f(3.0f);")
+        Stmt("float f(3.0f);"),
+
+        Stmt("f(3, 4);").withExtraDecl("void f(int, int);")
 ));
 
 }

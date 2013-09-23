@@ -13,8 +13,15 @@ public:
     bool VisitDeclStmt(clang::DeclStmt *s)
     {
         range = toLocationRange(
-            s->getStartLoc(),
-            clang::Lexer::getLocForEndOfToken(s->getEndLoc(), 0, sourceManager, clang::LangOptions()));
+            s->getLocStart(),
+            clang::Lexer::getLocForEndOfToken(s->getLocEnd(), 0, sourceManager, clang::LangOptions()));
+        return false;
+    }
+    bool VisitCallExpr(clang::CallExpr *s)
+    {
+        range = toLocationRange(
+            s->getLocStart(),
+            clang::Lexer::findLocationAfterToken(s->getLocEnd(), clang::tok::semi, sourceManager, clang::LangOptions(), false));
         return false;
     }
     LocationRange getRange() const { return range; }
