@@ -22,7 +22,6 @@ add_library(cppmanip SHARED
     src/cppmanip/clangutil/ClangToolArgsBuilder.cpp
     src/cppmanip/CppManip.cpp
     src/cppmanip/PrettyFunctionPrinter.cpp
-    src/cppmanip/NaiveStatementLocator.cpp
     src/cppmanip/DelayedMethodExtractor.cpp
     src/cppmanip/NaiveLocalVariableLocator.cpp
     src/cppmanip/text/TextReplacementRecorder.cpp
