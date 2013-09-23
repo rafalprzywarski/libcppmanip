@@ -15,46 +15,46 @@ struct DefaultClangFunctionLocatorTest : testing::Test
     {
         func.reset(new test::ParsedFunction(source));
     }
-    void assertFunctionContainsSelection(const std::string& name, unsigned from, unsigned to)
+    void assertFunctionContainsSelection(const std::string& name, SourceLocation from, SourceLocation to)
     {
-        DefaultClangFunctionLocator locator(OffsetRange(from, to));
+        DefaultClangFunctionLocator locator(LocationRange(from, to));
         ASSERT_EQ(name, locator.getFunction(func->getASTContext()).getNameAsString())
-            << "[" << from << ", " << to << ")";
+            << "[" << from.row << ", " << from.col << "; " << to.row << ", " << to.col << ")";
     }
-    void assertFailsForSelection(unsigned from, unsigned to)
+    void assertFailsForSelection(SourceLocation from, SourceLocation to)
     {
-        DefaultClangFunctionLocator locator(OffsetRange(from, to));
+        DefaultClangFunctionLocator locator(LocationRange(from, to));
         ASSERT_THROW(locator.getFunction(func->getASTContext()), ExtractMethodError)
-            << "[" << from << ", " << to << ")";
+            << "[" << from.row << ", " << from.col << "; " << to.row << ", " << to.col << ")";
     }
 };
 
 TEST_F(DefaultClangFunctionLocatorTest, should_get_the_function_containing_given_selection)
 {
     parse("void f()\n{\n  /*here*/\n}\n");
-    ASSERT_NO_THROW(assertFunctionContainsSelection("f", 11, 19));
-    ASSERT_NO_THROW(assertFunctionContainsSelection("f", 13, 13));
-    ASSERT_NO_THROW(assertFunctionContainsSelection("f", 9, 10));
-    ASSERT_NO_THROW(assertFunctionContainsSelection("f", 22, 23));
+    ASSERT_NO_THROW(assertFunctionContainsSelection("f", rowCol(2, 0), rowCol(2, 8)));
+    ASSERT_NO_THROW(assertFunctionContainsSelection("f", rowCol(2, 2), rowCol(2, 2)));
+    ASSERT_NO_THROW(assertFunctionContainsSelection("f", rowCol(1, 0), rowCol(1, 1)));
+    ASSERT_NO_THROW(assertFunctionContainsSelection("f", rowCol(3, 0), rowCol(3, 1)));
 }
 
 TEST_F(DefaultClangFunctionLocatorTest, should_fail_when_the_selection_is_not_overlapping_the_body)
 {
     parse("void f()\n{\n /*...*/\n}\n");
-    assertFailsForSelection(1, 9);
-    assertFailsForSelection(21, 22);
+    assertFailsForSelection(rowCol(0, 1), rowCol(0, 9));
+    assertFailsForSelection(rowCol(3, 1), rowCol(4, 0));
 }
 
 TEST_F(DefaultClangFunctionLocatorTest, should_search_through_all_the_functions)
 {
     parse("void f()\n{\n \n}\nvoid g()\n{\n /*here*/ \n}\nvoid h()\n{\n \n}\n");
-    ASSERT_NO_THROW(assertFunctionContainsSelection("g", 27, 35));
+    ASSERT_NO_THROW(assertFunctionContainsSelection("g", rowCol(6, 1), rowCol(6, 14)));
 }
 
 TEST_F(DefaultClangFunctionLocatorTest, should_ignore_functions_without_bodies)
 {
     parse("void f(); void g(); void h() { }");
-    ASSERT_NO_THROW(assertFunctionContainsSelection("h", 30, 30));
+    ASSERT_NO_THROW(assertFunctionContainsSelection("h", rowCol(0, 30), rowCol(0, 30)));
 }
 
 }

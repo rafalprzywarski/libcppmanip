@@ -10,7 +10,7 @@ namespace cppmanip
 {
 
 clangutil::TranslationUnitHandlerPtr TranslationUnitFunctionExtractorFactory::createFunctionExtractor(
-    const std::string& extractedMethodName, OffsetRange selection, text::OffsetBasedTextModifier& sourceOperations)
+    const std::string& extractedMethodName, LocationRange selection, text::OffsetBasedTextModifier& sourceOperations)
 {
     struct WithDeps
     {
@@ -20,7 +20,7 @@ clangutil::TranslationUnitHandlerPtr TranslationUnitFunctionExtractorFactory::cr
         NaiveLocalVariableLocator localVariableLocator;
         DelayedMethodExtractor stmtExtractor;
         TranslationUnitFunctionExtractor functionExtractor;
-        WithDeps(const std::string& extractedMethodName, OffsetRange selection, text::OffsetBasedTextModifier& sourceOperations)
+        WithDeps(const std::string& extractedMethodName, LocationRange selection, text::OffsetBasedTextModifier& sourceOperations)
             : functionLocator(selection), stmtLocator(selection), stmtExtractor(sourceOperations, printer, localVariableLocator, extractedMethodName),
             functionExtractor(functionLocator, stmtLocator, stmtExtractor) { }
     };

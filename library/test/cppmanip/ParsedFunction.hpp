@@ -18,6 +18,7 @@ public:
     clang::StmtRange stmts();
     clang::ASTContext& getASTContext() { return *astContext; }
 private:
+    std::string sourceForTwine;
     Condition parsed, canFinish;
     clang::StmtRange range;
     clang::ASTContext *astContext;

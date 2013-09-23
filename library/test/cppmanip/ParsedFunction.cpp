@@ -67,7 +67,8 @@ private:
 }
 
 ParsedFunction::ParsedFunction(const std::string& source)
-    : thread([&]{ clang::tooling::runToolOnCode(new ParseFunctionFrontendAction(astContext, range, parsed, canFinish), source); })
+    : sourceForTwine(source),
+    thread([&]{ clang::tooling::runToolOnCode(new ParseFunctionFrontendAction(astContext, range, parsed, canFinish), sourceForTwine); })
 {
     parsed.wait();
 }

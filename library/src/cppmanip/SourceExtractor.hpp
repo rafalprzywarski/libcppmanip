@@ -7,6 +7,7 @@
 #include <clang/Lex/Lexer.h>
 #include <stdexcept>
 #include "OffsetRange.hpp"
+#include "LocationRange.hpp"
 
 namespace clang
 {
@@ -30,6 +31,7 @@ public:
     bool isLocationFromMainFile(clang::SourceLocation loc);
     std::string getVarName(const clang::VarDecl& d);
     std::string getVarDecl(const clang::VarDecl& d);
+    LocationRange getLocationRange(clang::SourceRange r);
 
 private:
     clang::SourceManager& sourceManager;

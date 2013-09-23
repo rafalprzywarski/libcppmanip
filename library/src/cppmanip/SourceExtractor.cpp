@@ -109,4 +109,11 @@ unsigned int SourceExtractor::getSourceLength(clang::SourceRange spelling, const
     return end - start + extraCharsHack(node);
 }
 
+LocationRange SourceExtractor::getLocationRange(clang::SourceRange r)
+{
+    return LocationRange(
+        rowCol(sourceManager.getSpellingLineNumber(r.getBegin()) - 1, sourceManager.getSpellingColumnNumber(r.getBegin()) - 1),
+        rowCol(sourceManager.getSpellingLineNumber(r.getEnd()) - 1, sourceManager.getSpellingColumnNumber(r.getEnd()) - 1));
+}
+
 }

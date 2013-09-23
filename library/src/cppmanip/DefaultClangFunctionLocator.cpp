@@ -12,7 +12,7 @@ namespace
 class Visitor : public clang::RecursiveASTVisitor<Visitor>
 {
 public:
-    Visitor(OffsetRange selection) : selection(selection), foundDecl() { }
+    Visitor(LocationRange selection) : selection(selection), foundDecl() { }
     bool VisitFunctionDecl(clang::FunctionDecl* decl)
     {
         if (!decl->hasBody() || !getBodyRange(decl).overlapsWith(selection))
@@ -22,15 +22,17 @@ public:
     }
     clang::FunctionDecl *getFoundDecl() const { return foundDecl; }
 private:
-    OffsetRange selection;
+    LocationRange selection;
     clang::FunctionDecl* foundDecl;
-    OffsetRange getBodyRange(clang::FunctionDecl* decl)
+    LocationRange getBodyRange(clang::FunctionDecl* decl)
     {
         auto& sourceManager = decl->getASTContext().getSourceManager();
         const auto CLOSING_BRACE = 1;
-        auto s = sourceManager.getFileOffset(sourceManager.getSpellingLoc(decl->getBody()->getLocStart()));
-        auto e = sourceManager.getFileOffset(sourceManager.getSpellingLoc(decl->getBody()->getLocEnd())) + CLOSING_BRACE;
-        return OffsetRange(s, e);
+        auto s = decl->getBody()->getLocStart();
+        auto e = decl->getBody()->getLocEnd().getLocWithOffset(CLOSING_BRACE);
+        return LocationRange(
+            rowCol(sourceManager.getSpellingLineNumber(s) - 1, sourceManager.getSpellingColumnNumber(s) - 1),
+            rowCol(sourceManager.getSpellingLineNumber(e) - 1, sourceManager.getSpellingColumnNumber(e) - 1));
     }
 };
 

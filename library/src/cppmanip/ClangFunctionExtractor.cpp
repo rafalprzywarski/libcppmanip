@@ -9,14 +9,6 @@
 namespace cppmanip
 {
 
-OffsetRange getSourceRange(SourceSelection selection, const std::string& source)
-{
-    SourceLocationConverter sourceLocationConverter(source);
-    return OffsetRange(
-        sourceLocationConverter.getOffsetFromLocation(selection.from),
-        sourceLocationConverter.getOffsetFromLocation(selection.to));
-}
-
 SourceReplacements recordReplacements(const text::OffsetBasedTextModifier& sourceOperations, const std::string& source)
 {
     OffsetConverter offsetCoverter(source);
@@ -28,7 +20,7 @@ SourceReplacements recordReplacements(const text::OffsetBasedTextModifier& sourc
 SourceReplacements ClangFunctionExtractor::extractFunctionInFile(const std::string& functionName, SourceSelection selection, const std::string& filename)
 {
     std::string source = io::loadTextFromFile(filename);
-    auto functionExtractor = TranslationUnitFunctionExtractorFactory().createFunctionExtractor(functionName, getSourceRange(selection, source), textModifier);
+    auto functionExtractor = TranslationUnitFunctionExtractorFactory().createFunctionExtractor(functionName, LocationRange(selection.from, selection.to), textModifier);
     clangutil::runTranslationUnitHandlerOnFile(functionExtractor, filename);
     return recordReplacements(textModifier, source);
 }

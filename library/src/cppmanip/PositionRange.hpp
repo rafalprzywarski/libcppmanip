@@ -13,7 +13,7 @@ class PositionRange
 {
 public:
     PositionRange() : from(0), to(0) { }
-    PositionRange(unsigned from, unsigned to)
+    PositionRange(Position from, Position to)
         : from(from), to(to)
     {
         if (to < from)
@@ -24,10 +24,10 @@ public:
     {
         if (right.from < from)
             return right.overlapsWith(*this);
-        return (right.to != from) && (right.from < to);
+        return !(right.to == from) && (right.from < to);
     }
 private:
-    unsigned from, to;
+    Position from, to;
 };
 
 }

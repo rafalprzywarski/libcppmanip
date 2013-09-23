@@ -4,7 +4,7 @@
 namespace cppmanip
 {
 
-NaiveStatementLocator::NaiveStatementLocator(OffsetRange selection)
+NaiveStatementLocator::NaiveStatementLocator(LocationRange selection)
     : selection(selection) { }
 
 clang::StmtRange NaiveStatementLocator::findStatementsInFunction(const clang::FunctionDecl& decl)
@@ -25,7 +25,7 @@ clang::StmtRange NaiveStatementLocator::findStatementsTouchingSelection(const cl
 
 bool NaiveStatementLocator::selectionOverlapsWithStmt(const clang::Stmt& stmt, SourceExtractor& sourceExtractor)
 {
-    return selection.overlapsWith(sourceExtractor.getOffsetRange(sourceExtractor.getCorrectSourceRange(stmt)));
+    return selection.overlapsWith(sourceExtractor.getLocationRange(sourceExtractor.getCorrectSourceRange(stmt)));
 }
 
 }
