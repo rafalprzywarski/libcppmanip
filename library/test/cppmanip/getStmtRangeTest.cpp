@@ -77,7 +77,9 @@ INSTANTIATE_TEST_CASE_P(
         Stmt("int z = f();").withExtraDecl("int f();"),
         Stmt("float f(3.0f);"),
 
-        Stmt("f(3, 4);").withExtraDecl("void f(int, int);")
+        Stmt("f(3, 4);").withExtraDecl("void f(int, int);"),
+
+        Stmt("o.f();").withExtraDecl("struct O { void f(); } o;")
 ));
 
 }
