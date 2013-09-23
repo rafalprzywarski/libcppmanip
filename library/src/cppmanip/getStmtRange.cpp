@@ -26,6 +26,12 @@ public:
             getRangeTillSemicolon(s);
         else
             getRange(s);
+        return false;
+    }
+    bool VisitCompoundAssignOperator(clang::CompoundAssignOperator *s)
+    {
+        getRangeTillSemicolon(s);
+        return false;
     }
     LocationRange getRange() const { return range; }
 private:

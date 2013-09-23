@@ -93,7 +93,9 @@ INSTANTIATE_TEST_CASE_P(
         Stmt("o.f();").withExtraDecl("struct O { void f(); } o;"),
 
         Stmt("for (;;);"),
-        Stmt("for (;;) f();").withExtraDecl("void f();")
+        Stmt("for (;;) f();").withExtraDecl("void f();"),
+
+        Stmt("i += 4;").withExtraDecl("int i;")
 ));
 
 }
