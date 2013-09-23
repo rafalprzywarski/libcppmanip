@@ -19,7 +19,7 @@ link_directories("${PROJECT_SOURCE_DIR}/../gmock-1.6.0/build")
 add_library(cppmanip SHARED
     src/cppmanip/SourceExtractor.cpp
     src/cppmanip/io/TextFileOps.cpp
-    src/cppmanip/ClangToolArgsBuilder.cpp
+    src/cppmanip/clangutil/ClangToolArgsBuilder.cpp
     src/cppmanip/CppManip.cpp
     src/cppmanip/PrettyFunctionPrinter.cpp
     src/cppmanip/NaiveStatementLocator.cpp
@@ -33,7 +33,7 @@ add_library(cppmanip SHARED
     src/cppmanip/DefaultClangFunctionLocator.cpp
     src/cppmanip/TranslationUnitFunctionExtractor.cpp
     src/cppmanip/TranslationUnitFunctionExtractorFactory.cpp
-    src/cppmanip/runTranslationUnitHandlerOnFile.cpp
+    src/cppmanip/clangutil/runTranslationUnitHandlerOnFile.cpp
 )
 
 target_link_libraries(cppmanip LINK_PRIVATE
@@ -60,7 +60,7 @@ add_executable(cppmaniptest
     test/main.cpp
     test/cppmanip/TextOperationApplierTest.cpp
     test/cppmanip/OffsetRangeTest.cpp
-    test/cppmanip/ClangToolArgsBuilderTest.cpp
+    test/cppmanip/clangutil/ClangToolArgsBuilderTest.cpp
     test/cppmanip/SourceExtractorTest.cpp
     test/cppmanip/TextReplacementRecorderTest.cpp
     test/cppmanip/OffsetConverterTest.cpp

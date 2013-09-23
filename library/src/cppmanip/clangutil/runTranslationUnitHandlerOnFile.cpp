@@ -6,6 +6,8 @@
 
 namespace cppmanip
 {
+namespace clangutil
+{
 
 void runTranslationUnitHandlerOnFile(TranslationUnitHandlerPtr handler, std::string filename)
 {
@@ -19,4 +21,5 @@ void runTranslationUnitHandlerOnFile(TranslationUnitHandlerPtr handler, std::str
     tool.run(&actionFactory);
 }
 
+}
 }

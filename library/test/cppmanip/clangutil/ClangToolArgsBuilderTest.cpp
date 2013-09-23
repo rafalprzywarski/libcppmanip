@@ -1,13 +1,15 @@
-#include <cppmanip/ClangToolArgsBuilder.hpp>
 #include <gtest/gtest.h>
+#include <cppmanip/clangutil/ClangToolArgsBuilder.hpp>
 
 namespace cppmanip
+{
+namespace clangutil
 {
 
 struct ClangToolArgsBuilderTest : testing::Test
 {
     ClangToolArgsBuilder builder;
-    
+
     void expectArgs(std::vector<std::string> args)
     {
         ASSERT_EQ(args.size(), builder.getArgc());
@@ -22,4 +24,5 @@ TEST_F(ClangToolArgsBuilderTest, should_pass_source_file_name_as_the_first_argum
     expectArgs({ "", "source", "--" });
 }
 
+}
 }

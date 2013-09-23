@@ -3,12 +3,11 @@
 #include <clang/AST/ASTConsumer.h>
 #include <clang/Frontend/FrontendAction.h>
 #include <clang/Tooling/Tooling.h>
-#include "SourceRange.hpp"
-#include "OffsetRange.hpp"
-#include "TextModifier.hpp"
 #include "TranslationUnitHandler.hpp"
 
 namespace cppmanip
+{
+namespace clangutil
 {
 
 class ASTConsumerWithTranslationUnitHandler : public clang::ASTConsumer
@@ -52,5 +51,6 @@ private:
     TranslationUnitHandlerPtr translationUnitHandler;
 };
 
+}
 }
 #endif // CPPMANIP_71A4C766A1F04C4BB01EFA68BF81545F_HPP

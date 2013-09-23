@@ -4,7 +4,7 @@
 #include "TextReplacementRecorder.hpp"
 #include "io/TextFileOps.hpp"
 #include "TranslationUnitFunctionExtractorFactory.hpp"
-#include "runTranslationUnitHandlerOnFile.hpp"
+#include "clangutil/runTranslationUnitHandlerOnFile.hpp"
 
 namespace cppmanip
 {
@@ -29,7 +29,7 @@ SourceReplacements ClangFunctionExtractor::extractFunctionInFile(const std::stri
 {
     std::string source = io::loadTextFromFile(filename);
     auto functionExtractor = TranslationUnitFunctionExtractorFactory().createFunctionExtractor(functionName, getSourceRange(selection, source), textModifier);
-    runTranslationUnitHandlerOnFile(functionExtractor, filename);
+    clangutil::runTranslationUnitHandlerOnFile(functionExtractor, filename);
     return recordReplacements(textModifier, source);
 }
 

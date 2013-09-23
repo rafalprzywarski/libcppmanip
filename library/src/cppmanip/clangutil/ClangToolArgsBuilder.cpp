@@ -3,6 +3,8 @@
 
 namespace cppmanip
 {
+namespace clangutil
+{
 
 ClangToolArgsBuilder::ClangToolArgsBuilder() 
         : args{"", "", "--"}, rawArgs(args.size()) { }
@@ -23,4 +25,5 @@ const char** ClangToolArgsBuilder::getArgv() const
     return &rawArgs[0]; 
 }
 
+}
 }
