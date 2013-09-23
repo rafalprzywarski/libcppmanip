@@ -5,10 +5,10 @@
 
 namespace cppmanip {
 
-class ClangFunctionLocator
+class FunctionLocator
 {
 public:
-    virtual ~ClangFunctionLocator() { }
+    virtual ~FunctionLocator() { }
     virtual clang::FunctionDecl& getFunction(clang::ASTContext& context) = 0;
 };
 

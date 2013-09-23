@@ -1,4 +1,4 @@
-#include "DefaultClangFunctionLocator.hpp"
+#include "DefaultFunctionLocator.hpp"
 #include <cppmanip/ExtractMethodError.hpp>
 #include <clang/AST/RecursiveASTVisitor.h>
 #include <clang/AST/ASTContext.h>
@@ -38,7 +38,7 @@ private:
 
 }
 
-clang::FunctionDecl& DefaultClangFunctionLocator::getFunction(clang::ASTContext& context)
+clang::FunctionDecl& DefaultFunctionLocator::getFunction(clang::ASTContext& context)
 {
     Visitor v(selection);
     v.TraverseDecl(context.getTranslationUnitDecl());

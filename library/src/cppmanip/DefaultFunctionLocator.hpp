@@ -1,15 +1,15 @@
 #ifndef CPPMANIP_9C814E877C7147EB88A24679CA5852C2_HPP
 #define CPPMANIP_9C814E877C7147EB88A24679CA5852C2_HPP
-#include "ClangFunctionLocator.hpp"
+#include "FunctionLocator.hpp"
 #include "LocationRange.hpp"
 
 namespace cppmanip
 {
 
-class DefaultClangFunctionLocator : public ClangFunctionLocator
+class DefaultFunctionLocator : public FunctionLocator
 {
 public:
-    DefaultClangFunctionLocator(LocationRange selection) : selection(selection) { }
+    DefaultFunctionLocator(LocationRange selection) : selection(selection) { }
     virtual clang::FunctionDecl& getFunction(clang::ASTContext& context);
 private:
     LocationRange selection;

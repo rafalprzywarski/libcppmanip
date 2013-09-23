@@ -1,10 +1,10 @@
 #include "TranslationUnitFunctionExtractorFactory.hpp"
-#include "DefaultClangFunctionLocator.hpp"
 #include "PrettyFunctionPrinter.hpp"
 #include "NaiveStatementLocator.hpp"
 #include "NaiveLocalVariableLocator.hpp"
 #include "DelayedMethodExtractor.hpp"
 #include "TranslationUnitFunctionExtractor.hpp"
+#include "DefaultFunctionLocator.hpp"
 
 namespace cppmanip
 {
@@ -14,7 +14,7 @@ clangutil::TranslationUnitHandlerPtr TranslationUnitFunctionExtractorFactory::cr
 {
     struct WithDeps
     {
-        DefaultClangFunctionLocator functionLocator;
+        DefaultFunctionLocator functionLocator;
         PrettyFunctionPrinter printer;
         NaiveStatementLocator stmtLocator;
         NaiveLocalVariableLocator localVariableLocator;

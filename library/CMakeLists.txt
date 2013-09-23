@@ -29,7 +29,7 @@ add_library(cppmanip SHARED
     src/cppmanip/OffsetConverter.cpp
     src/cppmanip/ClangFunctionExtractor.cpp
     src/cppmanip/ClangFunctionExtractorFactory.cpp
-    src/cppmanip/DefaultClangFunctionLocator.cpp
+    src/cppmanip/DefaultFunctionLocator.cpp
     src/cppmanip/TranslationUnitFunctionExtractor.cpp
     src/cppmanip/TranslationUnitFunctionExtractorFactory.cpp
     src/cppmanip/clangutil/runTranslationUnitHandlerOnFile.cpp
@@ -63,7 +63,7 @@ add_executable(cppmaniptest
     test/cppmanip/SourceExtractorTest.cpp
     test/cppmanip/text/TextReplacementRecorderTest.cpp
     test/cppmanip/OffsetConverterTest.cpp
-    test/cppmanip/DefaultClangFunctionLocatorTest.cpp
+    test/cppmanip/DefaultFunctionLocatorTest.cpp
     test/cppmanip/SourceLocationOperatorsTest.cpp
 ) 
 
