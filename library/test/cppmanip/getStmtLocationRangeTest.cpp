@@ -1,5 +1,6 @@
 #include <cppmanip/getStmtLocationRange.hpp>
 #include "ParsedFunction.hpp"
+#include <cppmanip/ExtractMethodError.hpp>
 #include <gtest/gtest.h>
 
 using namespace testing;
@@ -69,6 +70,12 @@ TEST_F(getStmtLocationRangeTest, should_handle_multiline_statements)
 {
     auto range = getRangeFromSource("void dummy_function__() {\n  int\n x;\n}");
     ASSERT_EQ(LocationRange(rowCol(1, 2), rowCol(2, 3)), range);
+}
+
+TEST_F(getStmtLocationRangeTest, should_throw_an_exception_for_unknown_statement)
+{
+    auto source = "void dummy_function__() {\n  return 4 + 2;\n}";
+    ASSERT_THROW(getRangeFromSource(source), cppmanip::ExtractMethodError);
 }
 
 TEST_P(getStmtLocationRangeTest, should_find_correct_source_range_for_a_statement)
