@@ -293,7 +293,7 @@ Feature: As a developer I want to extract code into methods to make my code more
         void extracted()
         {
             for (std::string aux = "";  aux != ";"; aux=";")
-                for (std::string aux = "";  aux != ";"; aux=";");
+                for (std::string aux = "";  aux != ";"; aux=";")
                     for (std::string aux = "";  aux != ";"; aux=";"/**/);
         }
 
