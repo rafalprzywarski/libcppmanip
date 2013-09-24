@@ -40,29 +40,9 @@ const char* SourceExtractor::getSourceText(clang::SourceLocation loc)
     return text;
 }
 
-OffsetRange SourceExtractor::getOffsetRange(clang::SourceRange r)
-{
-    return {getOffset(r.getBegin()), getOffset(r.getEnd())};
-}
-
 unsigned int SourceExtractor::getOffset(clang::SourceLocation loc)
 {
     return sourceManager.getFileOffset(loc);
-}
-
-bool SourceExtractor::isLocationFromMainFile(clang::SourceLocation loc)
-{
-    return sourceManager.isFromMainFile(loc);
-}
-
-std::string SourceExtractor::getVarName(const clang::VarDecl& d)
-{
-    return d.getNameAsString();
-}
-
-std::string SourceExtractor::getVarDecl(const clang::VarDecl& d)
-{
-    return d.getType().getAsString() + " " + d.getNameAsString();
 }
 
 clang::SourceRange SourceExtractor::getCorrectSourceRange(const clang::FunctionDecl& node)
@@ -107,13 +87,6 @@ unsigned int SourceExtractor::getSourceLength(clang::SourceRange spelling, const
     if (end < start)
         throw std::runtime_error("invalid decomposed range, probably because of macros");
     return end - start + extraCharsHack(node);
-}
-
-LocationRange SourceExtractor::getLocationRange(clang::SourceRange r)
-{
-    return LocationRange(
-        rowCol(sourceManager.getSpellingLineNumber(r.getBegin()) - 1, sourceManager.getSpellingColumnNumber(r.getBegin()) - 1),
-        rowCol(sourceManager.getSpellingLineNumber(r.getEnd()) - 1, sourceManager.getSpellingColumnNumber(r.getEnd()) - 1));
 }
 
 }

@@ -52,7 +52,7 @@ FunctionPrinter::Strings DelayedMethodExtractor::getTypesAndNames(DelayedMethodE
 {
     FunctionPrinter::Strings args;
     for (auto d : variables)
-        args.push_back(sourceExtractor.getVarDecl(*d));
+        args.push_back(getVarDecl(*d));
     return args;
 }
 
@@ -60,7 +60,7 @@ FunctionPrinter::Strings DelayedMethodExtractor::getNames(DelayedMethodExtractor
 {
     FunctionPrinter::Strings args;
     for (auto d : variables)
-        args.push_back(sourceExtractor.getVarName(*d));
+        args.push_back(d->getNameAsString());
     return args;
 }
 void DelayedMethodExtractor::failIfVariablesAreDeclaredByAndUsedAfterStmts(
@@ -71,6 +71,11 @@ void DelayedMethodExtractor::failIfVariablesAreDeclaredByAndUsedAfterStmts(
         throw ExtractMethodError("Cannot extract \'" + extractedFunctionName +
             "\'. Following variables are in use after the selected statements: " + boost::algorithm::join(getNames(usedVars, sourceExtractor), ", "));
 
+}
+
+std::string DelayedMethodExtractor::getVarDecl(const clang::VarDecl& d) const
+{
+    return d.getType().getAsString() + " " + d.getNameAsString();
 }
 
 }

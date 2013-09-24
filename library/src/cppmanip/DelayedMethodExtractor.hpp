@@ -32,6 +32,7 @@ private:
     FunctionPrinter::Strings getTypesAndNames(Variables variables, SourceExtractor& sourceExtractor);
     FunctionPrinter::Strings getNames(Variables variables, SourceExtractor& sourceExtractor);
     void failIfVariablesAreDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, const clang::FunctionDecl& originalFunction, const std::string& extractedFunctionName, SourceExtractor& sourceExtractor);
+    std::string getVarDecl(const clang::VarDecl& d) const;
 };
 
 }

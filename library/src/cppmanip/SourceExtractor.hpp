@@ -26,12 +26,7 @@ public:
     clang::SourceRange getCorrectSourceRange(const clang::Stmt& node);
     clang::SourceRange getCorrectSourceRange(clang::StmtRange stmts);
     std::string getSource(clang::SourceRange range);
-    OffsetRange getOffsetRange(clang::SourceRange r);
     unsigned getOffset(clang::SourceLocation loc);
-    bool isLocationFromMainFile(clang::SourceLocation loc);
-    std::string getVarName(const clang::VarDecl& d);
-    std::string getVarDecl(const clang::VarDecl& d);
-    LocationRange getLocationRange(clang::SourceRange r);
 
 private:
     clang::SourceManager& sourceManager;
