@@ -83,7 +83,7 @@ public:
 
     bool VisitDeclRefExpr(clang::DeclRefExpr *d)
     {
-        auto var = clang::dyn_cast_or_null<clang::VarDecl>(d->getDecl());
+        auto var = clang::dyn_cast<clang::VarDecl>(d->getDecl());
         if (!var || isGlobal(var))
             return true;
         variables.push_back(var);
