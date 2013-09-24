@@ -5,6 +5,8 @@
 
 namespace cppmanip
 {
+namespace math
+{
 
 /**
  * A left-closed right-open range, with the exception that degenerate ranges overlap non-degenerate ranges.
@@ -39,5 +41,6 @@ private:
     Position from, to;
 };
 
+}
 }
 #endif // CPPMANIP_143F175862E14387A557B8C4624C6193_HPP

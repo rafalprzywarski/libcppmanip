@@ -1,8 +1,10 @@
 #include <gtest/gtest.h>
-#include <cppmanip/PositionRange.hpp>
+#include <cppmanip/math/PositionRange.hpp>
 #include <stdexcept>
 
 namespace cppmanip
+{
+namespace math
 {
 
 struct PositionRangeTest : testing::Test
@@ -70,4 +72,5 @@ TEST_F(PositionRangeTest, ranges_are_equal_iff_they_have_the_same_bounds)
     ASSERT_FALSE(Range(1, 5) == Range(2, 5));
 }
 
+}
 }

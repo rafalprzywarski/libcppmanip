@@ -6,7 +6,7 @@
 #include <boost/optional.hpp>
 #include "TextReplacementListener.hpp"
 #include "TextModifier.hpp"
-#include <cppmanip/PositionRange.hpp>
+#include <cppmanip/math/PositionRange.hpp>
 
 namespace cppmanip
 {
@@ -36,7 +36,7 @@ public:
         replacements[from].setRemovalEnd(to);
     }
 private:
-    typedef PositionRange<Position> OffsetRange;
+    typedef math::PositionRange<Position> OffsetRange;
     class Replacement
     {
     public:
