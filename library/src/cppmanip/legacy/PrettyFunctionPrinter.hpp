@@ -10,8 +10,10 @@ namespace legacy
 class PrettyFunctionPrinter : public FunctionPrinter
 {
 public:
-    virtual std::string printFunction(const std::string& name, const Strings& args, const std::string& body);
-    virtual std::string printFunctionCall(const std::string& name, const Strings& args);
+    virtual std::string printFunction(const std::string& name, const Variables& args, const std::string& body);
+    virtual std::string printFunctionCall(const std::string& name, const Variables& args);
+private:
+    Strings getTypesAndNames(Variables variables);
 };
 
 }

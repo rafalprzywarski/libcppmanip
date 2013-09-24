@@ -3,6 +3,11 @@
 #include <string>
 #include <vector>
 
+namespace clang
+{
+class VarDecl;
+}
+
 namespace cppmanip
 {
 namespace legacy
@@ -11,10 +16,11 @@ namespace legacy
 class FunctionPrinter
 {
 public:
+    typedef std::vector<clang::VarDecl *> Variables;
     typedef std::vector<std::string> Strings;
     virtual ~FunctionPrinter() { }
-    virtual std::string printFunction(const std::string& name, const Strings& args, const std::string& body) = 0;
-    virtual std::string printFunctionCall(const std::string& name, const Strings& args) = 0;
+    virtual std::string printFunction(const std::string& name, const Variables& args, const std::string& body) = 0;
+    virtual std::string printFunctionCall(const std::string& name, const Variables& args) = 0;
 };
 
 }

@@ -34,6 +34,11 @@ std::string SourceExtractor::getSource(clang::SourceRange range)
     return std::string(getSourceText(range.getBegin()), getLength(range));
 }
 
+std::string SourceExtractor::getSource(clang::StmtRange range)
+{
+    return getSource(getCorrectSourceRange(range));
+}
+
 const char* SourceExtractor::getSourceText(clang::SourceLocation loc) 
 {
     auto invalid = true;

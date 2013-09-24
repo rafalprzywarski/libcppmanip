@@ -28,13 +28,11 @@ private:
     LocalVariableLocator& localVariableLocator;
     std::string extractedFunctionName;
 
-    void printExtractedFunction(clang::SourceLocation at, const std::string& name, const Variables& variables, clang::SourceRange stmtsRange, SourceExtractor& sourceExtractor);
-    void replaceStatementsWithFunctionCall(clang::SourceRange stmtsRange, const std::string& functionName, const Variables& variables, SourceExtractor& sourceExtractor);
-    void replaceRangeWith(clang::SourceRange without, std::string replace, SourceExtractor& sourceExtractor);
-    FunctionPrinter::Strings getTypesAndNames(Variables variables, SourceExtractor& sourceExtractor);
-    FunctionPrinter::Strings getNames(Variables variables, SourceExtractor& sourceExtractor);
-    void failIfVariablesAreDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, const clang::FunctionDecl& originalFunction, const std::string& extractedFunctionName, SourceExtractor& sourceExtractor);
-    std::string getVarDecl(const clang::VarDecl& d) const;
+    void printExtractedFunction(const clang::FunctionDecl& originalFunction, const Variables& variables, clang::StmtRange stmts, SourceExtractor& sourceExtractor);
+    void replaceStatementsWithFunctionCall(clang::StmtRange stmts, const Variables& variables, SourceExtractor& sourceExtractor);
+    void replaceRangeWith(unsigned int from, unsigned int to, std::string replacement);
+    std::string getNames(Variables variables);
+    void failIfVariablesAreDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, const clang::FunctionDecl& originalFunction);
 };
 
 }

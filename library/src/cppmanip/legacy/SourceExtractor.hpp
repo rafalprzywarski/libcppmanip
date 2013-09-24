@@ -26,6 +26,7 @@ public:
     clang::SourceRange getCorrectSourceRange(clang::Stmt& node);
     clang::SourceRange getCorrectSourceRange(clang::StmtRange stmts);
     std::string getSource(clang::SourceRange range);
+    std::string getSource(clang::StmtRange stmts);
     unsigned getOffset(clang::SourceLocation loc);
 
 private:
