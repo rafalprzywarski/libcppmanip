@@ -35,9 +35,7 @@ public:
         : astContext(astContext), function(function), parsed(parsed), canFinish(canFinish) { }
     virtual void HandleTranslationUnit(clang::ASTContext& Ctx)
     {
-        FunctionDeclVisitor vv(function);
-        vv.TraverseDecl(Ctx.getTranslationUnitDecl());
-        astContext = &Ctx;
+        parse(Ctx);
         parsed.notify();
         canFinish.wait();
     }
@@ -46,6 +44,12 @@ private:
     clang::FunctionDecl *& function;
     Notifier& parsed;
     Waiter& canFinish;
+    void parse(clang::ASTContext& ctx)
+    {
+        FunctionDeclVisitor vv(function);
+        vv.TraverseDecl(ctx.getTranslationUnitDecl());
+        astContext = &ctx;
+    }
 };
 
 class ParseFunctionFrontendAction : public clang::ASTFrontendAction
