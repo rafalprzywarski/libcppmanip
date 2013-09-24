@@ -26,10 +26,10 @@ public:
     }
     bool VisitForStmt(clang::ForStmt *s)
     {
-        if (!clang::isa<clang::NullStmt>(s->getBody()))
-            getRangeTillSemicolon(s);
-        else
+        if (clang::isa<clang::NullStmt>(s->getBody()) || clang::isa<clang::CompoundStmt>(s->getBody()))
             getRange(s);
+        else
+            getRangeTillSemicolon(s);
         return false;
     }
     bool VisitCompoundAssignOperator(clang::CompoundAssignOperator *s)

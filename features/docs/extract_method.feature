@@ -230,4 +230,27 @@ Feature: As a developer I want to extract code into methods to make my code more
 
         """
         And there should be a replacement with "extracted();"
+    @done
+    Scenario: should extract for statements with compound body
+        Given source code:
+        """
+        #include <string>
+        void g(int);
+        void f()
+        {
+            for (std::string aux = "";  aux != ";"; aux=";") {
+                g(7); }
+        }
+        """
+        When I run function extraction from "for (" to "g(7); }" with name "extracted"
+        Then there should be an insertion:
+        """
+        void extracted()
+        {
+            for (std::string aux = "";  aux != ";"; aux=";") {
+                g(7); }
+        }
+
+        """
+        And there should be a replacement with "extracted();"
 
