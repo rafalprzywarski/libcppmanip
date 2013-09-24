@@ -1,7 +1,7 @@
 #include "getStmtLocationRange.hpp"
 #include <boost/optional.hpp>
 #include <cppmanip/ExtractMethodError.hpp>
-#include <clang/AST/RecursiveASTVisitor.h>
+#include <clang/AST/StmtVisitor.h>
 #include <clang/Lex/Lexer.h>
 
 namespace cppmanip
@@ -9,62 +9,52 @@ namespace cppmanip
 namespace
 {
 
-class StmtVisitor : public clang::RecursiveASTVisitor<StmtVisitor>
+class StmtVisitor : public clang::StmtVisitor<StmtVisitor, boost::optional<clang::SourceRange>>
 {
 public:
     StmtVisitor(clang::SourceManager& sourceManager)
         : sourceManager(sourceManager) { }
-    bool VisitDeclStmt(clang::DeclStmt *s)
+    clang::SourceRange VisitDeclStmt(clang::DeclStmt *s)
     {
-        getRange(s);
-        return false;
+        return getRange(s);
     }
-    bool VisitCallExpr(clang::CallExpr *s)
+    clang::SourceRange VisitCallExpr(clang::CallExpr *s)
     {
-        getRangeTillSemicolon(s);
-        return false;
+        return getRangeTillSemicolon(s);
     }
-    bool VisitForStmt(clang::ForStmt *s)
+    clang::SourceRange VisitForStmt(clang::ForStmt *s)
     {
-        getRange(s);
-        auto r = getStmtRange(sourceManager, *s->getBody());
-        range->setEnd(r.getEnd());
-        return false;
+        auto start = getRange(s);
+        auto end = getStmtRange(sourceManager, *s->getBody());
+        return { start.getBegin(), end.getEnd() };
     }
-    bool VisitCompoundAssignOperator(clang::CompoundAssignOperator *s)
+    clang::SourceRange VisitCompoundAssignOperator(clang::CompoundAssignOperator *s)
     {
-        getRangeTillSemicolon(s);
-        return false;
+        return getRangeTillSemicolon(s);
     }
-    bool VisitIfStmt(clang::IfStmt *s)
+    clang::SourceRange VisitIfStmt(clang::IfStmt *s)
     {
-        getRangeTillSemicolon(s);
-        return false;
+        return getRangeTillSemicolon(s);
     }
-    bool VisitCompoundStmt(clang::CompoundStmt *s)
+    clang::SourceRange VisitCompoundStmt(clang::CompoundStmt *s)
     {
-        getRange(s);
-        return false;
+        return getRange(s);
     }
-    bool VisitNullStmt(clang::NullStmt *s)
+    clang::SourceRange VisitNullStmt(clang::NullStmt *s)
     {
-        getRange(s);
-        return false;
+        return getRange(s);
     }
-
-    boost::optional<clang::SourceRange> getRange() const { return range; }
 private:
-    boost::optional<clang::SourceRange> range;
     clang::SourceManager& sourceManager;
-    void getRange(clang::Stmt *s)
+    clang::SourceRange getRange(clang::Stmt *s)
     {
-        range = clang::SourceRange(
+        return clang::SourceRange(
             s->getLocStart(),
             clang::Lexer::getLocForEndOfToken(s->getLocEnd(), 0, sourceManager, clang::LangOptions()));
     }
-    void getRangeTillSemicolon(clang::Stmt *s)
+    clang::SourceRange getRangeTillSemicolon(clang::Stmt *s)
     {
-        range = clang::SourceRange(
+        return clang::SourceRange(
             s->getLocStart(),
             clang::Lexer::findLocationAfterToken(s->getLocEnd(), clang::tok::semi, sourceManager, clang::LangOptions(), false));
     }
@@ -92,8 +82,7 @@ LocationRange toLocationRange(clang::SourceManager& sm, clang::SourceRange r)
 clang::SourceRange getStmtRange(clang::SourceManager& sourceManager, clang::Stmt& stmt)
 {
     StmtVisitor v(sourceManager);
-    v.TraverseStmt(&stmt);
-    auto range = v.getRange();
+    auto range = v.Visit(&stmt);
     if (!range)
         throw cppmanip::ExtractMethodError(std::string("Unhandled statement"));
     return *range;
