@@ -30,7 +30,7 @@ class SourceReplacement
     getColumnOfPhraseAtRow(phrase, @to.row, source) == (@to.col - phrase.length)
   end
   def to_s
-    "#{@from} -> #{@to} : \'#{text}\'"
+    "#{@from} -> #{@to} :\n \'#{text}\'\n"
   end
 private
   def getColumnOfPhraseAtRow phrase, row, source

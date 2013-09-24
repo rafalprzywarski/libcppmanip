@@ -183,3 +183,26 @@ Feature: As a developer I want to extract code into methods to make my code more
         }
         """
         And there should be a replacement for "int b = a;" with "extracted(a);"
+    @done
+    Scenario: should extract if statements
+        Given source code:
+        """
+        void g(int);
+        void f()
+        {
+            if (true)
+                g(7);
+        }
+        """
+        When I run function extraction from "if (" to "g(7);" with name "extracted"
+        Then there should be an insertion:
+        """
+        void extracted()
+        {
+            if (true)
+                g(7);
+        }
+
+        """
+        And there should be a replacement with "extracted();"
+

@@ -37,6 +37,11 @@ public:
         getRangeTillSemicolon(s);
         return false;
     }
+    bool VisitIfStmt(clang::IfStmt *s)
+    {
+        getRangeTillSemicolon(s);
+        return false;
+    }
 
     boost::optional<clang::SourceRange> getRange() const { return range; }
 private:
