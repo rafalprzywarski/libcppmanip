@@ -24,19 +24,19 @@ public:
     }
     void insertTextAt(const std::string& text, Position pos)
     {
-        verifyNoOverlappingRangesExist(OffsetRange(pos, pos));
+        verifyNoOverlappingRangesExist(PositionRange(pos, pos));
         replacements[pos].appendInsertionText(text);
     }
     void removeTextInRange(Position from, Position to)
     {
-        OffsetRange range{from, to};
+        PositionRange range{from, to};
         verifyNoOverlappingRangesExist(range);
         if (range.degenerate())
             return;
         replacements[from].setRemovalEnd(to);
     }
 private:
-    typedef math::PositionRange<Position> OffsetRange;
+    typedef math::PositionRange<Position> PositionRange;
     class Replacement
     {
     public:
@@ -48,9 +48,9 @@ private:
         {
             removalEnd = end;
         }
-        bool overlapsWithRangeAt(const OffsetRange& r, Position pos) const
+        bool overlapsWithRangeAt(const PositionRange& r, Position pos) const
         {
-            return OffsetRange(pos, getRemovalEnd(pos)).overlapsWith(r);
+            return PositionRange(pos, getRemovalEnd(pos)).overlapsWith(r);
         }
         void applyAt(Position pos, TextReplacementListener<Position>& listner) const
         {
@@ -66,7 +66,7 @@ private:
     };
     std::map<Position, Replacement, std::greater<Position> > replacements;
 
-    void verifyNoOverlappingRangesExist(const OffsetRange& r)
+    void verifyNoOverlappingRangesExist(const PositionRange& r)
     {
         for (auto const& rep : replacements)
             if (rep.second.overlapsWithRangeAt(r, rep.first))
