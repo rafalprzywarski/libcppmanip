@@ -74,7 +74,7 @@ TEST_F(getStmtLocationRangeTest, should_handle_multiline_statements)
 
 TEST_F(getStmtLocationRangeTest, should_throw_an_exception_for_unknown_statement)
 {
-    auto source = "void dummy_function__() {\n  return 4 + 2;\n}";
+    auto source = "int dummy_function__() {\n  return 4 + 2;\n}";
     ASSERT_THROW(getRangeFromSource(source), cppmanip::ExtractMethodError);
 }
 

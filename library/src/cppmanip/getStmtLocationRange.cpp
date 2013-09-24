@@ -38,13 +38,7 @@ public:
         return false;
     }
 
-    clang::SourceRange getRange() const
-    {
-        if (!range)
-            throw cppmanip::ExtractMethodError(std::string("Unhandled statement: "));
-
-        return *range;
-    }
+    boost::optional<clang::SourceRange> getRange() const { return range; }
 private:
     boost::optional<clang::SourceRange> range;
     clang::SourceManager& sourceManager;
@@ -85,7 +79,10 @@ clang::SourceRange getStmtRange(clang::SourceManager& sourceManager, clang::Stmt
 {
     StmtVisitor v(sourceManager);
     v.TraverseStmt(&stmt);
-    return v.getRange();
+    auto range = v.getRange();
+    if (!range)
+        throw cppmanip::ExtractMethodError(std::string("Unhandled statement"));
+    return *range;
 }
 
 LocationRange getStmtLocationRange(clang::SourceManager& sourceManager, clang::Stmt& stmt)
