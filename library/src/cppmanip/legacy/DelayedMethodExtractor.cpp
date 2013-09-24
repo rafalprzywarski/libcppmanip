@@ -10,6 +10,8 @@
 
 namespace cppmanip
 {
+namespace legacy
+{
 
 DelayedMethodExtractor::DelayedMethodExtractor(text::OffsetBasedTextModifier& sourceOperations, FunctionPrinter& functionPrinter,
     LocalVariableLocator& localVariableLocator, const std::string& extractedFunctionName)
@@ -78,4 +80,5 @@ std::string DelayedMethodExtractor::getVarDecl(const clang::VarDecl& d) const
     return d.getType().getAsString() + " " + d.getNameAsString();
 }
 
+}
 }

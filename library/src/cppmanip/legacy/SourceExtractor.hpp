@@ -6,7 +6,6 @@
 #include <clang/Basic/SourceManager.h>
 #include <clang/Lex/Lexer.h>
 #include <stdexcept>
-#include "LocationRange.hpp"
 
 namespace clang
 {
@@ -14,6 +13,8 @@ class VarDecl;
 }
 
 namespace cppmanip
+{
+namespace legacy
 {
 
 class SourceExtractor
@@ -48,5 +49,6 @@ private:
     const char *getSourceText(clang::SourceLocation loc);
 };
 
+}
 }
 #endif // CPPMANIP_215653695B8744B6B4E2B7B6AC37D277_HPP

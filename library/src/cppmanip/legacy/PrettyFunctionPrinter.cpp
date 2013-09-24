@@ -3,6 +3,8 @@
 
 namespace cppmanip
 {
+namespace legacy
+{
 
 std::string PrettyFunctionPrinter::printFunction(const std::string& name, const Strings& args, const std::string& body)
 {
@@ -30,4 +32,5 @@ std::string PrettyFunctionPrinter::printFunctionCall(const std::string& name, co
     return os.str();
 }
 
+}
 }

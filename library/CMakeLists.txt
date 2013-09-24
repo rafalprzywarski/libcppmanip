@@ -17,13 +17,13 @@ link_directories("${PROJECT_SOURCE_DIR}/../gmock-1.6.0/build/gtest")
 link_directories("${PROJECT_SOURCE_DIR}/../gmock-1.6.0/build")
 
 add_library(cppmanip SHARED
-    src/cppmanip/SourceExtractor.cpp
+    src/cppmanip/legacy/SourceExtractor.cpp
     src/cppmanip/io/TextFileOps.cpp
     src/cppmanip/clangutil/ClangToolArgsBuilder.cpp
     src/cppmanip/extractFunctionInFile.cpp
-    src/cppmanip/PrettyFunctionPrinter.cpp
-    src/cppmanip/DelayedMethodExtractor.cpp
-    src/cppmanip/NaiveLocalVariableLocator.cpp
+    src/cppmanip/legacy/PrettyFunctionPrinter.cpp
+    src/cppmanip/legacy/DelayedMethodExtractor.cpp
+    src/cppmanip/legacy/NaiveLocalVariableLocator.cpp
     src/cppmanip/text/TextReplacementRecorder.cpp
     src/cppmanip/text/OffsetConverter.cpp
     src/cppmanip/ClangFunctionExtractor.cpp

@@ -1,7 +1,7 @@
 #include "TranslationUnitFunctionExtractorFactory.hpp"
-#include "PrettyFunctionPrinter.hpp"
-#include "NaiveLocalVariableLocator.hpp"
-#include "DelayedMethodExtractor.hpp"
+#include "legacy/PrettyFunctionPrinter.hpp"
+#include "legacy/NaiveLocalVariableLocator.hpp"
+#include "legacy/DelayedMethodExtractor.hpp"
 #include "TranslationUnitFunctionExtractor.hpp"
 #include "DefaultFunctionLocator.hpp"
 #include "DefaultStatementLocator.hpp"
@@ -16,10 +16,10 @@ clangutil::TranslationUnitHandlerPtr TranslationUnitFunctionExtractorFactory::cr
     struct WithDeps
     {
         DefaultFunctionLocator functionLocator;
-        PrettyFunctionPrinter printer;
+        legacy::PrettyFunctionPrinter printer;
         DefaultStatementLocator stmtLocator;
-        NaiveLocalVariableLocator localVariableLocator;
-        DelayedMethodExtractor stmtExtractor;
+        legacy::NaiveLocalVariableLocator localVariableLocator;
+        legacy::DelayedMethodExtractor stmtExtractor;
         TranslationUnitFunctionExtractor functionExtractor;
         WithDeps(const std::string& extractedMethodName, LocationRange selection, text::OffsetBasedTextModifier& sourceOperations)
             : functionLocator(selection), stmtLocator(getStmtLocationRange, selection),

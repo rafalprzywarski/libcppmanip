@@ -7,6 +7,8 @@
 
 namespace cppmanip
 {
+namespace legacy
+{
 
 namespace
 {
@@ -140,4 +142,5 @@ LocalVariableLocator::Variables NaiveLocalVariableLocator::findVariablesDeclared
     return result;
 }
 
+}
 }

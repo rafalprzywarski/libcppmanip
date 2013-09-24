@@ -5,6 +5,8 @@
 
 namespace cppmanip
 {
+namespace legacy
+{
 
 class NaiveLocalVariableLocator : public LocalVariableLocator
 {
@@ -13,5 +15,6 @@ public:
     virtual Variables findVariablesDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, clang::Stmt& parent);
 };
 
+}
 }
 #endif // CPPMANIP_050F6B6B2ADD47528D05772006AEF4C7_HPP

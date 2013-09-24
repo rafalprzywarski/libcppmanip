@@ -3,10 +3,12 @@
 #include "FunctionPrinter.hpp"
 #include "LocalVariableLocator.hpp"
 #include "SourceExtractor.hpp"
-#include "StatementExtractor.hpp"
-#include "text/TextModifier.hpp"
+#include <cppmanip/StatementExtractor.hpp>
+#include <cppmanip/text/TextModifier.hpp>
 
 namespace cppmanip
+{
+namespace legacy
 {
 
 class DelayedMethodExtractor : public StatementExtractor
@@ -35,5 +37,6 @@ private:
     std::string getVarDecl(const clang::VarDecl& d) const;
 };
 
+}
 }
 #endif // CPPMANIP_799523E01B0442A6ABBA2BFB7EF4F97A_HPP

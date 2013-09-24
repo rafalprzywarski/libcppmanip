@@ -1,10 +1,12 @@
 #include "SourceExtractor.hpp"
-#include "getStmtLocationRange.hpp"
+#include <cppmanip/getStmtLocationRange.hpp>
 #include <clang/AST/Decl.h>
 #include <clang/AST/Expr.h>
 #include <clang/AST/ExprCXX.h>
 
 namespace cppmanip
+{
+namespace legacy
 {
 
 namespace
@@ -78,4 +80,5 @@ unsigned int SourceExtractor::getSourceLength(clang::SourceRange spelling, const
     return end - start;
 }
 
+}
 }
