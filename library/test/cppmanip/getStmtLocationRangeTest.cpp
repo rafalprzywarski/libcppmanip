@@ -53,7 +53,7 @@ struct getStmtLocationRangeTest : testing::TestWithParam<Stmt>
         return getStmtLocationRange(func->getDecl()->getASTContext().getSourceManager(), **func->stmts());
     }
 
-    LocationRange getRageFromStmt(const std::string& stmt)
+    LocationRange getRangeFromStmt(const std::string& stmt)
     {
         return getRangeFromSource(extraDeclarations + " void dummy_function__() { " + stmt + "\n }"); // \n is needed because of clang bug
     }
@@ -81,7 +81,7 @@ TEST_F(getStmtLocationRangeTest, should_throw_an_exception_for_unknown_statement
 TEST_P(getStmtLocationRangeTest, should_find_correct_source_range_for_a_statement)
 {
     setExtraDeclarations(GetParam().extraDecl);
-    auto range = getRageFromStmt(GetParam().stmt);
+    auto range = getRangeFromStmt(GetParam().stmt);
     expectStmtRangeIs(range, GetParam().stmt);
 }
 
