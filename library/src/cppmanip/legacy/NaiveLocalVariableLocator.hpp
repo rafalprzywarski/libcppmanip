@@ -1,13 +1,13 @@
 #ifndef CPPMANIP_050F6B6B2ADD47528D05772006AEF4C7_HPP
 #define CPPMANIP_050F6B6B2ADD47528D05772006AEF4C7_HPP
-#include <cppmanip/LocalVariableLocator.hpp>
+#include <cppmanip/LocalVariableUsageDetector.hpp>
 
 namespace cppmanip
 {
 namespace legacy
 {
 
-class NaiveLocalVariableLocator : public LocalVariableLocator
+class NaiveLocalVariableLocator : public LocalVariableUsageDetector
 {
 public:
     virtual Variables findLocalVariablesRequiredForStmts(clang::StmtRange stmts);

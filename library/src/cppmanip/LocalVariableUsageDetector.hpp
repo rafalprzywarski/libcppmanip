@@ -11,7 +11,7 @@ class VarDecl;
 namespace cppmanip
 {
 
-class LocalVariableLocator
+class LocalVariableUsageDetector
 {
 public:
     typedef std::vector<clang::VarDecl *> Variables;

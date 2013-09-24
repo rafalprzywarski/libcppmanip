@@ -117,14 +117,14 @@ public:
 
 }
 
-LocalVariableLocator::Variables NaiveLocalVariableLocator::findLocalVariablesRequiredForStmts(clang::StmtRange stmts)
+LocalVariableUsageDetector::Variables NaiveLocalVariableLocator::findLocalVariablesRequiredForStmts(clang::StmtRange stmts)
 {
     RequiredLocalVariablesFinder v;
     v.traverseStmts(stmts);
     return v.getVariables();
 }
 
-LocalVariableLocator::Variables NaiveLocalVariableLocator::findVariablesDeclaredByAndUsedAfterStmts(
+LocalVariableUsageDetector::Variables NaiveLocalVariableLocator::findVariablesDeclaredByAndUsedAfterStmts(
     clang::StmtRange stmts, clang::Stmt& parent)
 {
     DeclaredLocalVariablesFinder declaredFinder;

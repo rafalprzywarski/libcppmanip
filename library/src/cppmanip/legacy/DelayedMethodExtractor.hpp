@@ -4,7 +4,7 @@
 #include "SourceExtractor.hpp"
 #include <cppmanip/StatementExtractor.hpp>
 #include <cppmanip/text/TextModifier.hpp>
-#include <cppmanip/LocalVariableLocator.hpp>
+#include <cppmanip/LocalVariableUsageDetector.hpp>
 
 namespace cppmanip
 {
@@ -15,17 +15,17 @@ class DelayedMethodExtractor : public StatementExtractor
 {
 public:
     DelayedMethodExtractor(
-        text::OffsetBasedTextModifier& sourceOperations, FunctionPrinter& functionPrinter, LocalVariableLocator& localVariableLocator, const std::string& extractedFunctionName);
+        text::OffsetBasedTextModifier& sourceOperations, FunctionPrinter& functionPrinter, LocalVariableUsageDetector& localVariableLocator, const std::string& extractedFunctionName);
 
     void extractStatmentsFromFunction(clang::StmtRange stmts, const clang::FunctionDecl& originalFunction);
 
 private:
 
-    typedef LocalVariableLocator::Variables Variables;
+    typedef LocalVariableUsageDetector::Variables Variables;
 
     text::OffsetBasedTextModifier& sourceOperations;
     FunctionPrinter& functionPrinter;
-    LocalVariableLocator& localVariableLocator;
+    LocalVariableUsageDetector& localVariableLocator;
     std::string extractedFunctionName;
 
     void printExtractedFunction(const clang::FunctionDecl& originalFunction, const Variables& variables, clang::StmtRange stmts, SourceExtractor& sourceExtractor);

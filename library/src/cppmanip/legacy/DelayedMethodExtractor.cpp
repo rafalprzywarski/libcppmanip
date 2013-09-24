@@ -15,7 +15,7 @@ namespace legacy
 {
 
 DelayedMethodExtractor::DelayedMethodExtractor(text::OffsetBasedTextModifier& sourceOperations, FunctionPrinter& functionPrinter,
-    LocalVariableLocator& localVariableLocator, const std::string& extractedFunctionName)
+    LocalVariableUsageDetector& localVariableLocator, const std::string& extractedFunctionName)
     : sourceOperations(sourceOperations), functionPrinter(functionPrinter), localVariableLocator(localVariableLocator), extractedFunctionName(extractedFunctionName) { }
 
 void DelayedMethodExtractor::extractStatmentsFromFunction(clang::StmtRange stmts, const clang::FunctionDecl& originalFunction)
