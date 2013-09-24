@@ -23,7 +23,7 @@ public:
     SourceExtractor(clang::SourceManager& sourceManager) : sourceManager(sourceManager) { }
     
     clang::SourceRange getCorrectSourceRange(const clang::FunctionDecl& node);
-    clang::SourceRange getCorrectSourceRange(const clang::Stmt& node);
+    clang::SourceRange getCorrectSourceRange(clang::Stmt& node);
     clang::SourceRange getCorrectSourceRange(clang::StmtRange stmts);
     std::string getSource(clang::SourceRange range);
     unsigned getOffset(clang::SourceLocation loc);
@@ -35,7 +35,6 @@ private:
     clang::SourceRange getSpellingRange(const Node& n);
 
     unsigned getSourceLength(clang::SourceRange spelling, const clang::FunctionDecl& node);
-    unsigned getSourceLength(clang::SourceRange spelling, const clang::Stmt& node);
 
     unsigned getDistance(clang::SourceLocation from, clang::SourceLocation to)
     {

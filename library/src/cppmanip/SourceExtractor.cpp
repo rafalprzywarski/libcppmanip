@@ -1,4 +1,5 @@
 #include "SourceExtractor.hpp"
+#include "getStmtLocationRange.hpp"
 #include <clang/AST/Decl.h>
 #include <clang/AST/Expr.h>
 #include <clang/AST/ExprCXX.h>
@@ -52,11 +53,9 @@ clang::SourceRange SourceExtractor::getCorrectSourceRange(const clang::FunctionD
     return {spelling.getBegin(), spelling.getBegin().getLocWithOffset(sourceLength)};
 }
 
-clang::SourceRange SourceExtractor::getCorrectSourceRange(const clang::Stmt& node)
+clang::SourceRange SourceExtractor::getCorrectSourceRange(clang::Stmt& node)
 {
-    auto spelling = getSpellingRange(node);
-    auto sourceLength = getSourceLength(spelling, node);
-    return {spelling.getBegin(), spelling.getBegin().getLocWithOffset(sourceLength)};
+    return getStmtRange(sourceManager, node);
 }
 
 template <typename Node>
@@ -77,16 +76,6 @@ unsigned int SourceExtractor::getSourceLength(clang::SourceRange spelling, const
     if (end < start)
         throw std::runtime_error("invalid decomposed range, probably because of macros");
     return end - start;
-}
-
-unsigned int SourceExtractor::getSourceLength(clang::SourceRange spelling, const clang::Stmt& node)
-{
-    auto start = getOffset(spelling.getBegin());
-    auto end = sourceManager.getDecomposedLoc(
-        clang::Lexer::getLocForEndOfToken(spelling.getEnd(), 0, sourceManager, clang::LangOptions())).second;
-    if (end < start)
-        throw std::runtime_error("invalid decomposed range, probably because of macros");
-    return end - start + extraCharsHack(node);
 }
 
 }
