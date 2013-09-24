@@ -7,6 +7,7 @@
 namespace cppmanip
 {
 
+clang::SourceRange getStmtRange(clang::SourceManager& sourceManager, clang::Stmt& stmt);
 LocationRange getStmtLocationRange(clang::SourceManager& sourceManager, clang::Stmt& stmt);
 
 }

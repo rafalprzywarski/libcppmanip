@@ -4,6 +4,8 @@
 
 namespace cppmanip
 {
+namespace
+{
 
 class StmtVisitor : public clang::RecursiveASTVisitor<StmtVisitor>
 {
@@ -33,36 +35,53 @@ public:
         getRangeTillSemicolon(s);
         return false;
     }
-    LocationRange getRange() const { return range; }
+    clang::SourceRange getRange() const { return range; }
 private:
-    LocationRange range;
+    clang::SourceRange range;
     clang::SourceManager& sourceManager;
-    unsigned toZeroBased(unsigned n) { return n - 1; }
-    LocationRange toLocationRange(clang::SourceLocation b, clang::SourceLocation e)
-    {
-        return LocationRange(
-            rowCol(toZeroBased(sourceManager.getSpellingLineNumber(b)), toZeroBased(sourceManager.getSpellingColumnNumber(b))),
-            rowCol(toZeroBased(sourceManager.getSpellingLineNumber(e)), toZeroBased(sourceManager.getSpellingColumnNumber(e))));
-    }
     void getRange(clang::Stmt *s)
     {
-        range = toLocationRange(
+        range = clang::SourceRange(
             s->getLocStart(),
             clang::Lexer::getLocForEndOfToken(s->getLocEnd(), 0, sourceManager, clang::LangOptions()));
     }
     void getRangeTillSemicolon(clang::Stmt *s)
     {
-        range = toLocationRange(
+        range = clang::SourceRange(
             s->getLocStart(),
             clang::Lexer::findLocationAfterToken(s->getLocEnd(), clang::tok::semi, sourceManager, clang::LangOptions(), false));
     }
 };
 
-LocationRange getStmtLocationRange(clang::SourceManager& sourceManager, clang::Stmt& stmt)
+unsigned toZeroBased(unsigned n)
+{
+    return n - 1;
+}
+
+SourceLocation toRowCol(clang::SourceManager& sm, clang::SourceLocation l)
+{
+    return rowCol(
+        toZeroBased(sm.getSpellingLineNumber(l)),
+        toZeroBased(sm.getSpellingColumnNumber(l)));
+}
+
+LocationRange toLocationRange(clang::SourceManager& sm, clang::SourceRange r)
+{
+    return LocationRange(toRowCol(sm, r.getBegin()), toRowCol(sm, r.getEnd()));
+}
+
+}
+
+clang::SourceRange getStmtRange(clang::SourceManager& sourceManager, clang::Stmt& stmt)
 {
     StmtVisitor v(sourceManager);
     v.TraverseStmt(&stmt);
     return v.getRange();
+}
+
+LocationRange getStmtLocationRange(clang::SourceManager& sourceManager, clang::Stmt& stmt)
+{
+    return toLocationRange(sourceManager, getStmtRange(sourceManager, stmt));
 }
 
 }
