@@ -1,5 +1,6 @@
 #include "DefaultLocalVariableUsageDetector.hpp"
 #include <clang/AST/RecursiveASTVisitor.h>
+#include <unordered_set>
 
 namespace cppmanip
 {
@@ -9,13 +10,13 @@ namespace
 
 struct UsedVariablesVisitor : clang::RecursiveASTVisitor<UsedVariablesVisitor>
 {
-    LocalVariableUsageDetector::Variables used;
+    std::unordered_set<clang::VarDecl *> used;
 
     bool VisitDeclRefExpr(clang::DeclRefExpr *d)
     {
         auto var = clang::dyn_cast<clang::VarDecl>(d->getDecl());
         if (var)
-            used.push_back(var);
+            used.insert(var);
         return true;
     }
 };
@@ -28,7 +29,7 @@ LocalVariableUsageDetector::Variables DefaultLocalVariableUsageDetector::findLoc
     UsedVariablesVisitor v;
     for (auto s : stmts)
         v.TraverseStmt(s);
-    return v.used;
+    return { begin(v.used), end(v.used) };
 }
 LocalVariableUsageDetector::Variables DefaultLocalVariableUsageDetector::findVariablesDeclaredByAndUsedAfterStmts(
     clang::StmtRange stmts, clang::Stmt& parent)
