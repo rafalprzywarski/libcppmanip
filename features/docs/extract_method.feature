@@ -129,9 +129,9 @@ Feature: As a developer I want to extract code into methods to make my code more
         void other(int);
         void original()
         {
-            int i = 7;
             int j = 9;
             j += 5;
+            int i = 7;
             i += 2;
             other(i);
         }
@@ -201,6 +201,31 @@ Feature: As a developer I want to extract code into methods to make my code more
         {
             if (true)
                 g(7);
+        }
+
+        """
+        And there should be a replacement with "extracted();"
+
+    @done
+    Scenario: should extract if statements with else clauses
+        Given source code:
+        """
+        void g(int);
+        void f()
+        {
+            if (true)
+                g(7);
+            else g(8);
+        }
+        """
+        When I run function extraction from "if (" to "g(8);" with name "extracted"
+        Then there should be an insertion:
+        """
+        void extracted()
+        {
+            if (true)
+                g(7);
+            else g(8);
         }
 
         """
