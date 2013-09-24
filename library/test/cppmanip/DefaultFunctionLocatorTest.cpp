@@ -53,7 +53,7 @@ TEST_F(DefaultFunctionLocatorTest, should_search_through_all_the_functions)
 
 TEST_F(DefaultFunctionLocatorTest, should_ignore_functions_without_bodies)
 {
-    parse("void f(); void g(); void h() { }");
+    parse("void f(); void g(); void h() { \n }"); // \n is needed because of clang bug
     ASSERT_NO_THROW(assertFunctionContainsSelection("h", rowCol(0, 30), rowCol(0, 30)));
 }
 

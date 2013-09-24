@@ -55,7 +55,7 @@ struct getStmtLocationRangeTest : testing::TestWithParam<Stmt>
 
     LocationRange getRageFromStmt(const std::string& stmt)
     {
-        return getRangeFromSource(extraDeclarations + " void dummy_function__() { " + stmt + " }");
+        return getRangeFromSource(extraDeclarations + " void dummy_function__() { " + stmt + "\n }"); // \n is needed because of clang bug
     }
 
     void expectStmtRangeIs(LocationRange range, const std::string& phrase)
