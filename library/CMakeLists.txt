@@ -61,7 +61,6 @@ add_executable(cppmaniptest
     test/cppmanip/text/TextOperationApplierTest.cpp
     test/cppmanip/OffsetRangeTest.cpp
     test/cppmanip/clangutil/ClangToolArgsBuilderTest.cpp
-    test/cppmanip/SourceExtractorTest.cpp
     test/cppmanip/text/TextReplacementRecorderTest.cpp
     test/cppmanip/OffsetConverterTest.cpp
     test/cppmanip/DefaultFunctionLocatorTest.cpp

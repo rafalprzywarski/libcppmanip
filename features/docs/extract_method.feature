@@ -231,6 +231,27 @@ Feature: As a developer I want to extract code into methods to make my code more
         """
         And there should be a replacement with "extracted();"
     @done
+    Scenario: should extract for statements with variable declaration
+        Given source code:
+        """
+        #include <string>
+        void g(int);
+        void f()
+        {
+            for (std::string aux = "";  aux != ";"; aux=";") int x = 3;
+        }
+        """
+        When I run function extraction from "for (" to "3;" with name "extracted"
+        Then there should be an insertion:
+        """
+        void extracted()
+        {
+            for (std::string aux = "";  aux != ";"; aux=";") int x = 3;
+        }
+
+        """
+        And there should be a replacement with "extracted();"
+    @done
     Scenario: should extract for statements with compound body
         Given source code:
         """
@@ -249,6 +270,31 @@ Feature: As a developer I want to extract code into methods to make my code more
         {
             for (std::string aux = "";  aux != ";"; aux=";") {
                 g(7); }
+        }
+
+        """
+        And there should be a replacement with "extracted();"
+    @done
+    Scenario: should extract for statements with nested for loops
+        Given source code:
+        """
+        #include <string>
+        void g(int);
+        void f()
+        {
+            for (std::string aux = "";  aux != ";"; aux=";")
+                for (std::string aux = "";  aux != ";"; aux=";")
+                    for (std::string aux = "";  aux != ";"; aux=";"/**/);
+        }
+        """
+        When I run function extraction from "for (" to "/**/);" with name "extracted"
+        Then there should be an insertion:
+        """
+        void extracted()
+        {
+            for (std::string aux = "";  aux != ";"; aux=";")
+                for (std::string aux = "";  aux != ";"; aux=";");
+                    for (std::string aux = "";  aux != ";"; aux=";"/**/);
         }
 
         """
