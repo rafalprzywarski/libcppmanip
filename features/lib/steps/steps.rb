@@ -49,23 +49,32 @@ Then /^it should fail with a message "(.*?)"$/ do |expectedMessage|
   @error.should eq(expectedMessage), "cppmanip should have failed with message: #{expectedMessage}"
 end
 
+def expectNoErrors
+  @error.should be_nil, "Failed with error: #{@error}"
+end
+
 Then /^there should be (\d+) changes$/ do |changeCount|
+  expectNoErrors
   @replacements.count.should eq(changeCount)
 end
 
 Then /^there should be an insertion:$/ do |insertionText|
+  expectNoErrors
   @replacements.index { |r| r.isInsertion && r.text == insertionText }.should_not be_nil, "insertion with \'#{insertionText}\' not found in #{@replacements}"
 end
 
 Then /^there should be an insertion before "(.*?)":$/ do |before, insertionText|
+  expectNoErrors
   @replacements.index { |r| r.isInsertionBefore(before, @source) && r.text == insertionText }.should_not be_nil
 end
 
 Then /^there should be a replacement with "(.*?)"$/ do |replacementText|
+  expectNoErrors
   @replacements.index { |r| r.text == replacementText }.should_not be_nil, "replacement with \'#{replacementText}\' not found in #{@replacements}"
 end
 
 Then /^there should be a replacement from "(.*?)" to "(.*?)" with "(.*?)"$/ do |from, to, replacementText|
+  expectNoErrors
   @replacements.index { |r|
     r.text == replacementText && r.isFrom(from, @source) && r.isTo(to, @source)
   }.should_not be_nil, "replacement with \'#{replacementText}\' not found in #{@replacements}"
