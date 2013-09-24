@@ -4,6 +4,8 @@
 
 namespace cppmanip
 {
+namespace text
+{
 
 SourceLocation OffsetConverter::getLocationFromOffset(unsigned int offset) const
 {
@@ -35,4 +37,5 @@ unsigned int OffsetConverter::calcRow(unsigned int offset) const
     return std::count(source.begin(), source.begin() + offset, '\n');
 }
 
+}
 }

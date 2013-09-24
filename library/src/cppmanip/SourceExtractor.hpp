@@ -6,7 +6,6 @@
 #include <clang/Basic/SourceManager.h>
 #include <clang/Lex/Lexer.h>
 #include <stdexcept>
-#include "OffsetRange.hpp"
 #include "LocationRange.hpp"
 
 namespace clang

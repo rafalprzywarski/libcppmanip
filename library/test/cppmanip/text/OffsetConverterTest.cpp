@@ -1,8 +1,10 @@
-#include <cppmanip/OffsetConverter.hpp>
+#include <cppmanip/text/OffsetConverter.hpp>
 #include <gtest/gtest.h>
 #include <stdexcept>
 
 namespace cppmanip
+{
+namespace text
 {
 
 TEST(OffsetConverterTest, should_return_offset_in_the_first_line)
@@ -39,4 +41,5 @@ TEST(OffsetConverterTest, should_fail_if_offset_is_greater_or_equal_the_length_o
     ASSERT_THROW(converter.getLocationFromOffset(21), std::out_of_range);
 }
 
+}
 }

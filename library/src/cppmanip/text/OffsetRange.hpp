@@ -1,6 +1,6 @@
 #ifndef CPPMANIP_10F3A6DA37744054897720CE57342C12_HPP
 #define CPPMANIP_10F3A6DA37744054897720CE57342C12_HPP
-#include "PositionRange.hpp"
+#include <cppmanip/PositionRange.hpp>
 
 namespace cppmanip
 {

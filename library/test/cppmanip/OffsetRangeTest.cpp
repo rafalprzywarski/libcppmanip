@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <cppmanip/OffsetRange.hpp>
+#include <cppmanip/text/OffsetRange.hpp>
 #include <stdexcept>
 
 namespace cppmanip

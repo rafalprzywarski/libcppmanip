@@ -1,5 +1,5 @@
 #include "ClangFunctionExtractor.hpp"
-#include "OffsetConverter.hpp"
+#include "text/OffsetConverter.hpp"
 #include "io/TextFileOps.hpp"
 #include "TranslationUnitFunctionExtractorFactory.hpp"
 #include "clangutil/runTranslationUnitHandlerOnFile.hpp"
@@ -11,8 +11,8 @@ namespace
 {
 SourceReplacements recordReplacements(const text::OffsetBasedTextModifier& sourceOperations, const std::string& filename)
 {
-    OffsetConverter offsetCoverter(io::loadTextFromFile(filename));
-    text::TextReplacementRecorder recorder(std::bind(&OffsetConverter::getLocationFromOffset, &offsetCoverter, std::placeholders::_1));
+    text::OffsetConverter offsetCoverter(io::loadTextFromFile(filename));
+    text::TextReplacementRecorder recorder(std::bind(&text::OffsetConverter::getLocationFromOffset, &offsetCoverter, std::placeholders::_1));
     sourceOperations.apply(recorder);
     return recorder.getReplacements();
 }

@@ -1,7 +1,6 @@
 #ifndef CPPMANIP_E7CD9B82765343D98CDD6BB3FB1AF245_HPP
 #define CPPMANIP_E7CD9B82765343D98CDD6BB3FB1AF245_HPP
 #include <clang/AST/Decl.h>
-#include "OffsetRange.hpp"
 
 namespace cppmanip {
 
