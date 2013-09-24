@@ -16,7 +16,7 @@ public:
     bool VisitDeclRefExpr(clang::DeclRefExpr *d)
     {
         auto var = clang::dyn_cast<clang::VarDecl>(d->getDecl());
-        if (var)
+        if (var && !isGlobal(var))
             used.insert(var);
         return true;
     }
@@ -37,6 +37,11 @@ public:
 private:
     std::unordered_set<clang::VarDecl *> used;
     std::unordered_set<clang::VarDecl *> declared;
+
+    bool isGlobal(clang::VarDecl *d) const
+    {
+        return d->getParentFunctionOrMethod() == nullptr;
+    }
 };
 
 }

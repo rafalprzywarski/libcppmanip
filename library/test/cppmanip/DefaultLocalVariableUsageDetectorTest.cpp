@@ -84,4 +84,11 @@ TEST_F(DefaultLocalVariableUsageDetectorTest, should_not_return_variables_declar
     expectEqUnordered(found, { varDecl(INT_X, stmts) });
 }
 
+TEST_F(DefaultLocalVariableUsageDetectorTest, should_not_return_global_variables)
+{
+    declareFunctions("int g;");
+    auto stmts = parseStmts("int x = g;");
+    ASSERT_TRUE(detector.findLocalVariablesRequiredForStmts(stmts).empty());
+}
+
 }
