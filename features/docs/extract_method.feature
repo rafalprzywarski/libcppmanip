@@ -159,3 +159,27 @@ Feature: As a developer I want to extract code into methods to make my code more
 
         """
         And there should be a replacement for "int b = 7;" with "extracted();"
+    @wip
+    Scenario: Extraction of statement in try block is supported
+        Given source code:
+        """
+        void myFunction()
+        {
+            try
+            {
+                int a = 2;
+                int b = a;
+            }
+            catch (...)
+            {}
+        }
+        """
+        When I run function extraction for "int b = a;" with name "extracted"
+        Then there should be an insertion:
+        """
+        void extracted(int a)
+        {
+            int b = a;
+        }
+        """
+        And there should be a replacement for "int b = a;" with "extracted(a);"
