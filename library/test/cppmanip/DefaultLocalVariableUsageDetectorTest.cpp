@@ -74,4 +74,14 @@ TEST_F(DefaultLocalVariableUsageDetectorTest, should_not_return_the_same_variabl
     ASSERT_EQ(1u, found.size());
 }
 
+TEST_F(DefaultLocalVariableUsageDetectorTest, should_not_return_variables_declared_inside_the_given_range)
+{
+    declareFunctions("void f(int, int);");
+    auto stmts = parseStmts("int x = 1; int y = 2; f(x, y); int z = 4; f(y, z);");
+    const auto INT_X = 0;
+    auto checked = skip(1, stmts);
+    auto found = detector.findLocalVariablesRequiredForStmts(checked);
+    expectEqUnordered(found, { varDecl(INT_X, stmts) });
+}
+
 }

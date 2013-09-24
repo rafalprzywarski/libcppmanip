@@ -1,6 +1,8 @@
 #include "DefaultLocalVariableUsageDetector.hpp"
 #include <clang/AST/RecursiveASTVisitor.h>
 #include <unordered_set>
+#include <boost/range/adaptor/filtered.hpp>
+#include <boost/range/algorithm_ext/push_back.hpp>
 
 namespace cppmanip
 {
@@ -8,10 +10,9 @@ namespace cppmanip
 namespace
 {
 
-struct UsedVariablesVisitor : clang::RecursiveASTVisitor<UsedVariablesVisitor>
+class RequiredVariablesVisitor : public clang::RecursiveASTVisitor<RequiredVariablesVisitor>
 {
-    std::unordered_set<clang::VarDecl *> used;
-
+public:
     bool VisitDeclRefExpr(clang::DeclRefExpr *d)
     {
         auto var = clang::dyn_cast<clang::VarDecl>(d->getDecl());
@@ -19,6 +20,23 @@ struct UsedVariablesVisitor : clang::RecursiveASTVisitor<UsedVariablesVisitor>
             used.insert(var);
         return true;
     }
+
+    bool VisitVarDecl(clang::VarDecl *d)
+    {
+        declared.insert(d);
+        return true;
+    }
+
+    LocalVariableUsageDetector::Variables getRequired() const
+    {
+        LocalVariableUsageDetector::Variables required;
+        auto notDeclared = [&](clang::VarDecl *d) { return declared.count(d) == 0; };
+        boost::push_back(required, used | boost::adaptors::filtered(notDeclared));
+        return required;
+    }
+private:
+    std::unordered_set<clang::VarDecl *> used;
+    std::unordered_set<clang::VarDecl *> declared;
 };
 
 }
@@ -26,10 +44,10 @@ struct UsedVariablesVisitor : clang::RecursiveASTVisitor<UsedVariablesVisitor>
 LocalVariableUsageDetector::Variables DefaultLocalVariableUsageDetector::findLocalVariablesRequiredForStmts(
     clang::StmtRange stmts)
 {
-    UsedVariablesVisitor v;
+    RequiredVariablesVisitor v;
     for (auto s : stmts)
         v.TraverseStmt(s);
-    return { begin(v.used), end(v.used) };
+    return v.getRequired();
 }
 LocalVariableUsageDetector::Variables DefaultLocalVariableUsageDetector::findVariablesDeclaredByAndUsedAfterStmts(
     clang::StmtRange stmts, clang::Stmt& parent)
