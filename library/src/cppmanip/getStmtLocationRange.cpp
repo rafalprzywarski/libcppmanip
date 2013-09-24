@@ -1,4 +1,6 @@
 #include "getStmtLocationRange.hpp"
+#include <boost/optional.hpp>
+#include <cppmanip/ExtractMethodError.hpp>
 #include <clang/AST/RecursiveASTVisitor.h>
 #include <clang/Lex/Lexer.h>
 
@@ -35,9 +37,16 @@ public:
         getRangeTillSemicolon(s);
         return false;
     }
-    clang::SourceRange getRange() const { return range; }
+
+    clang::SourceRange getRange() const
+    {
+        if (!range)
+            throw cppmanip::ExtractMethodError(std::string("Unhandled statement: "));
+
+        return *range;
+    }
 private:
-    clang::SourceRange range;
+    boost::optional<clang::SourceRange> range;
     clang::SourceManager& sourceManager;
     void getRange(clang::Stmt *s)
     {
