@@ -66,7 +66,7 @@ FunctionPrinter::Strings DelayedMethodExtractor::getNames(DelayedMethodExtractor
 void DelayedMethodExtractor::failIfVariablesAreDeclaredByAndUsedAfterStmts(
     clang::StmtRange stmts, const clang::FunctionDecl& originalFunction, const std::string& extractedFunctionName, SourceExtractor& sourceExtractor)
 {
-    auto usedVars = localVariableLocator.findVariablesDeclaredByAndUsedAfterStmts(stmts, originalFunction);
+    auto usedVars = localVariableLocator.findVariablesDeclaredByAndUsedAfterStmts(stmts, *clang::dyn_cast<clang::CompoundStmt>(originalFunction.getBody()));
     if (!usedVars.empty())
         throw ExtractMethodError("Cannot extract \'" + extractedFunctionName +
             "\'. Following variables are in use after the selected statements: " + boost::algorithm::join(getNames(usedVars, sourceExtractor), ", "));

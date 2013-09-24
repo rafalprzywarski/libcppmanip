@@ -75,9 +75,9 @@ private:
 class UsedVariablesFinder : public clang::RecursiveASTVisitor<UsedVariablesFinder>, public VariableFinder
 {
 public:
-    void findAfterStmts(clang::StmtRange stmts, const clang::FunctionDecl& func)
+    void findAfterStmts(clang::StmtRange stmts, clang::Stmt& parent)
     {
-        for (auto& s : clang::StmtRange(end(stmts), func.getBody()->child_end()))
+        for (auto& s : clang::StmtRange(end(stmts), end(parent.children())))
             TraverseStmt(s);
     }
 
@@ -123,14 +123,14 @@ LocalVariableLocator::Variables NaiveLocalVariableLocator::findLocalVariablesReq
 }
 
 LocalVariableLocator::Variables NaiveLocalVariableLocator::findVariablesDeclaredByAndUsedAfterStmts(
-    clang::StmtRange stmts, const clang::FunctionDecl& func)
+    clang::StmtRange stmts, clang::Stmt& parent)
 {
     DeclaredLocalVariablesFinder declaredFinder;
     declaredFinder.traverseStmts(stmts);
     auto declared = declaredFinder.getVariables();
 
     UsedVariablesFinder usedFinder;
-    usedFinder.findAfterStmts(stmts, func);
+    usedFinder.findAfterStmts(stmts, parent);
     auto used = usedFinder.getVariables();
 
     auto isDeclared = [&](clang::VarDecl *d) { return !boost::empty(boost::find<boost::return_found_end>(declared, d)); };

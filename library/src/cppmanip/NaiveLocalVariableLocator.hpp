@@ -10,7 +10,7 @@ class NaiveLocalVariableLocator : public LocalVariableLocator
 {
 public:
     virtual Variables findLocalVariablesRequiredForStmts(clang::StmtRange stmts);
-    virtual Variables findVariablesDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, const clang::FunctionDecl& func);
+    virtual Variables findVariablesDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, clang::Stmt& parent);
 };
 
 }

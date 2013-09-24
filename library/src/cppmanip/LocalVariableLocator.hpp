@@ -6,7 +6,6 @@
 namespace clang
 {
 class VarDecl;
-class FunctionDecl;
 }
 
 namespace cppmanip
@@ -17,7 +16,7 @@ class LocalVariableLocator
 public:
     typedef std::vector<clang::VarDecl *> Variables;
     virtual Variables findLocalVariablesRequiredForStmts(clang::StmtRange stmts) = 0;
-    virtual Variables findVariablesDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, const clang::FunctionDecl& func) = 0;
+    virtual Variables findVariablesDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, clang::Stmt& parent) = 0;
 };
 
 }
