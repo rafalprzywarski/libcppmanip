@@ -1,4 +1,4 @@
-#include "getStmtRange.hpp"
+#include "getStmtLocationRange.hpp"
 #include <clang/AST/RecursiveASTVisitor.h>
 #include <clang/Lex/Lexer.h>
 
@@ -58,7 +58,7 @@ private:
     }
 };
 
-LocationRange getStmtRange(clang::SourceManager& sourceManager, clang::Stmt& stmt)
+LocationRange getStmtLocationRange(clang::SourceManager& sourceManager, clang::Stmt& stmt)
 {
     StmtVisitor v(sourceManager);
     v.TraverseStmt(&stmt);

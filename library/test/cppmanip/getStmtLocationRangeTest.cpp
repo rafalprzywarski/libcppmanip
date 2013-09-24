@@ -1,4 +1,4 @@
-#include <cppmanip/getStmtRange.hpp>
+#include <cppmanip/getStmtLocationRange.hpp>
 #include "ParsedFunction.hpp"
 #include <gtest/gtest.h>
 
@@ -29,7 +29,7 @@ std::ostream& operator<<(std::ostream& os, const Stmt& s)
     return os;
 }
 
-struct getStmtRangeTest : testing::TestWithParam<Stmt>
+struct getStmtLocationRangeTest : testing::TestWithParam<Stmt>
 {
     std::unique_ptr<test::ParsedFunction> func;
     std::string extraDeclarations;
@@ -49,7 +49,7 @@ struct getStmtRangeTest : testing::TestWithParam<Stmt>
     LocationRange getRangeFromSource(const std::string& source)
     {
         parse(source);
-        return getStmtRange(func->getDecl()->getASTContext().getSourceManager(), **func->stmts());
+        return getStmtLocationRange(func->getDecl()->getASTContext().getSourceManager(), **func->stmts());
     }
 
     LocationRange getRageFromStmt(const std::string& stmt)
@@ -65,13 +65,13 @@ struct getStmtRangeTest : testing::TestWithParam<Stmt>
     }
 };
 
-TEST_F(getStmtRangeTest, should_handle_multiline_statements)
+TEST_F(getStmtLocationRangeTest, should_handle_multiline_statements)
 {
     auto range = getRangeFromSource("void dummy_function__() {\n  int\n x;\n}");
     ASSERT_EQ(LocationRange(rowCol(1, 2), rowCol(2, 3)), range);
 }
 
-TEST_P(getStmtRangeTest, should_find_correct_source_range_for_a_statement)
+TEST_P(getStmtLocationRangeTest, should_find_correct_source_range_for_a_statement)
 {
     setExtraDeclarations(GetParam().extraDecl);
     auto range = getRageFromStmt(GetParam().stmt);
@@ -80,7 +80,7 @@ TEST_P(getStmtRangeTest, should_find_correct_source_range_for_a_statement)
 
 INSTANTIATE_TEST_CASE_P(
     should_find_correct_source_range_for_all_statements,
-    getStmtRangeTest,
+    getStmtLocationRangeTest,
     Values(
         Stmt("int x;"),
         Stmt("int x  ;"),

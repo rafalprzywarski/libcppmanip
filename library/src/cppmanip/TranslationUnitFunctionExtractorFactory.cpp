@@ -5,7 +5,7 @@
 #include "TranslationUnitFunctionExtractor.hpp"
 #include "DefaultFunctionLocator.hpp"
 #include "DefaultStatementLocator.hpp"
-#include "getStmtRange.hpp"
+#include "getStmtLocationRange.hpp"
 
 namespace cppmanip
 {
@@ -22,7 +22,7 @@ clangutil::TranslationUnitHandlerPtr TranslationUnitFunctionExtractorFactory::cr
         DelayedMethodExtractor stmtExtractor;
         TranslationUnitFunctionExtractor functionExtractor;
         WithDeps(const std::string& extractedMethodName, LocationRange selection, text::OffsetBasedTextModifier& sourceOperations)
-            : functionLocator(selection), stmtLocator(getStmtRange, selection),
+            : functionLocator(selection), stmtLocator(getStmtLocationRange, selection),
             stmtExtractor(sourceOperations, printer, localVariableLocator, extractedMethodName),
             functionExtractor(functionLocator, stmtLocator, stmtExtractor) { }
     };
