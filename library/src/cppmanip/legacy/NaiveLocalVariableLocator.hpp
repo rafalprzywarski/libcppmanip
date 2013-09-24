@@ -1,7 +1,6 @@
 #ifndef CPPMANIP_050F6B6B2ADD47528D05772006AEF4C7_HPP
 #define CPPMANIP_050F6B6B2ADD47528D05772006AEF4C7_HPP
-
-#include "LocalVariableLocator.hpp"
+#include <cppmanip/LocalVariableLocator.hpp>
 
 namespace cppmanip
 {

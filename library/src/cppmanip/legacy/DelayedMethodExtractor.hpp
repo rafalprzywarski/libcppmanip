@@ -1,10 +1,10 @@
 #ifndef CPPMANIP_799523E01B0442A6ABBA2BFB7EF4F97A_HPP
 #define CPPMANIP_799523E01B0442A6ABBA2BFB7EF4F97A_HPP
 #include "FunctionPrinter.hpp"
-#include "LocalVariableLocator.hpp"
 #include "SourceExtractor.hpp"
 #include <cppmanip/StatementExtractor.hpp>
 #include <cppmanip/text/TextModifier.hpp>
+#include <cppmanip/LocalVariableLocator.hpp>
 
 namespace cppmanip
 {
