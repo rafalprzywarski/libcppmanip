@@ -20,7 +20,7 @@ add_library(cppmanip SHARED
     src/cppmanip/SourceExtractor.cpp
     src/cppmanip/io/TextFileOps.cpp
     src/cppmanip/clangutil/ClangToolArgsBuilder.cpp
-    src/cppmanip/CppManip.cpp
+    src/cppmanip/extractFunctionInFile.cpp
     src/cppmanip/PrettyFunctionPrinter.cpp
     src/cppmanip/DelayedMethodExtractor.cpp
     src/cppmanip/NaiveLocalVariableLocator.cpp
