@@ -18,7 +18,7 @@ public:
     {
         return getRange(s);
     }
-    clang::SourceRange VisitCallExpr(clang::CallExpr *s)
+    clang::SourceRange VisitExpr(clang::Expr *s)
     {
         return getRangeTillSemicolon(s);
     }
@@ -27,10 +27,6 @@ public:
         auto start = getRange(s);
         auto end = getStmtRange(sourceManager, *s->getBody());
         return { start.getBegin(), end.getEnd() };
-    }
-    clang::SourceRange VisitCompoundAssignOperator(clang::CompoundAssignOperator *s)
-    {
-        return getRangeTillSemicolon(s);
     }
     clang::SourceRange VisitIfStmt(clang::IfStmt *s)
     {
