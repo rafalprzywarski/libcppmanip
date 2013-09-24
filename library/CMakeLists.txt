@@ -59,7 +59,7 @@ add_executable(cppmaniptest
     test/cppmanip/Condition.cpp
     test/main.cpp
     test/cppmanip/text/TextOperationApplierTest.cpp
-    test/cppmanip/OffsetRangeTest.cpp
+    test/cppmanip/PositionRangeTest.cpp
     test/cppmanip/clangutil/ClangToolArgsBuilderTest.cpp
     test/cppmanip/text/TextReplacementRecorderTest.cpp
     test/cppmanip/text/OffsetConverterTest.cpp
