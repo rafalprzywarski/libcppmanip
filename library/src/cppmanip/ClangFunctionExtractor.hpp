@@ -10,15 +10,14 @@ namespace cppmanip
 class ClangFunctionExtractor : public FunctionExtractor
 {
 public:
-    ClangFunctionExtractor(text::OffsetBasedTextModifier& textModifier, const std::string& filename,
-        clangutil::TranslationUnitHandlerPtr translationUnitHandler
-    )
-        : textModifier(textModifier), filename(filename), translationUnitHandler(translationUnitHandler) { }
+    typedef std::function<SourceReplacements()> GetReplacements;
+    typedef std::function<void()> RunTranslationUnitHandler;
+    ClangFunctionExtractor(RunTranslationUnitHandler runTranslationUnitHandler, GetReplacements getReplacements)
+        : runTranslationUnitHandler(runTranslationUnitHandler), getReplacements(getReplacements) { }
     virtual SourceReplacements extractFunctionInFile();
 private:
-    text::OffsetBasedTextModifier& textModifier;
-    std::string filename;
-    clangutil::TranslationUnitHandlerPtr translationUnitHandler;
+    RunTranslationUnitHandler runTranslationUnitHandler;
+    GetReplacements getReplacements;
 };
 
 }

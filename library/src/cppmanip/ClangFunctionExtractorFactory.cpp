@@ -1,12 +1,27 @@
 #include "ClangFunctionExtractorFactory.hpp"
 #include "ClangFunctionExtractor.hpp"
 #include "text/TextOperationApplier.hpp"
+#include "text/OffsetConverter.hpp"
+#include "text/TextReplacementRecorder.hpp"
 #include "makeWithDependencies.hpp"
 #include "LocationRange.hpp"
 #include "TranslationUnitFunctionExtractorFactory.hpp"
+#include "io/TextFileOps.hpp"
+#include "clangutil/runTranslationUnitHandlerOnFile.hpp"
 
 namespace cppmanip
 {
+
+namespace
+{
+SourceReplacements recordReplacements(const text::OffsetBasedTextModifier& sourceOperations, const std::string& filename)
+{
+    text::OffsetConverter offsetCoverter(io::loadTextFromFile(filename));
+    text::TextReplacementRecorder recorder(std::bind(&text::OffsetConverter::getLocationFromOffset, &offsetCoverter, std::placeholders::_1));
+    sourceOperations.apply(recorder);
+    return recorder.getReplacements();
+}
+}
 
 FunctionExtractorPtr ClangFunctionExtractorFactory::createFunctionExtractor(
     const std::string& functionName, SourceSelection selection, const std::string& filename)
@@ -16,9 +31,12 @@ FunctionExtractorPtr ClangFunctionExtractorFactory::createFunctionExtractor(
         text::OffsetBasedTextOperationApplier textModifier;
         ClangFunctionExtractor extractor;
         WithDeps(const std::string& functionName, SourceSelection selection, const std::string& filename)
-            : extractor(textModifier, filename,
-                        TranslationUnitFunctionExtractorFactory().createFunctionExtractor(
-                            functionName, LocationRange(selection.from, selection.to), textModifier)) { }
+            : extractor(
+                std::bind(
+                    clangutil::runTranslationUnitHandlerOnFile,
+                    TranslationUnitFunctionExtractorFactory().createFunctionExtractor(
+                        functionName, LocationRange(selection.from, selection.to), textModifier), filename),
+                std::bind(recordReplacements, std::ref(textModifier), filename)) { }
     };
     auto withDeps = std::make_shared<WithDeps>(functionName, selection, filename);
     return std::shared_ptr<FunctionExtractor>(withDeps, &withDeps->extractor);
