@@ -38,7 +38,7 @@ public:
         return os << "[" << p.from << "; " << p.to << ")";
     }
 private:
-    Position from, to;
+    const Position from, to;
 };
 
 }

@@ -20,7 +20,7 @@ public:
         translationUnitHandler->handleTranslationUnit(ctx);
     }
 private:
-    TranslationUnitHandlerPtr translationUnitHandler;
+    const TranslationUnitHandlerPtr translationUnitHandler;
 };
 
 class FrontendActionWithTranslationUnitHandler : public clang::ASTFrontendAction
@@ -33,7 +33,7 @@ public:
         return new ASTConsumerWithTranslationUnitHandler(translationUnitHandler);
     }
 private:
-    TranslationUnitHandlerPtr translationUnitHandler;
+    const TranslationUnitHandlerPtr translationUnitHandler;
 };
 
 class FrontendActionWithTranslationUnitHandlerFactory : public clang::tooling::FrontendActionFactory
@@ -48,7 +48,7 @@ public:
     }
 
 private:
-    TranslationUnitHandlerPtr translationUnitHandler;
+    const TranslationUnitHandlerPtr translationUnitHandler;
 };
 
 }

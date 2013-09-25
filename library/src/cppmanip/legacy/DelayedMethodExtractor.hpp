@@ -26,7 +26,7 @@ private:
     text::OffsetBasedTextModifier& sourceOperations;
     FunctionPrinter& functionPrinter;
     LocalVariableUsageDetector& localVariableLocator;
-    std::string extractedFunctionName;
+    const std::string extractedFunctionName;
 
     void printExtractedFunction(const clang::FunctionDecl& originalFunction, const Variables& variables, clang::StmtRange stmts, SourceExtractor& sourceExtractor);
     void replaceStatementsWithFunctionCall(clang::StmtRange stmts, const Variables& variables, SourceExtractor& sourceExtractor);

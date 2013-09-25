@@ -16,8 +16,8 @@ public:
         : runTranslationUnitHandler(runTranslationUnitHandler), getReplacements(getReplacements) { }
     virtual SourceReplacements extractFunctionInFile();
 private:
-    RunTranslationUnitHandler runTranslationUnitHandler;
-    GetReplacements getReplacements;
+    const RunTranslationUnitHandler runTranslationUnitHandler;
+    const GetReplacements getReplacements;
 };
 
 }

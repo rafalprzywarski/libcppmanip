@@ -16,8 +16,8 @@ public:
         : getStmtRange(getStmtRange), selection(selection) { }
     virtual clang::StmtRange findStatementsInFunction(const clang::FunctionDecl& decl);
 private:
-    GetStmtRange getStmtRange;
-    LocationRange selection;
+    const GetStmtRange getStmtRange;
+    const LocationRange selection;
 };
 
 }

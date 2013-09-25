@@ -12,7 +12,7 @@ public:
     DefaultFunctionLocator(LocationRange selection) : selection(selection) { }
     virtual clang::FunctionDecl& getFunction(clang::ASTContext& context);
 private:
-    LocationRange selection;
+    const LocationRange selection;
 };
 
 }
