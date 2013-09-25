@@ -14,7 +14,7 @@ struct DefaultLocalVariableUsageDetectorTest : testing::Test
     std::string extraDeclarations;
     DefaultLocalVariableUsageDetector detector;
 
-    void declareFunctions(const std::string& functions)
+    void declareGlobal(const std::string& functions)
     {
         extraDeclarations = functions;
     }
@@ -47,7 +47,7 @@ struct DefaultLocalVariableUsageDetectorTest : testing::Test
 
 TEST_F(DefaultLocalVariableUsageDetectorTest, should_return_no_variables_of_none_are_used)
 {
-    declareFunctions("void f(); void g();");
+    declareGlobal("void f(); void g();");
     auto stmts = parseStmts("f(); g();");
 
     ASSERT_TRUE(detector.findLocalVariablesRequiredForStmts(stmts).empty());
@@ -55,7 +55,7 @@ TEST_F(DefaultLocalVariableUsageDetectorTest, should_return_no_variables_of_none
 
 TEST_F(DefaultLocalVariableUsageDetectorTest, should_return_variables_in_given_range)
 {
-    declareFunctions("void f(int); void g(int);");
+    declareGlobal("void f(int); void g(int);");
     auto stmts = parseStmts("int x = 1; int y = 2; f(x); g(y);");
     const auto INT_X = 0, INT_Y = 1;
     auto checked = skip(2, stmts);
@@ -66,7 +66,7 @@ TEST_F(DefaultLocalVariableUsageDetectorTest, should_return_variables_in_given_r
 
 TEST_F(DefaultLocalVariableUsageDetectorTest, should_not_return_the_same_variable_twice)
 {
-    declareFunctions("void f(int); void g(int);");
+    declareGlobal("void f(int); void g(int);");
     auto stmts = parseStmts("int x = 1; f(x); g(x);");
     auto checked = skip(1, stmts);
 
@@ -76,7 +76,7 @@ TEST_F(DefaultLocalVariableUsageDetectorTest, should_not_return_the_same_variabl
 
 TEST_F(DefaultLocalVariableUsageDetectorTest, should_not_return_variables_declared_inside_the_given_range)
 {
-    declareFunctions("void f(int, int);");
+    declareGlobal("void f(int, int);");
     auto stmts = parseStmts("int x = 1; int y = 2; f(x, y); int z = 4; f(y, z);");
     const auto INT_X = 0;
     auto checked = skip(1, stmts);
@@ -86,7 +86,7 @@ TEST_F(DefaultLocalVariableUsageDetectorTest, should_not_return_variables_declar
 
 TEST_F(DefaultLocalVariableUsageDetectorTest, should_not_return_global_variables)
 {
-    declareFunctions("int g;");
+    declareGlobal("int g;");
     auto stmts = parseStmts("int x = g;");
     ASSERT_TRUE(detector.findLocalVariablesRequiredForStmts(stmts).empty());
 }
