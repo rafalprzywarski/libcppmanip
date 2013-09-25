@@ -9,7 +9,7 @@ namespace cppmanip
 class ClangFunctionExtractorFactory
 {
 public:
-    std::shared_ptr<FunctionExtractor> createFunctionExtractor();
+    FunctionExtractorPtr createFunctionExtractor(const std::string& functionName, SourceSelection selection, const std::string& filename);
 };
 
 }

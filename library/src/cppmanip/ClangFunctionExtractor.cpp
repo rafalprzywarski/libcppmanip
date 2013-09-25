@@ -18,10 +18,9 @@ SourceReplacements recordReplacements(const text::OffsetBasedTextModifier& sourc
 }
 }
 
-SourceReplacements ClangFunctionExtractor::extractFunctionInFile(const std::string& functionName, SourceSelection selection, const std::string& filename)
+SourceReplacements ClangFunctionExtractor::extractFunctionInFile()
 {
-    auto functionExtractor = TranslationUnitFunctionExtractorFactory().createFunctionExtractor(functionName, LocationRange(selection.from, selection.to), textModifier);
-    clangutil::runTranslationUnitHandlerOnFile(functionExtractor, filename);
+    clangutil::runTranslationUnitHandlerOnFile(translationUnitHandler, filename);
     return recordReplacements(textModifier, filename);
 }
 
