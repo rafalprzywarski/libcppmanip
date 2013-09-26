@@ -17,7 +17,7 @@ namespace
 SourceReplacements recordReplacements(const text::OffsetBasedTextModifier& sourceOperations, const std::string& filename)
 {
     text::OffsetConverter offsetCoverter(io::loadTextFromFile(filename));
-    text::TextReplacementRecorder recorder(std::bind(&text::OffsetConverter::getLocationFromOffset, &offsetCoverter, std::placeholders::_1));
+    text::TextReplacementRecorder recorder([&](unsigned offset) { return offsetCoverter.getLocationFromOffset(offset); });
     sourceOperations.apply(recorder);
     return recorder.getReplacements();
 }

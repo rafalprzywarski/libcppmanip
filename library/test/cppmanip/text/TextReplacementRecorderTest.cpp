@@ -20,7 +20,7 @@ struct TextReplacementRecorderTest : testing::Test
     MOCK_METHOD1(fromOffsetToSourceLocation, SourceLocation(unsigned offset));
 
     TextReplacementRecorderTest()
-        : recorder(std::bind(&TextReplacementRecorderTest::fromOffsetToSourceLocation, this, std::placeholders::_1))
+        : recorder([&](unsigned offset) { return fromOffsetToSourceLocation(offset); })
     {
         FROM.col = 20;
         FROM.row = 30;

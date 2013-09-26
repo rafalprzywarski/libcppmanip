@@ -30,7 +30,7 @@ clangutil::HandleTranslationUnit TranslationUnitFunctionExtractorFactory::create
     };
     auto withDeps = std::make_shared<WithDeps>(extractedMethodName, selection, sourceOperations);
     std::shared_ptr<TranslationUnitFunctionExtractor> handler{withDeps, &withDeps->functionExtractor};
-    return std::bind(&TranslationUnitFunctionExtractor::handleTranslationUnit, handler, std::placeholders::_1);
+    return [=](clang::ASTContext& ctx){ handler->handleTranslationUnit(ctx); };
 }
 
 }
