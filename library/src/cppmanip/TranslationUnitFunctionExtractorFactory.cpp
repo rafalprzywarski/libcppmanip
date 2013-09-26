@@ -4,7 +4,7 @@
 #include "legacy/DelayedMethodExtractor.hpp"
 #include "TranslationUnitFunctionExtractor.hpp"
 #include "getFunctionFromAstInSelection.hpp"
-#include "DefaultStatementLocator.hpp"
+#include "findStatementsInFunctionOverlappingSelection.hpp"
 #include "getStmtLocationRange.hpp"
 
 namespace cppmanip
@@ -18,16 +18,14 @@ clangutil::TranslationUnitHandlerPtr TranslationUnitFunctionExtractorFactory::cr
     struct WithDeps
     {
         legacy::PrettyFunctionPrinter printer;
-        DefaultStatementLocator stmtLocator;
         legacy::NaiveLocalVariableLocator localVariableLocator;
         legacy::DelayedMethodExtractor stmtExtractor;
         TranslationUnitFunctionExtractor functionExtractor;
         WithDeps(const std::string& extractedMethodName, LocationRange selection, text::OffsetBasedTextModifier& sourceOperations)
-            : stmtLocator(getStmtLocationRange, selection),
-            stmtExtractor(sourceOperations, printer, localVariableLocator, extractedMethodName),
+            : stmtExtractor(sourceOperations, printer, localVariableLocator, extractedMethodName),
             functionExtractor(
                 bind(getFunctionFromAstInSelection, _1, selection),
-                bind(&DefaultStatementLocator::findStatementsInFunction, &stmtLocator, _1),
+                bind(findStatementsInFunctionOverlappingSelection, _1, selection, getStmtLocationRange),
                 stmtExtractor) { }
     };
     auto withDeps = std::make_shared<WithDeps>(extractedMethodName, selection, sourceOperations);

@@ -1,11 +1,12 @@
-#include "DefaultStatementLocator.hpp"
+#include "findStatementsInFunctionOverlappingSelection.hpp"
 #include <clang/AST/Stmt.h>
 #include <clang/AST/ASTContext.h>
 
 namespace cppmanip
 {
 
-clang::StmtRange DefaultStatementLocator::findStatementsInFunction(const clang::FunctionDecl& decl)
+clang::StmtRange findStatementsInFunctionOverlappingSelection(
+    const clang::FunctionDecl& decl, LocationRange selection, GetStmtRange getStmtRange)
 {
     auto first = std::find_if(
         decl.getBody()->child_begin(), decl.getBody()->child_end(),

@@ -32,7 +32,7 @@ add_library(cppmanip SHARED
     src/cppmanip/TranslationUnitFunctionExtractor.cpp
     src/cppmanip/TranslationUnitFunctionExtractorFactory.cpp
     src/cppmanip/clangutil/runTranslationUnitHandlerOnFile.cpp
-    src/cppmanip/DefaultStatementLocator.cpp
+    src/cppmanip/findStatementsInFunctionOverlappingSelection.cpp
     src/cppmanip/getStmtLocationRange.cpp
     src/cppmanip/DefaultLocalVariableUsageDetector.cpp
 )
@@ -66,7 +66,7 @@ add_executable(cppmaniptest
     test/cppmanip/text/OffsetConverterTest.cpp
     test/cppmanip/getFunctionFromAstInSelectionTest.cpp
     test/cppmanip/SourceLocationOperatorsTest.cpp
-    test/cppmanip/DefaultStatementLocatorTest.cpp
+    test/cppmanip/findStatementsInFunctionOverlappingSelectionTest.cpp
     test/cppmanip/getStmtLocationRangeTest.cpp
     test/cppmanip/DefaultLocalVariableUsageDetectorTest.cpp
 ) 
