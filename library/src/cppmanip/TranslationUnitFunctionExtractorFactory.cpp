@@ -25,7 +25,10 @@ clangutil::TranslationUnitHandlerPtr TranslationUnitFunctionExtractorFactory::cr
         WithDeps(const std::string& extractedMethodName, LocationRange selection, text::OffsetBasedTextModifier& sourceOperations)
             : stmtLocator(getStmtLocationRange, selection),
             stmtExtractor(sourceOperations, printer, localVariableLocator, extractedMethodName),
-            functionExtractor(bind(getFunctionFromAstInSelection, _1, selection), stmtLocator, stmtExtractor) { }
+            functionExtractor(
+                bind(getFunctionFromAstInSelection, _1, selection),
+                bind(&DefaultStatementLocator::findStatementsInFunction, &stmtLocator, _1),
+                stmtExtractor) { }
     };
     auto withDeps = std::make_shared<WithDeps>(extractedMethodName, selection, sourceOperations);
     return std::shared_ptr<clangutil::TranslationUnitHandler>(withDeps, &withDeps->functionExtractor);
