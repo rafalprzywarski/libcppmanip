@@ -1,12 +1,11 @@
 #ifndef CPPMANIP_F6D4A1972E414BE5B79D1D592783B2D2_HPP
 #define CPPMANIP_F6D4A1972E414BE5B79D1D592783B2D2_HPP
 #include "StatementExtractor.hpp"
-#include "clangutil/TranslationUnitHandler.hpp"
 
 namespace cppmanip
 {
 
-class TranslationUnitFunctionExtractor : public clangutil::TranslationUnitHandler
+class TranslationUnitFunctionExtractor
 {
 public:
     typedef std::function<clang::FunctionDecl&(clang::ASTContext&)> LocateFunction;

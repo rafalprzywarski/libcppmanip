@@ -1,8 +1,8 @@
 #ifndef CPPMANIP_BFCEF719CED24F62880950DB1CFBA8A0_HPP
 #define CPPMANIP_BFCEF719CED24F62880950DB1CFBA8A0_HPP
-#include "clangutil/TranslationUnitHandler.hpp"
 #include "text/TextModifier.hpp"
 #include "LocationRange.hpp"
+#include "clangutil/HandleTranslationUnit.hpp"
 
 namespace cppmanip
 {
@@ -10,7 +10,7 @@ namespace cppmanip
 class TranslationUnitFunctionExtractorFactory
 {
 public:
-    clangutil::TranslationUnitHandlerPtr createFunctionExtractor(
+    clangutil::HandleTranslationUnit createFunctionExtractor(
         const std::string& extractedMethodName, LocationRange selection, cppmanip::text::OffsetBasedTextModifier& sourceOperations);
 };
 

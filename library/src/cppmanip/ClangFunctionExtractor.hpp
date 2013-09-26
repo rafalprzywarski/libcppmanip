@@ -2,7 +2,6 @@
 #define CPPMANIP_96167AD230584C3EAA5F0BF303AB37C9_HPP
 #include "FunctionExtractor.hpp"
 #include "text/TextModifier.hpp"
-#include "clangutil/TranslationUnitHandler.hpp"
 
 namespace cppmanip
 {

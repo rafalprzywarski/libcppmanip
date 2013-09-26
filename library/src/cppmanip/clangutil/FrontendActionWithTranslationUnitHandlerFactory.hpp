@@ -3,7 +3,7 @@
 #include <clang/AST/ASTConsumer.h>
 #include <clang/Frontend/FrontendAction.h>
 #include <clang/Tooling/Tooling.h>
-#include "TranslationUnitHandler.hpp"
+#include "HandleTranslationUnit.hpp"
 
 namespace cppmanip
 {
@@ -13,42 +13,42 @@ namespace clangutil
 class ASTConsumerWithTranslationUnitHandler : public clang::ASTConsumer
 {
 public:
-    ASTConsumerWithTranslationUnitHandler(TranslationUnitHandlerPtr translationUnitHandler)
-        : translationUnitHandler(translationUnitHandler) { }
+    ASTConsumerWithTranslationUnitHandler(clangutil::HandleTranslationUnit handleTranslationUnit)
+        : handleTranslationUnit(handleTranslationUnit) { }
     virtual void HandleTranslationUnit(clang::ASTContext& ctx)
     {
-        translationUnitHandler->handleTranslationUnit(ctx);
+        handleTranslationUnit(ctx);
     }
 private:
-    const TranslationUnitHandlerPtr translationUnitHandler;
+    const clangutil::HandleTranslationUnit handleTranslationUnit;
 };
 
 class FrontendActionWithTranslationUnitHandler : public clang::ASTFrontendAction
 {
 public:
-    FrontendActionWithTranslationUnitHandler(TranslationUnitHandlerPtr translationUnitHandler)
-        : translationUnitHandler(translationUnitHandler) { }
+    FrontendActionWithTranslationUnitHandler(HandleTranslationUnit handleTranslationUnit)
+        : handleTranslationUnit(handleTranslationUnit) { }
     virtual clang::ASTConsumer* CreateASTConsumer(clang::CompilerInstance&, clang::StringRef)
     {
-        return new ASTConsumerWithTranslationUnitHandler(translationUnitHandler);
+        return new ASTConsumerWithTranslationUnitHandler(handleTranslationUnit);
     }
 private:
-    const TranslationUnitHandlerPtr translationUnitHandler;
+    const HandleTranslationUnit handleTranslationUnit;
 };
 
 class FrontendActionWithTranslationUnitHandlerFactory : public clang::tooling::FrontendActionFactory
 {
 public:
-    FrontendActionWithTranslationUnitHandlerFactory(TranslationUnitHandlerPtr translationUnitHandler)
-        : translationUnitHandler(translationUnitHandler) { }
+    FrontendActionWithTranslationUnitHandlerFactory(HandleTranslationUnit handleTranslationUnit)
+        : handleTranslationUnit(handleTranslationUnit) { }
 
     virtual clang::FrontendAction* create()
     {
-        return new FrontendActionWithTranslationUnitHandler(translationUnitHandler);
+        return new FrontendActionWithTranslationUnitHandler(handleTranslationUnit);
     }
 
 private:
-    const TranslationUnitHandlerPtr translationUnitHandler;
+    const HandleTranslationUnit handleTranslationUnit;
 };
 
 }
