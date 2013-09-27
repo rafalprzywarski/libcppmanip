@@ -32,11 +32,10 @@ FunctionExtractorPtr ClangFunctionExtractorFactory::createFunctionExtractor(
         ClangFunctionExtractor extractor;
         WithDeps(const std::string& functionName, SourceSelection selection, const std::string& filename)
             : extractor(
-                std::bind(
-                    clangutil::runTranslationUnitHandlerOnFile,
+                [&]{ clangutil::runTranslationUnitHandlerOnFile(
                     TranslationUnitFunctionExtractorFactory().createFunctionExtractor(
-                        functionName, LocationRange(selection.from, selection.to), textModifier), filename),
-                std::bind(recordReplacements, std::ref(textModifier), filename)) { }
+                        functionName, LocationRange(selection.from, selection.to), textModifier), filename); },
+                [&]{ return recordReplacements(textModifier, filename); }) { }
     };
     auto withDeps = std::make_shared<WithDeps>(functionName, selection, filename);
     return std::shared_ptr<FunctionExtractor>(withDeps, &withDeps->extractor);
