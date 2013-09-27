@@ -6,8 +6,6 @@
 #include <boost/next_prior.hpp>
 
 using namespace testing;
-using std::bind;
-namespace arg = std::placeholders;
 
 namespace cppmanip
 {
