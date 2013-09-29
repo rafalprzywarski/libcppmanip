@@ -34,7 +34,7 @@ add_library(cppmanip SHARED
     src/cppmanip/clangutil/runTranslationUnitHandlerOnFile.cpp
     src/cppmanip/findStatementsInFunctionOverlappingSelection.cpp
     src/cppmanip/getStmtLocationRange.cpp
-    src/cppmanip/DefaultLocalVariableUsageDetector.cpp
+    src/cppmanip/findLocalVariablesRequiredForStmts.cpp
 )
 
 target_link_libraries(cppmanip LINK_PRIVATE
@@ -68,7 +68,7 @@ add_executable(cppmaniptest
     test/cppmanip/SourceLocationOperatorsTest.cpp
     test/cppmanip/findStatementsInFunctionOverlappingSelectionTest.cpp
     test/cppmanip/getStmtLocationRangeTest.cpp
-    test/cppmanip/DefaultLocalVariableUsageDetectorTest.cpp
+    test/cppmanip/findLocalVariablesRequiredForStmtsTest.cpp
     test/cppmanip/getASTContextForSource.cpp
 ) 
 

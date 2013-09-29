@@ -1,4 +1,4 @@
-#include <cppmanip/DefaultLocalVariableUsageDetector.hpp>
+#include <cppmanip/findLocalVariablesRequiredForStmts.hpp>
 #include "ParsedFunction.hpp"
 #include <gtest/gtest.h>
 #include <memory>
@@ -8,11 +8,10 @@
 namespace cppmanip
 {
 
-struct DefaultLocalVariableUsageDetectorTest : testing::Test
+struct findLocalVariablesRequiredForStmtsTest : testing::Test
 {
     std::unique_ptr<test::ParsedFunction> func;
     std::string extraDeclarations;
-    DefaultLocalVariableUsageDetector detector;
 
     void declareGlobal(const std::string& functions)
     {
@@ -45,50 +44,50 @@ struct DefaultLocalVariableUsageDetectorTest : testing::Test
     }
 };
 
-TEST_F(DefaultLocalVariableUsageDetectorTest, should_return_no_variables_of_none_are_used)
+TEST_F(findLocalVariablesRequiredForStmtsTest, should_return_no_variables_of_none_are_used)
 {
     declareGlobal("void f(); void g();");
     auto stmts = parseStmts("f(); g();");
 
-    ASSERT_TRUE(detector.findLocalVariablesRequiredForStmts(stmts).empty());
+    ASSERT_TRUE(findLocalVariablesRequiredForStmts(stmts).empty());
 }
 
-TEST_F(DefaultLocalVariableUsageDetectorTest, should_return_variables_in_given_range)
+TEST_F(findLocalVariablesRequiredForStmtsTest, should_return_variables_in_given_range)
 {
     declareGlobal("void f(int); void g(int);");
     auto stmts = parseStmts("int x = 1; int y = 2; f(x); g(y);");
     const auto INT_X = 0, INT_Y = 1;
     auto checked = skip(2, stmts);
 
-    auto found = detector.findLocalVariablesRequiredForStmts(checked);
+    auto found = findLocalVariablesRequiredForStmts(checked);
     expectEqUnordered(found, { varDecl(INT_X, stmts), varDecl(INT_Y, stmts) });
 }
 
-TEST_F(DefaultLocalVariableUsageDetectorTest, should_not_return_the_same_variable_twice)
+TEST_F(findLocalVariablesRequiredForStmtsTest, should_not_return_the_same_variable_twice)
 {
     declareGlobal("void f(int); void g(int);");
     auto stmts = parseStmts("int x = 1; f(x); g(x);");
     auto checked = skip(1, stmts);
 
-    auto found = detector.findLocalVariablesRequiredForStmts(checked);
+    auto found = findLocalVariablesRequiredForStmts(checked);
     ASSERT_EQ(1u, found.size());
 }
 
-TEST_F(DefaultLocalVariableUsageDetectorTest, should_not_return_variables_declared_inside_the_given_range)
+TEST_F(findLocalVariablesRequiredForStmtsTest, should_not_return_variables_declared_inside_the_given_range)
 {
     declareGlobal("void f(int, int);");
     auto stmts = parseStmts("int x = 1; int y = 2; f(x, y); int z = 4; f(y, z);");
     const auto INT_X = 0;
     auto checked = skip(1, stmts);
-    auto found = detector.findLocalVariablesRequiredForStmts(checked);
+    auto found = findLocalVariablesRequiredForStmts(checked);
     expectEqUnordered(found, { varDecl(INT_X, stmts) });
 }
 
-TEST_F(DefaultLocalVariableUsageDetectorTest, should_not_return_global_variables)
+TEST_F(findLocalVariablesRequiredForStmtsTest, should_not_return_global_variables)
 {
     declareGlobal("int g;");
     auto stmts = parseStmts("int x = g;");
-    ASSERT_TRUE(detector.findLocalVariablesRequiredForStmts(stmts).empty());
+    ASSERT_TRUE(findLocalVariablesRequiredForStmts(stmts).empty());
 }
 
 }

@@ -1,4 +1,4 @@
-#include "DefaultLocalVariableUsageDetector.hpp"
+#include "findLocalVariablesRequiredForStmts.hpp"
 #include <clang/AST/RecursiveASTVisitor.h>
 #include <unordered_set>
 #include <boost/range/adaptor/filtered.hpp>
@@ -46,18 +46,13 @@ private:
 
 }
 
-std::vector<clang::VarDecl *> DefaultLocalVariableUsageDetector::findLocalVariablesRequiredForStmts(
+std::vector<clang::VarDecl *> findLocalVariablesRequiredForStmts(
     clang::StmtRange stmts)
 {
     RequiredVariablesVisitor v;
     for (auto s : stmts)
         v.TraverseStmt(s);
     return v.getRequired();
-}
-std::vector<clang::VarDecl *> DefaultLocalVariableUsageDetector::findVariablesDeclaredByAndUsedAfterStmts(
-    clang::StmtRange stmts, clang::Stmt& parent)
-{
-    return std::vector<clang::VarDecl *>();
 }
 
 }
