@@ -35,6 +35,7 @@ add_library(cppmanip SHARED
     src/cppmanip/query/findStatementsInFunctionOverlappingSelection.cpp
     src/cppmanip/query/getStmtLocationRange.cpp
     src/cppmanip/query/findLocalVariablesRequiredForStmts.cpp
+    src/cppmanip/query/findVariablesDeclaredByAndUsedAfterStmts.cpp
 )
 
 target_link_libraries(cppmanip LINK_PRIVATE
@@ -70,6 +71,7 @@ add_executable(cppmaniptest
     test/cppmanip/query/getStmtLocationRangeTest.cpp
     test/cppmanip/query/findLocalVariablesRequiredForStmtsTest.cpp
     test/cppmanip/getASTContextForSource.cpp
+    test/cppmanip/query/findVariablesDeclaredByAndUsedAfterStmtsTest.cpp
 ) 
 
 target_link_libraries(cppmaniptest cppmanip gtest gmock boost_thread boost_system pthread)
