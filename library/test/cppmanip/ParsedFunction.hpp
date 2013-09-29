@@ -15,6 +15,7 @@ public:
     clang::FunctionDecl *getDecl();
     clang::StmtRange stmts();
     clang::ASTContext& getASTContext() { return *astContext; }
+    clang::SourceManager& getSourceManager() { return astContext->getSourceManager(); }
 private:
     std::shared_ptr<clang::ASTContext> astContext;
 };
