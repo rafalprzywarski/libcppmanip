@@ -6,6 +6,7 @@
 #include "getFunctionFromAstInSelection.hpp"
 #include "findStatementsInFunctionOverlappingSelection.hpp"
 #include "getStmtLocationRange.hpp"
+#include "findLocalVariablesRequiredForStmts.hpp"
 
 namespace cppmanip
 {
@@ -24,7 +25,7 @@ clangutil::HandleTranslationUnit TranslationUnitFunctionExtractorFactory::create
         WithDeps(const std::string& extractedMethodName, LocationRange selection, text::OffsetBasedTextModifier& sourceOperations)
             : stmtExtractor(
                 sourceOperations, printer,
-                [&](clang::StmtRange stmts) { return localVariableLocator.findLocalVariablesRequiredForStmts(stmts); },
+                findLocalVariablesRequiredForStmts,
                 [&](clang::StmtRange stmts, clang::Stmt& parent) { return localVariableLocator.findVariablesDeclaredByAndUsedAfterStmts(stmts, parent); },
                 extractedMethodName),
             functionExtractor(

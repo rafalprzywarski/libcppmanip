@@ -14,7 +14,6 @@ class NaiveLocalVariableLocator
 {
 public:
     typedef std::vector<clang::VarDecl *> Variables;
-    virtual Variables findLocalVariablesRequiredForStmts(clang::StmtRange stmts);
     virtual Variables findVariablesDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, clang::Stmt& parent);
 };
 
