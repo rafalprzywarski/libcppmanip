@@ -69,6 +69,7 @@ add_executable(cppmaniptest
     test/cppmanip/findStatementsInFunctionOverlappingSelectionTest.cpp
     test/cppmanip/getStmtLocationRangeTest.cpp
     test/cppmanip/DefaultLocalVariableUsageDetectorTest.cpp
+    test/cppmanip/getASTContextForSource.cpp
 ) 
 
 target_link_libraries(cppmaniptest cppmanip gtest gmock boost_thread boost_system pthread)
