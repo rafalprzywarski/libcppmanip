@@ -107,6 +107,38 @@ Feature: As a developer I want to extract code into methods to make my code more
 
         """
         And there should be a replacement with "with_args(i, f);"
+    @wip
+    Scenario: Referenced local variables should be passed to the extracted function in order of their declarations
+        Given source code:
+        """
+        void other1(int);
+        void other2();
+        void other3(int, float);
+        void other4(int, float);
+        void original()
+        {
+            long l = 1;
+            int i = 7;
+            float f = 9.5f;
+            other1(i);
+            other2();
+            other3(i + 5, f * 2);
+            other4(f, l);
+        }
+        """
+        When I run function extraction from "other1(i)" to "other4(f, " with name "with_args"
+        Then there should be an insertion:
+        """
+        void with_args(long l, int i, float f)
+        {
+            other1(i);
+            other2();
+            other3(i + 5, f * 2);
+            other4(f, l);
+        }
+
+        """
+        And there should be a replacement with "with_args(l, i, f);"
     @done
     Scenario: Extraction of local variables declared in and used after the selected block should prevent the extraction
         Given source code:
