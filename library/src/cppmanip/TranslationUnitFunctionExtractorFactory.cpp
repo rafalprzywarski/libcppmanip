@@ -7,7 +7,7 @@
 #include "query/findLocalVariablesRequiredForStmts.hpp"
 #include "query/findVariablesDeclaredByAndUsedAfterStmts.hpp"
 #include "query/getFunctionDefinitionLocation.hpp"
-#include "query/getStmtsSource.hpp"
+#include "query/getSourceFromRange.hpp"
 #include "format/printFunction.hpp"
 
 namespace cppmanip
@@ -34,7 +34,7 @@ clangutil::HandleTranslationUnit TranslationUnitFunctionExtractorFactory::create
                         query::getFunctionDefinitionLocation,
                         query::findLocalVariablesRequiredForStmts,
                         query::findVariablesDeclaredByAndUsedAfterStmts, extractedMethodName,
-                        bind(query::getStmtsSource, std::ref(sourceManager), _1));
+                        bind(query::getSourceFromRange, std::ref(sourceManager), _1));
                 }) { }
     };
     auto withDeps = std::make_shared<WithDeps>(extractedMethodName, selection, sourceOperations);

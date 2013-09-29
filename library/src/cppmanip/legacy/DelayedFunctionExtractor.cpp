@@ -27,14 +27,14 @@ void DelayedFunctionExtractor::printExtractedFunction(
     clang::FunctionDecl& originalFunction, const DelayedFunctionExtractor::Variables& variables, clang::StmtRange stmts)
 {
     auto at = getLocationOffset(getFunctionDefinitionLocation(originalFunction));
-    auto source = printFunction(extractedFunctionName, variables, getStmtsSource(getStmtsRange(stmts)));
+    auto source = printFunction(extractedFunctionName, variables, getStmtsSource(getSourceFromRange(stmts)));
     sourceOperations.insertTextAt(source, at);
 }
 
 void DelayedFunctionExtractor::replaceStatementsWithFunctionCall(
     clang::StmtRange stmts, const DelayedFunctionExtractor::Variables& variables)
 {
-    auto without = getStmtsRange(stmts);
+    auto without = getSourceFromRange(stmts);
     auto begin = getLocationOffset(without.getBegin());
     auto end = getLocationOffset(without.getEnd());
     replaceRangeWith(begin, end, printFunctionCallStmt(extractedFunctionName, variables));

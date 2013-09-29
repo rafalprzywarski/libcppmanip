@@ -13,7 +13,7 @@ namespace cppmanip
 namespace query
 {
 
-std::string getStmtsSource(clang::SourceManager& sourceManager, clang::SourceRange range);
+std::string getSourceFromRange(clang::SourceManager& sourceManager, clang::SourceRange range);
 
 }
 }

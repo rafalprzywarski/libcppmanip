@@ -1,4 +1,4 @@
-#include "getStmtsSource.hpp"
+#include "getSourceFromRange.hpp"
 #include <cppmanip/query/getStmtLocationRange.hpp>
 
 namespace cppmanip
@@ -23,7 +23,7 @@ unsigned getLength(clang::SourceManager& sourceManager, clang::SourceRange r)
 }
 }
 
-std::string getStmtsSource(clang::SourceManager& sourceManager, clang::SourceRange range)
+std::string getSourceFromRange(clang::SourceManager& sourceManager, clang::SourceRange range)
 {
     return getSourceText(sourceManager, range.getBegin(), getLength(sourceManager, range));
 }
