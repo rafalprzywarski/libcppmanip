@@ -30,15 +30,15 @@ void DelayedFunctionExtractor::printExtractedFunction(
 {
     auto at = sourceExtractor.getCorrectSourceRange(originalFunction).getBegin();
     auto source = printFunction(extractedFunctionName, variables, sourceExtractor.getSource(stmts));
-    sourceOperations.insertTextAt(source, sourceExtractor.getOffset(at));
+    sourceOperations.insertTextAt(source, getLocationOffset(at));
 }
 
 void DelayedFunctionExtractor::replaceStatementsWithFunctionCall(
     clang::StmtRange stmts, const DelayedFunctionExtractor::Variables& variables, SourceExtractor& sourceExtractor)
 {
     auto without = sourceExtractor.getCorrectSourceRange(stmts);
-    auto begin = sourceExtractor.getOffset(without.getBegin());
-    auto end = sourceExtractor.getOffset(without.getEnd());
+    auto begin = getLocationOffset(without.getBegin());
+    auto end = getLocationOffset(without.getEnd());
     replaceRangeWith(begin, end, printFunctionCallStmt(extractedFunctionName, variables));
 }
 

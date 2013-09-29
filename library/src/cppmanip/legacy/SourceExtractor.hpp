@@ -25,7 +25,6 @@ public:
     clang::SourceRange getCorrectSourceRange(const clang::FunctionDecl& node);
     clang::SourceRange getCorrectSourceRange(clang::StmtRange stmts);
     std::string getSource(clang::StmtRange stmts);
-    unsigned getOffset(clang::SourceLocation loc);
 
 private:
     clang::SourceManager& sourceManager;
@@ -41,13 +40,14 @@ private:
     {
         return getOffset(to) - getOffset(from);
     }
-    
+
     unsigned getLength(clang::SourceRange r)
     {
         return getDistance(r.getBegin(), r.getEnd());
     }
-    
+
     const char *getSourceText(clang::SourceLocation loc);
+    unsigned getOffset(clang::SourceLocation loc);
 };
 
 }

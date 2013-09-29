@@ -23,9 +23,11 @@ clangutil::HandleTranslationUnit TranslationUnitFunctionExtractorFactory::create
             : functionExtractor(
                 bind(query::getFunctionFromAstInSelection, _1, selection),
                 bind(query::findStatementsInFunctionOverlappingSelection, _1, selection, query::getStmtLocationRange),
-                [&](clang::ASTContext& ) {
+                [&](clang::ASTContext& ctx) {
+                    auto& sourceManager = ctx.getSourceManager();
                     return std::make_shared<legacy::DelayedFunctionExtractor>(
                         sourceOperations, format::printFunctionCall, format::printFunctionDefinition,
+                        bind(&clang::SourceManager::getFileOffset, &sourceManager, _1),
                         query::findLocalVariablesRequiredForStmts,
                         query::findVariablesDeclaredByAndUsedAfterStmts, extractedMethodName);
                 }) { }
