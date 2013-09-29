@@ -75,6 +75,14 @@ LocationRange toLocationRange(clang::SourceManager& sm, clang::SourceRange r)
     return LocationRange(toRowCol(sm, r.getBegin()), toRowCol(sm, r.getEnd()));
 }
 
+clang::StmtRange last(clang::StmtRange r)
+{
+    clang::StmtRange last;
+    do last = r++;
+    while (!r.empty());
+    return last;
+}
+
 }
 
 clang::SourceRange getStmtRange(clang::SourceManager& sourceManager, clang::Stmt& stmt)
@@ -89,6 +97,16 @@ clang::SourceRange getStmtRange(clang::SourceManager& sourceManager, clang::Stmt
 LocationRange getStmtLocationRange(clang::SourceManager& sourceManager, clang::Stmt& stmt)
 {
     return toLocationRange(sourceManager, getStmtRange(sourceManager, stmt));
+}
+
+clang::SourceRange getStmtsRange(clang::SourceManager& sourceManager, clang::StmtRange stmts)
+{
+    return { getStmtRange(sourceManager, **stmts).getBegin(), getStmtRange(sourceManager, **last(stmts)).getEnd() };
+}
+
+LocationRange getStmtsLocationRange(clang::SourceManager& sourceManager, clang::StmtRange stmts)
+{
+    return toLocationRange(sourceManager, getStmtsRange(sourceManager, stmts));
 }
 
 }
