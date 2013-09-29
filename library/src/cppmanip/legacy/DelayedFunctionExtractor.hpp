@@ -47,7 +47,7 @@ private:
     const std::string extractedFunctionName;
 
     void printExtractedFunction(clang::FunctionDecl& originalFunction, const Variables& variables, clang::StmtRange stmts, SourceExtractor& sourceExtractor);
-    void replaceStatementsWithFunctionCall(clang::StmtRange stmts, const Variables& variables, SourceExtractor& sourceExtractor);
+    void replaceStatementsWithFunctionCall(clang::StmtRange stmts, const Variables& variables);
     void replaceRangeWith(unsigned int from, unsigned int to, std::string replacement);
     std::string printVariableNames(Variables variables);
     void failIfVariablesAreDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, const clang::FunctionDecl& originalFunction);

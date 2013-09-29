@@ -22,7 +22,7 @@ void DelayedFunctionExtractor::extractStatmentsFromFunction(clang::StmtRange stm
 
     SourceExtractor sourceExtractor(originalFunction.getASTContext().getSourceManager());
     printExtractedFunction(originalFunction, requiredVars, stmts, sourceExtractor);
-    replaceStatementsWithFunctionCall(stmts, requiredVars, sourceExtractor);
+    replaceStatementsWithFunctionCall(stmts, requiredVars);
 }
 
 void DelayedFunctionExtractor::printExtractedFunction(
@@ -34,7 +34,7 @@ void DelayedFunctionExtractor::printExtractedFunction(
 }
 
 void DelayedFunctionExtractor::replaceStatementsWithFunctionCall(
-    clang::StmtRange stmts, const DelayedFunctionExtractor::Variables& variables, SourceExtractor& sourceExtractor)
+    clang::StmtRange stmts, const DelayedFunctionExtractor::Variables& variables)
 {
     auto without = getStmtsRange(stmts);
     auto begin = getLocationOffset(without.getBegin());
