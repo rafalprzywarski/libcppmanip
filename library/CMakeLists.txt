@@ -21,7 +21,6 @@ add_library(cppmanip SHARED
     src/cppmanip/io/TextFileOps.cpp
     src/cppmanip/clangutil/ClangToolArgsBuilder.cpp
     src/cppmanip/extractFunctionInFile.cpp
-    src/cppmanip/legacy/PrettyFunctionPrinter.cpp
     src/cppmanip/legacy/DelayedFunctionExtractor.cpp
     src/cppmanip/text/TextReplacementRecorder.cpp
     src/cppmanip/text/OffsetConverter.cpp

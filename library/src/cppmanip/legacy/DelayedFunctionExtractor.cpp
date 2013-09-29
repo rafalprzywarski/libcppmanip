@@ -1,6 +1,5 @@
 #include "DelayedFunctionExtractor.hpp"
 #include "SourceExtractor.hpp"
-#include "FunctionPrinter.hpp"
 #include <cppmanip/ExtractMethodError.hpp>
 #include <clang/AST/Expr.h>
 #include <clang/AST/RecursiveASTVisitor.h>
@@ -30,7 +29,7 @@ void DelayedFunctionExtractor::printExtractedFunction(
     const clang::FunctionDecl& originalFunction, const DelayedFunctionExtractor::Variables& variables, clang::StmtRange stmts, SourceExtractor& sourceExtractor)
 {
     auto at = sourceExtractor.getCorrectSourceRange(originalFunction).getBegin();
-    auto source = functionPrinter.printFunction(extractedFunctionName, variables, sourceExtractor.getSource(stmts));
+    auto source = printFunction(extractedFunctionName, variables, sourceExtractor.getSource(stmts));
     sourceOperations.insertTextAt(source, sourceExtractor.getOffset(at));
 }
 
@@ -40,7 +39,7 @@ void DelayedFunctionExtractor::replaceStatementsWithFunctionCall(
     auto without = sourceExtractor.getCorrectSourceRange(stmts);
     auto begin = sourceExtractor.getOffset(without.getBegin());
     auto end = sourceExtractor.getOffset(without.getEnd());
-    replaceRangeWith(begin, end, functionPrinter.printFunctionCall(extractedFunctionName, variables));
+    replaceRangeWith(begin, end, printFunctionCallStmt(extractedFunctionName, variables));
 }
 
 void DelayedFunctionExtractor::replaceRangeWith(unsigned from, unsigned to, std::string replacement)
@@ -49,7 +48,37 @@ void DelayedFunctionExtractor::replaceRangeWith(unsigned from, unsigned to, std:
     sourceOperations.insertTextAt(replacement, from);
 }
 
-std::string DelayedFunctionExtractor::getNames(Variables variables)
+namespace
+{
+
+std::vector<std::string> getTypesAndNames(const std::vector<clang::VarDecl *>& variables)
+{
+    std::vector<std::string> args;
+    for (auto d : variables)
+        args.push_back(d->getType().getAsString() + " " + d->getNameAsString());
+    return args;
+}
+
+}
+
+std::string DelayedFunctionExtractor::printFunction(const std::string& name, const Variables& vars, const std::string& body)
+{
+    auto args = getTypesAndNames(vars);
+    return printFunctionDefinition("void", name, args, body);
+}
+
+std::string DelayedFunctionExtractor::printFunctionCallStmt(const std::string& name, const Variables& args)
+{
+    using boost::adaptors::transformed;
+    std::vector<std::string> argNames;
+    boost::push_back(argNames, args | transformed(std::mem_fun(&clang::VarDecl::getNameAsString)));
+    return printFunctionCall(name, argNames) + ";";
+}
+
+namespace
+{
+
+std::string printOrderedVariableNameList(std::vector<clang::VarDecl *> variables)
 {
     using boost::adaptors::transformed;
     std::vector<std::string> names;
@@ -58,13 +87,15 @@ std::string DelayedFunctionExtractor::getNames(Variables variables)
     return boost::algorithm::join(names, ", ");
 }
 
+}
+
 void DelayedFunctionExtractor::failIfVariablesAreDeclaredByAndUsedAfterStmts(
     clang::StmtRange stmts, const clang::FunctionDecl& originalFunction)
 {
     auto usedVars = findVariablesDeclaredByAndUsedAfterStmts(stmts, *originalFunction.getBody());
     if (!usedVars.empty())
         throw ExtractMethodError("Cannot extract \'" + extractedFunctionName +
-            "\'. Following variables are in use after the selected statements: " + getNames(usedVars));
+            "\'. Following variables are in use after the selected statements: " + printOrderedVariableNameList(usedVars));
 
 }
 
