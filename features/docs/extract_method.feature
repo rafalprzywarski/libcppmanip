@@ -80,34 +80,6 @@ Feature: As a developer I want to extract code into methods to make my code more
 
         """
     @done
-    Scenario: Referenced local variables should be passed to the extracted function
-        Given source code:
-        """
-        void other1(int);
-        void other2();
-        void other3(int, float);
-        void original()
-        {
-            int i = 7;
-            float f = 9.5f;
-            other1(i);
-            other2();
-            other3(i + 5, f * 2);
-        }
-        """
-        When I run function extraction from "other1(i)" to "other3(i + 5" with name "with_args"
-        Then there should be an insertion:
-        """
-        void with_args(int i, float f)
-        {
-            other1(i);
-            other2();
-            other3(i + 5, f * 2);
-        }
-
-        """
-        And there should be a replacement with "with_args(i, f);"
-    @wip
     Scenario: Referenced local variables should be passed to the extracted function in order of their declarations
         Given source code:
         """
