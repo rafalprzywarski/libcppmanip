@@ -7,7 +7,7 @@ namespace format
 
 std::string printFunctionCall(const std::string& name, const std::vector<std::string>& args)
 {
-    return name + "()";
+    return name + "(" + (args.empty() ? "" : args[0]) + ")";
 }
 
 }
