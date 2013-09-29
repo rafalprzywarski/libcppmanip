@@ -2,6 +2,7 @@
 #include <clang/AST/RecursiveASTVisitor.h>
 #include <unordered_set>
 #include <boost/range/adaptor/filtered.hpp>
+#include <boost/range/algorithm/sort.hpp>
 #include <boost/range/algorithm_ext/push_back.hpp>
 
 namespace cppmanip
@@ -32,6 +33,7 @@ public:
         std::vector<clang::VarDecl *> required;
         auto notDeclared = [&](clang::VarDecl *d) { return declared.count(d) == 0; };
         boost::push_back(required, used | boost::adaptors::filtered(notDeclared));
+        boost::sort(required, [](clang::VarDecl *left, clang::VarDecl *right) { return left->getLocation() < right->getLocation(); });
         return required;
     }
 private:

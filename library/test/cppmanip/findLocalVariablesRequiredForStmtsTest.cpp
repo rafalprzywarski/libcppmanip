@@ -42,6 +42,12 @@ struct findLocalVariablesRequiredForStmtsTest : testing::Test
         std::sort(expected.begin(), expected.end());
         ASSERT_TRUE(expected == found);
     }
+
+    void expectEqOrdered(std::vector<clang::VarDecl *> found, std::vector<clang::VarDecl *> expected)
+    {
+        ASSERT_EQ(expected.size(), found.size());
+        ASSERT_TRUE(expected == found);
+    }
 };
 
 TEST_F(findLocalVariablesRequiredForStmtsTest, should_return_no_variables_of_none_are_used)
@@ -88,6 +94,15 @@ TEST_F(findLocalVariablesRequiredForStmtsTest, should_not_return_global_variable
     declareGlobal("int g;");
     auto stmts = parseStmts("int x = g;");
     ASSERT_TRUE(findLocalVariablesRequiredForStmts(stmts).empty());
+}
+
+TEST_F(findLocalVariablesRequiredForStmtsTest, should_return_variables_in_order_of_their_declaration)
+{
+    declareGlobal("void f(int, int, int);");
+    auto stmts = parseStmts("int c(0); int a(0); int b(0); f(b, c, a);");
+    const auto INT_C = 0, INT_A = 1, INT_B = 2;
+    auto found = findLocalVariablesRequiredForStmts(skip(3, stmts));
+    expectEqOrdered(found, { varDecl(INT_C, stmts), varDecl(INT_A, stmts), varDecl(INT_B, stmts) });
 }
 
 }
