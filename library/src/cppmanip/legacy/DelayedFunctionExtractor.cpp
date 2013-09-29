@@ -36,7 +36,7 @@ void DelayedFunctionExtractor::printExtractedFunction(
 void DelayedFunctionExtractor::replaceStatementsWithFunctionCall(
     clang::StmtRange stmts, const DelayedFunctionExtractor::Variables& variables, SourceExtractor& sourceExtractor)
 {
-    auto without = sourceExtractor.getCorrectSourceRange(stmts);
+    auto without = getStmtsRange(stmts);
     auto begin = getLocationOffset(without.getBegin());
     auto end = getLocationOffset(without.getEnd());
     replaceRangeWith(begin, end, printFunctionCallStmt(extractedFunctionName, variables));

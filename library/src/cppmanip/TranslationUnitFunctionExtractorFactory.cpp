@@ -28,6 +28,7 @@ clangutil::HandleTranslationUnit TranslationUnitFunctionExtractorFactory::create
                     return std::make_shared<legacy::DelayedFunctionExtractor>(
                         sourceOperations, format::printFunctionCall, format::printFunctionDefinition,
                         bind(&clang::SourceManager::getFileOffset, &sourceManager, _1),
+                        bind(query::getStmtsRange, std::ref(sourceManager), _1),
                         query::findLocalVariablesRequiredForStmts,
                         query::findVariablesDeclaredByAndUsedAfterStmts, extractedMethodName);
                 }) { }

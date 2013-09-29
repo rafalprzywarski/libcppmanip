@@ -18,13 +18,14 @@ public:
     typedef std::function<std::string(const std::string&, const std::vector<std::string>&)> PrintFunctionCall;
     typedef std::function<std::string(const std::string&, const std::string&, const std::vector<std::string>&, const std::string&)> PrintFunctionDefinition;
     typedef std::function<unsigned(clang::SourceLocation)> GetLocationOffset;
+    typedef std::function<clang::SourceRange(clang::StmtRange stmts)> GetStmtsRange;
     DelayedFunctionExtractor(
         text::OffsetBasedTextModifier& sourceOperations, PrintFunctionCall printFunctionCall, PrintFunctionDefinition printFunctionDefinition,
-        GetLocationOffset getLocationOffset,
+        GetLocationOffset getLocationOffset, GetStmtsRange getStmtsRange,
         FindLocalVariablesRequiredForStmts findLocalVariablesRequiredForStmts,
         FindVariablesDeclaredByAndUsedAfterStmts findVariablesDeclaredByAndUsedAfterStmts, const std::string& extractedFunctionName)
         : sourceOperations(sourceOperations), printFunctionCall(printFunctionCall), printFunctionDefinition(printFunctionDefinition),
-        getLocationOffset(getLocationOffset),
+        getLocationOffset(getLocationOffset), getStmtsRange(getStmtsRange),
         findLocalVariablesRequiredForStmts(findLocalVariablesRequiredForStmts),
         findVariablesDeclaredByAndUsedAfterStmts(findVariablesDeclaredByAndUsedAfterStmts), extractedFunctionName(extractedFunctionName)
     {
@@ -38,6 +39,7 @@ private:
     PrintFunctionCall printFunctionCall;
     PrintFunctionDefinition printFunctionDefinition;
     GetLocationOffset getLocationOffset;
+    GetStmtsRange getStmtsRange;
     FindLocalVariablesRequiredForStmts findLocalVariablesRequiredForStmts;
     FindVariablesDeclaredByAndUsedAfterStmts findVariablesDeclaredByAndUsedAfterStmts;
     const std::string extractedFunctionName;
