@@ -23,9 +23,9 @@ unsigned extraCharsHack(const clang::Stmt& s) // semicolon
 clang::SourceRange SourceExtractor::getCorrectSourceRange(clang::StmtRange stmts)
 {
     clang::SourceRange r;
-    r.setBegin(getCorrectSourceRange(**stmts).getBegin());
+    r.setBegin(query::getStmtRange(sourceManager, **stmts).getBegin());
     for (auto s : stmts)
-        r.setEnd(getCorrectSourceRange(*s).getEnd());
+        r.setEnd(query::getStmtRange(sourceManager, *s).getEnd());
     return r;
 }
     
@@ -58,11 +58,6 @@ clang::SourceRange SourceExtractor::getCorrectSourceRange(const clang::FunctionD
     auto spelling = getSpellingRange(node);
     auto sourceLength = getSourceLength(spelling, node);
     return {spelling.getBegin(), spelling.getBegin().getLocWithOffset(sourceLength)};
-}
-
-clang::SourceRange SourceExtractor::getCorrectSourceRange(clang::Stmt& node)
-{
-    return query::getStmtRange(sourceManager, node);
 }
 
 template <typename Node>
