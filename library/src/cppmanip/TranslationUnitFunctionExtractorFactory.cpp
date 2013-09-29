@@ -6,6 +6,7 @@
 #include "query/getStmtLocationRange.hpp"
 #include "query/findLocalVariablesRequiredForStmts.hpp"
 #include "query/findVariablesDeclaredByAndUsedAfterStmts.hpp"
+#include "query/getFunctionDefinitionLocation.hpp"
 #include "format/printFunction.hpp"
 
 namespace cppmanip
@@ -29,6 +30,7 @@ clangutil::HandleTranslationUnit TranslationUnitFunctionExtractorFactory::create
                         sourceOperations, format::printFunctionCall, format::printFunctionDefinition,
                         bind(&clang::SourceManager::getFileOffset, &sourceManager, _1),
                         bind(query::getStmtsRange, std::ref(sourceManager), _1),
+                        query::getFunctionDefinitionLocation,
                         query::findLocalVariablesRequiredForStmts,
                         query::findVariablesDeclaredByAndUsedAfterStmts, extractedMethodName);
                 }) { }

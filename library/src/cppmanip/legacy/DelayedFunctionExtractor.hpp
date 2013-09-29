@@ -19,19 +19,20 @@ public:
     typedef std::function<std::string(const std::string&, const std::string&, const std::vector<std::string>&, const std::string&)> PrintFunctionDefinition;
     typedef std::function<unsigned(clang::SourceLocation)> GetLocationOffset;
     typedef std::function<clang::SourceRange(clang::StmtRange stmts)> GetStmtsRange;
+    typedef std::function<clang::SourceLocation(clang::FunctionDecl&)> GetFunctionDefinitionLocation;
     DelayedFunctionExtractor(
         text::OffsetBasedTextModifier& sourceOperations, PrintFunctionCall printFunctionCall, PrintFunctionDefinition printFunctionDefinition,
-        GetLocationOffset getLocationOffset, GetStmtsRange getStmtsRange,
+        GetLocationOffset getLocationOffset, GetStmtsRange getStmtsRange, GetFunctionDefinitionLocation getFunctionDefinitionLocation,
         FindLocalVariablesRequiredForStmts findLocalVariablesRequiredForStmts,
         FindVariablesDeclaredByAndUsedAfterStmts findVariablesDeclaredByAndUsedAfterStmts, const std::string& extractedFunctionName)
         : sourceOperations(sourceOperations), printFunctionCall(printFunctionCall), printFunctionDefinition(printFunctionDefinition),
-        getLocationOffset(getLocationOffset), getStmtsRange(getStmtsRange),
+        getLocationOffset(getLocationOffset), getStmtsRange(getStmtsRange), getFunctionDefinitionLocation(getFunctionDefinitionLocation),
         findLocalVariablesRequiredForStmts(findLocalVariablesRequiredForStmts),
         findVariablesDeclaredByAndUsedAfterStmts(findVariablesDeclaredByAndUsedAfterStmts), extractedFunctionName(extractedFunctionName)
     {
     }
 
-    void extractStatmentsFromFunction(clang::StmtRange stmts, const clang::FunctionDecl& originalFunction);
+    void extractStatmentsFromFunction(clang::StmtRange stmts, clang::FunctionDecl& originalFunction);
 
 private:
 
@@ -40,11 +41,12 @@ private:
     PrintFunctionDefinition printFunctionDefinition;
     GetLocationOffset getLocationOffset;
     GetStmtsRange getStmtsRange;
+    GetFunctionDefinitionLocation getFunctionDefinitionLocation;
     FindLocalVariablesRequiredForStmts findLocalVariablesRequiredForStmts;
     FindVariablesDeclaredByAndUsedAfterStmts findVariablesDeclaredByAndUsedAfterStmts;
     const std::string extractedFunctionName;
 
-    void printExtractedFunction(const clang::FunctionDecl& originalFunction, const Variables& variables, clang::StmtRange stmts, SourceExtractor& sourceExtractor);
+    void printExtractedFunction(clang::FunctionDecl& originalFunction, const Variables& variables, clang::StmtRange stmts, SourceExtractor& sourceExtractor);
     void replaceStatementsWithFunctionCall(clang::StmtRange stmts, const Variables& variables, SourceExtractor& sourceExtractor);
     void replaceRangeWith(unsigned int from, unsigned int to, std::string replacement);
     std::string printVariableNames(Variables variables);

@@ -15,7 +15,7 @@ namespace cppmanip
 namespace legacy
 {
 
-void DelayedFunctionExtractor::extractStatmentsFromFunction(clang::StmtRange stmts, const clang::FunctionDecl& originalFunction)
+void DelayedFunctionExtractor::extractStatmentsFromFunction(clang::StmtRange stmts, clang::FunctionDecl& originalFunction)
 {
     failIfVariablesAreDeclaredByAndUsedAfterStmts(stmts, originalFunction);
     auto requiredVars = findLocalVariablesRequiredForStmts(stmts);
@@ -26,11 +26,11 @@ void DelayedFunctionExtractor::extractStatmentsFromFunction(clang::StmtRange stm
 }
 
 void DelayedFunctionExtractor::printExtractedFunction(
-    const clang::FunctionDecl& originalFunction, const DelayedFunctionExtractor::Variables& variables, clang::StmtRange stmts, SourceExtractor& sourceExtractor)
+    clang::FunctionDecl& originalFunction, const DelayedFunctionExtractor::Variables& variables, clang::StmtRange stmts, SourceExtractor& sourceExtractor)
 {
-    auto at = sourceExtractor.getCorrectSourceRange(originalFunction).getBegin();
+    auto at = getLocationOffset(getFunctionDefinitionLocation(originalFunction));
     auto source = printFunction(extractedFunctionName, variables, sourceExtractor.getSource(stmts));
-    sourceOperations.insertTextAt(source, getLocationOffset(at));
+    sourceOperations.insertTextAt(source, at);
 }
 
 void DelayedFunctionExtractor::replaceStatementsWithFunctionCall(
