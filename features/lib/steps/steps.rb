@@ -60,7 +60,7 @@ end
 
 Then /^there should be an insertion:$/ do |insertionText|
   expectNoErrors
-  @replacements.index { |r| r.isInsertion && r.text == insertionText }.should_not be_nil, "insertion with \'#{insertionText}\' not found in replacement list #{@replacements}"
+  @replacements.index { |r| r.isInsertion && r.text == insertionText }.should_not be_nil, "insertion with \'#{insertionText}\' not found in #{@replacements}"
 end
 
 Then /^there should be an insertion before "(.*?)":$/ do |before, insertionText|
@@ -68,29 +68,16 @@ Then /^there should be an insertion before "(.*?)":$/ do |before, insertionText|
   @replacements.index { |r| r.isInsertionBefore(before, @source) && r.text == insertionText }.should_not be_nil
 end
 
-Then /^there should be an insertion containing "(.*?)" or "(.*?)"$/ do |option1, option2|
-  expectNoErrors
-  @replacements.index { |r|
-    r.isInsertion && (r.text.include?(option1) || r.text.include?(option2))
-  }.should_not be_nil, "insertion containing either \'#{option1}\' or \'#{option2}' not found in replacement list #{@replacements}"
-end
-
-Then /^there should be an insertion containing:$/ do |insertionText|
-  expectNoErrors
-  @replacements.index { |r|
-    r.isInsertion && r.text.include?(insertionText)
-  }.should_not be_nil, "insertion containing \'#{insertionText}\' not found in replacement list #{@replacements}"
-end
 Then /^there should be a replacement with "(.*?)"$/ do |replacementText|
   expectNoErrors
-  @replacements.index { |r| r.text == replacementText }.should_not be_nil, "replacement with \'#{replacementText}\' not found in replacement list #{@replacements}"
+  @replacements.index { |r| r.text == replacementText }.should_not be_nil, "replacement with \'#{replacementText}\' not found in #{@replacements}"
 end
 
 Then /^there should be a replacement from "(.*?)" to "(.*?)" with "(.*?)"$/ do |from, to, replacementText|
   expectNoErrors
   @replacements.index { |r|
     r.text == replacementText && r.isFrom(from, @source) && r.isTo(to, @source)
-  }.should_not be_nil, "replacement with \'#{replacementText}\' not found in replacement list  #{@replacements}"
+  }.should_not be_nil, "replacement with \'#{replacementText}\' not found in #{@replacements}"
 end
 
 Then /^there should be a replacement for "(.*?)" with "(.*?)"$/ do |phrase, replacementText|
