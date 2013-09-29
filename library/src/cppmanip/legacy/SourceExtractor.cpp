@@ -1,5 +1,5 @@
 #include "SourceExtractor.hpp"
-#include <cppmanip/getStmtLocationRange.hpp>
+#include <cppmanip/query/getStmtLocationRange.hpp>
 #include <clang/AST/Decl.h>
 #include <clang/AST/Expr.h>
 #include <clang/AST/ExprCXX.h>
@@ -62,7 +62,7 @@ clang::SourceRange SourceExtractor::getCorrectSourceRange(const clang::FunctionD
 
 clang::SourceRange SourceExtractor::getCorrectSourceRange(clang::Stmt& node)
 {
-    return getStmtRange(sourceManager, node);
+    return query::getStmtRange(sourceManager, node);
 }
 
 template <typename Node>

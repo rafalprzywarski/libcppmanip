@@ -5,6 +5,8 @@
 
 namespace cppmanip
 {
+namespace query
+{
 
 namespace
 {
@@ -47,4 +49,5 @@ clang::FunctionDecl& getFunctionFromAstInSelection(clang::ASTContext& context, L
     return *v.getFoundDecl();
 }
 
+}
 }

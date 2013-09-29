@@ -7,6 +7,8 @@
 
 namespace cppmanip
 {
+namespace query
+{
 
 namespace
 {
@@ -58,4 +60,4 @@ std::vector<clang::VarDecl *> findLocalVariablesRequiredForStmts(
 }
 
 }
-
+}

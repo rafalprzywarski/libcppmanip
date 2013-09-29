@@ -1,11 +1,13 @@
-#include <cppmanip/getFunctionFromAstInSelection.hpp>
-#include "ParsedFunction.hpp"
+#include <cppmanip/query/getFunctionFromAstInSelection.hpp>
+#include "../ParsedFunction.hpp"
 #include <cppmanip/SourceSelection.hpp>
 #include <cppmanip/ExtractMethodError.hpp>
 #include <gtest/gtest.h>
 #include <memory>
 
 namespace cppmanip
+{
+namespace query
 {
 
 struct getFunctionFromAstInSelectionTest : testing::Test
@@ -55,4 +57,5 @@ TEST_F(getFunctionFromAstInSelectionTest, should_ignore_functions_without_bodies
     ASSERT_NO_THROW(assertFunctionContainsSelection("h", rowCol(0, 30), rowCol(0, 30)));
 }
 
+}
 }

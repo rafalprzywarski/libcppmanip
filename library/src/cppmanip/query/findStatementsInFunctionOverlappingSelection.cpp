@@ -4,6 +4,8 @@
 
 namespace cppmanip
 {
+namespace query
+{
 
 clang::StmtRange findStatementsInFunctionOverlappingSelection(
     const clang::FunctionDecl& decl, LocationRange selection, GetStmtRange getStmtRange)
@@ -17,4 +19,5 @@ clang::StmtRange findStatementsInFunctionOverlappingSelection(
     return clang::StmtRange(first, last);
 }
 
+}
 }

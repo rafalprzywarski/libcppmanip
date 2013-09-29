@@ -3,10 +3,10 @@
 #include "legacy/NaiveLocalVariableLocator.hpp"
 #include "legacy/DelayedMethodExtractor.hpp"
 #include "TranslationUnitFunctionExtractor.hpp"
-#include "getFunctionFromAstInSelection.hpp"
-#include "findStatementsInFunctionOverlappingSelection.hpp"
-#include "getStmtLocationRange.hpp"
-#include "findLocalVariablesRequiredForStmts.hpp"
+#include "query/getFunctionFromAstInSelection.hpp"
+#include "query/findStatementsInFunctionOverlappingSelection.hpp"
+#include "query/getStmtLocationRange.hpp"
+#include "query/findLocalVariablesRequiredForStmts.hpp"
 
 namespace cppmanip
 {
@@ -25,12 +25,12 @@ clangutil::HandleTranslationUnit TranslationUnitFunctionExtractorFactory::create
         WithDeps(const std::string& extractedMethodName, LocationRange selection, text::OffsetBasedTextModifier& sourceOperations)
             : stmtExtractor(
                 sourceOperations, printer,
-                findLocalVariablesRequiredForStmts,
+                query::findLocalVariablesRequiredForStmts,
                 [&](clang::StmtRange stmts, clang::Stmt& parent) { return localVariableLocator.findVariablesDeclaredByAndUsedAfterStmts(stmts, parent); },
                 extractedMethodName),
             functionExtractor(
-                bind(getFunctionFromAstInSelection, _1, selection),
-                bind(findStatementsInFunctionOverlappingSelection, _1, selection, getStmtLocationRange),
+                bind(query::getFunctionFromAstInSelection, _1, selection),
+                bind(query::findStatementsInFunctionOverlappingSelection, _1, selection, query::getStmtLocationRange),
                 stmtExtractor) { }
     };
     auto withDeps = std::make_shared<WithDeps>(extractedMethodName, selection, sourceOperations);

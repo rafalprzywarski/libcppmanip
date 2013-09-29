@@ -1,11 +1,13 @@
-#include <cppmanip/findLocalVariablesRequiredForStmts.hpp>
-#include "ParsedFunction.hpp"
+#include <cppmanip/query/findLocalVariablesRequiredForStmts.hpp>
+#include "../ParsedFunction.hpp"
 #include <gtest/gtest.h>
 #include <memory>
 #include <boost/algorithm/string/join.hpp>
 #include <clang/AST/Stmt.h>
 
 namespace cppmanip
+{
+namespace query
 {
 
 struct findLocalVariablesRequiredForStmtsTest : testing::Test
@@ -105,4 +107,5 @@ TEST_F(findLocalVariablesRequiredForStmtsTest, should_return_variables_in_order_
     expectEqOrdered(found, { varDecl(INT_C, stmts), varDecl(INT_A, stmts), varDecl(INT_B, stmts) });
 }
 
+}
 }

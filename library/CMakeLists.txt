@@ -28,13 +28,13 @@ add_library(cppmanip SHARED
     src/cppmanip/text/OffsetConverter.cpp
     src/cppmanip/ClangFunctionExtractor.cpp
     src/cppmanip/ClangFunctionExtractorFactory.cpp
-    src/cppmanip/getFunctionFromAstInSelection.cpp
+    src/cppmanip/query/getFunctionFromAstInSelection.cpp
     src/cppmanip/TranslationUnitFunctionExtractor.cpp
     src/cppmanip/TranslationUnitFunctionExtractorFactory.cpp
     src/cppmanip/clangutil/runTranslationUnitHandlerOnFile.cpp
-    src/cppmanip/findStatementsInFunctionOverlappingSelection.cpp
-    src/cppmanip/getStmtLocationRange.cpp
-    src/cppmanip/findLocalVariablesRequiredForStmts.cpp
+    src/cppmanip/query/findStatementsInFunctionOverlappingSelection.cpp
+    src/cppmanip/query/getStmtLocationRange.cpp
+    src/cppmanip/query/findLocalVariablesRequiredForStmts.cpp
 )
 
 target_link_libraries(cppmanip LINK_PRIVATE
@@ -64,11 +64,11 @@ add_executable(cppmaniptest
     test/cppmanip/clangutil/ClangToolArgsBuilderTest.cpp
     test/cppmanip/text/TextReplacementRecorderTest.cpp
     test/cppmanip/text/OffsetConverterTest.cpp
-    test/cppmanip/getFunctionFromAstInSelectionTest.cpp
+    test/cppmanip/query/getFunctionFromAstInSelectionTest.cpp
     test/cppmanip/SourceLocationOperatorsTest.cpp
-    test/cppmanip/findStatementsInFunctionOverlappingSelectionTest.cpp
-    test/cppmanip/getStmtLocationRangeTest.cpp
-    test/cppmanip/findLocalVariablesRequiredForStmtsTest.cpp
+    test/cppmanip/query/findStatementsInFunctionOverlappingSelectionTest.cpp
+    test/cppmanip/query/getStmtLocationRangeTest.cpp
+    test/cppmanip/query/findLocalVariablesRequiredForStmtsTest.cpp
     test/cppmanip/getASTContextForSource.cpp
 ) 
 

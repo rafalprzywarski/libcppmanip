@@ -1,5 +1,5 @@
-#include <cppmanip/findStatementsInFunctionOverlappingSelection.hpp>
-#include "ParsedFunction.hpp"
+#include <cppmanip/query/findStatementsInFunctionOverlappingSelection.hpp>
+#include "../ParsedFunction.hpp"
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <clang/AST/Stmt.h>
@@ -8,6 +8,8 @@
 using namespace testing;
 
 namespace cppmanip
+{
+namespace query
 {
 
 struct findStatementsInFunctionOverlappingSelectionTest : testing::Test
@@ -85,4 +87,5 @@ TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_an_empty_
     ASSERT_TRUE(stmts.empty());
 }
 
+}
 }

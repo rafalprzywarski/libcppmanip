@@ -7,8 +7,11 @@ namespace clang { class VarDecl; }
 
 namespace cppmanip
 {
+namespace query
+{
 
 std::vector<clang::VarDecl *> findLocalVariablesRequiredForStmts(clang::StmtRange stmts);
 
+}
 }
 #endif // CPPMANIP_0ACCB425139A4912A691719B3EE19B55_HPP

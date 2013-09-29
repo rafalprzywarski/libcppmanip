@@ -6,6 +6,8 @@
 
 namespace cppmanip
 {
+namespace query
+{
 namespace
 {
 
@@ -89,4 +91,5 @@ LocationRange getStmtLocationRange(clang::SourceManager& sourceManager, clang::S
     return toLocationRange(sourceManager, getStmtRange(sourceManager, stmt));
 }
 
+}
 }

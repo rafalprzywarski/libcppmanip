@@ -1,11 +1,13 @@
-#include <cppmanip/getStmtLocationRange.hpp>
-#include "ParsedFunction.hpp"
+#include <cppmanip/query/getStmtLocationRange.hpp>
+#include "../ParsedFunction.hpp"
 #include <cppmanip/ExtractMethodError.hpp>
 #include <gtest/gtest.h>
 
 using namespace testing;
 
 namespace cppmanip
+{
+namespace query
 {
 namespace test
 {
@@ -32,13 +34,13 @@ std::ostream& operator<<(std::ostream& os, const Stmt& s)
 
 struct getStmtLocationRangeTest : testing::TestWithParam<Stmt>
 {
-    std::unique_ptr<test::ParsedFunction> func;
+    std::unique_ptr<cppmanip::test::ParsedFunction> func;
     std::string extraDeclarations;
     std::string parsedSource;
 
     void parse(const std::string& source)
     {
-        func.reset(new test::ParsedFunction(source));
+        func.reset(new cppmanip::test::ParsedFunction(source));
         parsedSource = source;
     }
 
@@ -110,5 +112,6 @@ INSTANTIATE_TEST_CASE_P(
         Stmt(";")
 ));
 
+}
 }
 }
