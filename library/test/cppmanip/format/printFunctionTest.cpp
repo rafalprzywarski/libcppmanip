@@ -1,4 +1,4 @@
-#include <cppmanip/format/printFunctionCall.hpp>
+#include <cppmanip/format/printFunction.hpp>
 #include <gtest/gtest.h>
 
 namespace cppmanip
