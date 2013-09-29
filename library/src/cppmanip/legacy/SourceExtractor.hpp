@@ -1,15 +1,12 @@
 #ifndef CPPMANIP_215653695B8744B6B4E2B7B6AC37D277_HPP
 #define CPPMANIP_215653695B8744B6B4E2B7B6AC37D277_HPP
-
-// TODO: semicolon hack
-#include <clang/AST/Stmt.h>
-#include <clang/Basic/SourceManager.h>
-#include <clang/Lex/Lexer.h>
-#include <stdexcept>
+#include <string>
+#include <clang/Basic/SourceLocation.h>
 
 namespace clang
 {
 class VarDecl;
+class SourceManager;
 }
 
 namespace cppmanip
@@ -21,33 +18,14 @@ class SourceExtractor
 {
 public:
     SourceExtractor(clang::SourceManager& sourceManager) : sourceManager(sourceManager) { }
-    
-    clang::SourceRange getCorrectSourceRange(const clang::FunctionDecl& node);
-    clang::SourceRange getCorrectSourceRange(clang::StmtRange stmts);
-    std::string getSource(clang::StmtRange stmts);
+
+    std::string getSource(clang::SourceRange range);
 
 private:
     clang::SourceManager& sourceManager;
 
-    template <typename Node>
-    clang::SourceRange getSpellingRange(const Node& n);
-
-    std::string getSource(clang::SourceRange range);
-
-    unsigned getSourceLength(clang::SourceRange spelling, const clang::FunctionDecl& node);
-
-    unsigned getDistance(clang::SourceLocation from, clang::SourceLocation to)
-    {
-        return getOffset(to) - getOffset(from);
-    }
-
-    unsigned getLength(clang::SourceRange r)
-    {
-        return getDistance(r.getBegin(), r.getEnd());
-    }
-
-    const char *getSourceText(clang::SourceLocation loc);
-    unsigned getOffset(clang::SourceLocation loc);
+    unsigned getLength(clang::SourceRange r);
+    std::string getSourceText(clang::SourceLocation loc, unsigned length);
 };
 
 }

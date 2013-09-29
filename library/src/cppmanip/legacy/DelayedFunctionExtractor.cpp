@@ -29,7 +29,7 @@ void DelayedFunctionExtractor::printExtractedFunction(
     clang::FunctionDecl& originalFunction, const DelayedFunctionExtractor::Variables& variables, clang::StmtRange stmts, SourceExtractor& sourceExtractor)
 {
     auto at = getLocationOffset(getFunctionDefinitionLocation(originalFunction));
-    auto source = printFunction(extractedFunctionName, variables, sourceExtractor.getSource(stmts));
+    auto source = printFunction(extractedFunctionName, variables, sourceExtractor.getSource(getStmtsRange(stmts)));
     sourceOperations.insertTextAt(source, at);
 }
 
