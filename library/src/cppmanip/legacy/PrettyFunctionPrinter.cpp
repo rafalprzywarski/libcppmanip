@@ -1,6 +1,9 @@
 #include "PrettyFunctionPrinter.hpp"
+#include <cppmanip/format/printFunction.hpp>
 #include <sstream>
 #include <clang/AST/Decl.h>
+#include <boost/range/adaptor/transformed.hpp>
+#include <boost/range/algorithm_ext/push_back.hpp>
 
 namespace cppmanip
 {
@@ -10,15 +13,7 @@ namespace legacy
 std::string PrettyFunctionPrinter::printFunction(const std::string& name, const Variables& vars, const std::string& body)
 {
     auto args = getTypesAndNames(vars);
-    std::ostringstream os;
-    os << "void " << name << "(";
-    for (decltype(args.size()) i = 0; i < args.size(); ++i)
-    {
-        if (i > 0) os << ", ";
-        os << args[i];
-    }
-    os << ")\n{\n    " << body << "\n}\n";
-    return os.str();
+    return format::printFunctionDefinition("void", name, args, body);
 }
 
 FunctionPrinter::Strings PrettyFunctionPrinter::getTypesAndNames(Variables variables)
@@ -31,15 +26,10 @@ FunctionPrinter::Strings PrettyFunctionPrinter::getTypesAndNames(Variables varia
 
 std::string PrettyFunctionPrinter::printFunctionCall(const std::string& name, const Variables& args)
 {
-    std::ostringstream os;
-    os <<  name << "(";
-    for (decltype(args.size()) i = 0; i < args.size(); ++i)
-    {
-        if (i > 0) os << ", ";
-        os << args[i]->getNameAsString();
-    }
-    os << ");";
-    return os.str();
+    using boost::adaptors::transformed;
+    std::vector<std::string> argNames;
+    boost::push_back(argNames, args | transformed(std::mem_fun(&clang::VarDecl::getNameAsString)));
+    return format::printFunctionCall(name, argNames) + ";";
 }
 
 }
