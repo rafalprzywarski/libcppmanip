@@ -1,12 +1,12 @@
 #include "TranslationUnitFunctionExtractorFactory.hpp"
 #include "legacy/PrettyFunctionPrinter.hpp"
-#include "legacy/NaiveLocalVariableLocator.hpp"
 #include "legacy/DelayedMethodExtractor.hpp"
 #include "TranslationUnitFunctionExtractor.hpp"
 #include "query/getFunctionFromAstInSelection.hpp"
 #include "query/findStatementsInFunctionOverlappingSelection.hpp"
 #include "query/getStmtLocationRange.hpp"
 #include "query/findLocalVariablesRequiredForStmts.hpp"
+#include "query/findVariablesDeclaredByAndUsedAfterStmts.hpp"
 
 namespace cppmanip
 {
@@ -19,14 +19,13 @@ clangutil::HandleTranslationUnit TranslationUnitFunctionExtractorFactory::create
     struct WithDeps
     {
         legacy::PrettyFunctionPrinter printer;
-        legacy::NaiveLocalVariableLocator localVariableLocator;
         legacy::DelayedMethodExtractor stmtExtractor;
         TranslationUnitFunctionExtractor functionExtractor;
         WithDeps(const std::string& extractedMethodName, LocationRange selection, text::OffsetBasedTextModifier& sourceOperations)
             : stmtExtractor(
                 sourceOperations, printer,
                 query::findLocalVariablesRequiredForStmts,
-                [&](clang::StmtRange stmts, clang::Stmt& parent) { return localVariableLocator.findVariablesDeclaredByAndUsedAfterStmts(stmts, parent); },
+                query::findVariablesDeclaredByAndUsedAfterStmts,
                 extractedMethodName),
             functionExtractor(
                 bind(query::getFunctionFromAstInSelection, _1, selection),

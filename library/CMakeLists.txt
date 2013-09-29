@@ -23,7 +23,6 @@ add_library(cppmanip SHARED
     src/cppmanip/extractFunctionInFile.cpp
     src/cppmanip/legacy/PrettyFunctionPrinter.cpp
     src/cppmanip/legacy/DelayedMethodExtractor.cpp
-    src/cppmanip/legacy/NaiveLocalVariableLocator.cpp
     src/cppmanip/text/TextReplacementRecorder.cpp
     src/cppmanip/text/OffsetConverter.cpp
     src/cppmanip/ClangFunctionExtractor.cpp
