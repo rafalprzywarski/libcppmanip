@@ -6,7 +6,7 @@ namespace cppmanip
 void TranslationUnitFunctionExtractor::handleTranslationUnit(clang::ASTContext& ctx) {
     auto& f = locateFunction(ctx);
     auto stmts = locateStatements(f);
-    stmtExtractor.extractStatmentsFromFunction(stmts, f);
+    createStmtExtractor(ctx)->extractStatmentsFromFunction(stmts, f);
 }
 
 }

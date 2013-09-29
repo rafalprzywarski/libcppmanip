@@ -14,5 +14,6 @@ public:
         clang::StmtRange stmts, const clang::FunctionDecl& originalFunction) = 0;
 };
 
+typedef std::shared_ptr<StatementExtractor> StatementExtractorPtr;
 }
 #endif // CPPMANIP_106D220E33A2477EA1C1472F2F1F1325_HPP
