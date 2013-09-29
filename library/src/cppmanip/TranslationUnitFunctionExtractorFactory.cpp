@@ -22,7 +22,11 @@ clangutil::HandleTranslationUnit TranslationUnitFunctionExtractorFactory::create
         legacy::DelayedMethodExtractor stmtExtractor;
         TranslationUnitFunctionExtractor functionExtractor;
         WithDeps(const std::string& extractedMethodName, LocationRange selection, text::OffsetBasedTextModifier& sourceOperations)
-            : stmtExtractor(sourceOperations, printer, localVariableLocator, extractedMethodName),
+            : stmtExtractor(
+                sourceOperations, printer,
+                [&](clang::StmtRange stmts) { return localVariableLocator.findLocalVariablesRequiredForStmts(stmts); },
+                [&](clang::StmtRange stmts, clang::Stmt& parent) { return localVariableLocator.findVariablesDeclaredByAndUsedAfterStmts(stmts, parent); },
+                extractedMethodName),
             functionExtractor(
                 bind(getFunctionFromAstInSelection, _1, selection),
                 bind(findStatementsInFunctionOverlappingSelection, _1, selection, getStmtLocationRange),

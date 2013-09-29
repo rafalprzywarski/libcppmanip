@@ -4,7 +4,6 @@
 #include "SourceExtractor.hpp"
 #include <cppmanip/StatementExtractor.hpp>
 #include <cppmanip/text/TextModifier.hpp>
-#include <cppmanip/LocalVariableUsageDetector.hpp>
 
 namespace cppmanip
 {
@@ -14,18 +13,26 @@ namespace legacy
 class DelayedMethodExtractor : public StatementExtractor
 {
 public:
+    typedef std::vector<clang::VarDecl *> Variables;
+    typedef std::function<Variables(clang::StmtRange stmts)> FindLocalVariablesRequiredForStmts;
+    typedef std::function<Variables(clang::StmtRange stmts, clang::Stmt& parent)> FindVariablesDeclaredByAndUsedAfterStmts;
     DelayedMethodExtractor(
-        text::OffsetBasedTextModifier& sourceOperations, FunctionPrinter& functionPrinter, LocalVariableUsageDetector& localVariableLocator, const std::string& extractedFunctionName);
+        text::OffsetBasedTextModifier& sourceOperations, FunctionPrinter& functionPrinter,
+        FindLocalVariablesRequiredForStmts findLocalVariablesRequiredForStmts,
+        FindVariablesDeclaredByAndUsedAfterStmts findVariablesDeclaredByAndUsedAfterStmts, const std::string& extractedFunctionName)
+        : sourceOperations(sourceOperations), functionPrinter(functionPrinter), findLocalVariablesRequiredForStmts(findLocalVariablesRequiredForStmts),
+        findVariablesDeclaredByAndUsedAfterStmts(findVariablesDeclaredByAndUsedAfterStmts), extractedFunctionName(extractedFunctionName)
+    {
+    }
 
     void extractStatmentsFromFunction(clang::StmtRange stmts, const clang::FunctionDecl& originalFunction);
 
 private:
 
-    typedef LocalVariableUsageDetector::Variables Variables;
-
     text::OffsetBasedTextModifier& sourceOperations;
     FunctionPrinter& functionPrinter;
-    LocalVariableUsageDetector& localVariableLocator;
+    FindLocalVariablesRequiredForStmts findLocalVariablesRequiredForStmts;
+    FindVariablesDeclaredByAndUsedAfterStmts findVariablesDeclaredByAndUsedAfterStmts;
     const std::string extractedFunctionName;
 
     void printExtractedFunction(const clang::FunctionDecl& originalFunction, const Variables& variables, clang::StmtRange stmts, SourceExtractor& sourceExtractor);

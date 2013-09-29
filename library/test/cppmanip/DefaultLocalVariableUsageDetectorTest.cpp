@@ -36,7 +36,7 @@ struct DefaultLocalVariableUsageDetectorTest : testing::Test
         return clang::dyn_cast<clang::VarDecl>(clang::dyn_cast<clang::DeclStmt>(*boost::next(begin(stmts), n))->getSingleDecl());
     }
 
-    void expectEqUnordered(LocalVariableUsageDetector::Variables found, LocalVariableUsageDetector::Variables expected)
+    void expectEqUnordered(std::vector<clang::VarDecl *> found, std::vector<clang::VarDecl *> expected)
     {
         ASSERT_EQ(expected.size(), found.size());
         std::sort(found.begin(), found.end());

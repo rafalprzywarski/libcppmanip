@@ -14,14 +14,10 @@ namespace cppmanip
 namespace legacy
 {
 
-DelayedMethodExtractor::DelayedMethodExtractor(text::OffsetBasedTextModifier& sourceOperations, FunctionPrinter& functionPrinter,
-    LocalVariableUsageDetector& localVariableLocator, const std::string& extractedFunctionName)
-    : sourceOperations(sourceOperations), functionPrinter(functionPrinter), localVariableLocator(localVariableLocator), extractedFunctionName(extractedFunctionName) { }
-
 void DelayedMethodExtractor::extractStatmentsFromFunction(clang::StmtRange stmts, const clang::FunctionDecl& originalFunction)
 {
     failIfVariablesAreDeclaredByAndUsedAfterStmts(stmts, originalFunction);
-    auto requiredVars = localVariableLocator.findLocalVariablesRequiredForStmts(stmts);
+    auto requiredVars = findLocalVariablesRequiredForStmts(stmts);
 
     SourceExtractor sourceExtractor(originalFunction.getASTContext().getSourceManager());
     printExtractedFunction(originalFunction, requiredVars, stmts, sourceExtractor);
@@ -60,7 +56,7 @@ std::string DelayedMethodExtractor::getNames(Variables variables)
 void DelayedMethodExtractor::failIfVariablesAreDeclaredByAndUsedAfterStmts(
     clang::StmtRange stmts, const clang::FunctionDecl& originalFunction)
 {
-    auto usedVars = localVariableLocator.findVariablesDeclaredByAndUsedAfterStmts(stmts, *originalFunction.getBody());
+    auto usedVars = findVariablesDeclaredByAndUsedAfterStmts(stmts, *originalFunction.getBody());
     if (!usedVars.empty())
         throw ExtractMethodError("Cannot extract \'" + extractedFunctionName +
             "\'. Following variables are in use after the selected statements: " + getNames(usedVars));

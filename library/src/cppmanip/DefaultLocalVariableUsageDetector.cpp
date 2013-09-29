@@ -27,9 +27,9 @@ public:
         return true;
     }
 
-    LocalVariableUsageDetector::Variables getRequired() const
+    std::vector<clang::VarDecl *> getRequired() const
     {
-        LocalVariableUsageDetector::Variables required;
+        std::vector<clang::VarDecl *> required;
         auto notDeclared = [&](clang::VarDecl *d) { return declared.count(d) == 0; };
         boost::push_back(required, used | boost::adaptors::filtered(notDeclared));
         return required;
@@ -46,7 +46,7 @@ private:
 
 }
 
-LocalVariableUsageDetector::Variables DefaultLocalVariableUsageDetector::findLocalVariablesRequiredForStmts(
+std::vector<clang::VarDecl *> DefaultLocalVariableUsageDetector::findLocalVariablesRequiredForStmts(
     clang::StmtRange stmts)
 {
     RequiredVariablesVisitor v;
@@ -54,10 +54,10 @@ LocalVariableUsageDetector::Variables DefaultLocalVariableUsageDetector::findLoc
         v.TraverseStmt(s);
     return v.getRequired();
 }
-LocalVariableUsageDetector::Variables DefaultLocalVariableUsageDetector::findVariablesDeclaredByAndUsedAfterStmts(
+std::vector<clang::VarDecl *> DefaultLocalVariableUsageDetector::findVariablesDeclaredByAndUsedAfterStmts(
     clang::StmtRange stmts, clang::Stmt& parent)
 {
-    return Variables();
+    return std::vector<clang::VarDecl *>();
 }
 
 }
