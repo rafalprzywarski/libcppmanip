@@ -1,5 +1,4 @@
 #include "DelayedFunctionExtractor.hpp"
-#include "SourceExtractor.hpp"
 #include <cppmanip/ExtractMethodError.hpp>
 #include <clang/AST/Expr.h>
 #include <clang/AST/RecursiveASTVisitor.h>
@@ -20,16 +19,15 @@ void DelayedFunctionExtractor::extractStatmentsFromFunction(clang::StmtRange stm
     failIfVariablesAreDeclaredByAndUsedAfterStmts(stmts, originalFunction);
     auto requiredVars = findLocalVariablesRequiredForStmts(stmts);
 
-    SourceExtractor sourceExtractor(originalFunction.getASTContext().getSourceManager());
-    printExtractedFunction(originalFunction, requiredVars, stmts, sourceExtractor);
+    printExtractedFunction(originalFunction, requiredVars, stmts);
     replaceStatementsWithFunctionCall(stmts, requiredVars);
 }
 
 void DelayedFunctionExtractor::printExtractedFunction(
-    clang::FunctionDecl& originalFunction, const DelayedFunctionExtractor::Variables& variables, clang::StmtRange stmts, SourceExtractor& sourceExtractor)
+    clang::FunctionDecl& originalFunction, const DelayedFunctionExtractor::Variables& variables, clang::StmtRange stmts)
 {
     auto at = getLocationOffset(getFunctionDefinitionLocation(originalFunction));
-    auto source = printFunction(extractedFunctionName, variables, sourceExtractor.getSource(getStmtsRange(stmts)));
+    auto source = printFunction(extractedFunctionName, variables, getStmtsSource(getStmtsRange(stmts)));
     sourceOperations.insertTextAt(source, at);
 }
 

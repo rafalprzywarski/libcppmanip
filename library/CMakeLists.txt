@@ -17,7 +17,7 @@ link_directories("${PROJECT_SOURCE_DIR}/../gmock-1.6.0/build/gtest")
 link_directories("${PROJECT_SOURCE_DIR}/../gmock-1.6.0/build")
 
 add_library(cppmanip SHARED
-    src/cppmanip/legacy/SourceExtractor.cpp
+    src/cppmanip/query/getStmtsSource.cpp
     src/cppmanip/io/TextFileOps.cpp
     src/cppmanip/clangutil/ClangToolArgsBuilder.cpp
     src/cppmanip/extractFunctionInFile.cpp
