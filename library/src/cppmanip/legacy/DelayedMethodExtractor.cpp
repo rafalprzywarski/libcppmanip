@@ -8,6 +8,8 @@
 #include <unordered_set>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/range/adaptor/transformed.hpp>
+#include <boost/range/algorithm_ext/push_back.hpp>
+#include <boost/range/algorithm/sort.hpp>
 
 namespace cppmanip
 {
@@ -50,7 +52,10 @@ void DelayedMethodExtractor::replaceRangeWith(unsigned from, unsigned to, std::s
 std::string DelayedMethodExtractor::getNames(Variables variables)
 {
     using boost::adaptors::transformed;
-    return boost::algorithm::join(variables | transformed(std::mem_fun(&clang::VarDecl::getNameAsString)), ", ");
+    std::vector<std::string> names;
+    boost::push_back(names, variables | transformed(std::mem_fun(&clang::VarDecl::getNameAsString)));
+    boost::sort(names);
+    return boost::algorithm::join(names, ", ");
 }
 
 void DelayedMethodExtractor::failIfVariablesAreDeclaredByAndUsedAfterStmts(

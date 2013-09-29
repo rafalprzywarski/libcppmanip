@@ -112,20 +112,21 @@ Feature: As a developer I want to extract code into methods to make my code more
         """
         And there should be a replacement with "with_args(l, i, f);"
     @done
-    Scenario: Extraction of local variables declared in and used after the selected block should prevent the extraction
+    Scenario: Extraction of local variables declared in and used after the selected block should cause an error with variable names listed alphabetically
         Given source code:
         """
-        void other3(int, int);
+        void other3(int, int, int);
         void original()
         {
-            int i = 7, j = 9;
+            int k = 3, i = 7, j = 9;
             i += 2;
+            k += 1;
             j += 5;
-            other3(i, j);
+            other3(j, k, i);
         }
         """
-        When I run function extraction from "int i = 7" to "j += 5" with name "bad"
-        Then it should fail with a message "Cannot extract 'bad'. Following variables are in use after the selected statements: i, j"
+        When I run function extraction from "int k = 3" to "j += 5" with name "bad"
+        Then it should fail with a message "Cannot extract 'bad'. Following variables are in use after the selected statements: i, j, k"
     @done
     Scenario: Local variables used after but not declared in the selected block should not prevent the extraction
         Given source code:
