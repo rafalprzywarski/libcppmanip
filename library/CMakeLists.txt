@@ -30,7 +30,7 @@ add_library(cppmanip SHARED
     src/cppmanip/TranslationUnitFunctionExtractor.cpp
     src/cppmanip/TranslationUnitFunctionExtractorFactory.cpp
     src/cppmanip/clangutil/runTranslationUnitHandlerOnFile.cpp
-    src/cppmanip/query/findStatementsInFunctionOverlappingSelection.cpp
+    src/cppmanip/query/findSelectedStatementsInFunction.cpp
     src/cppmanip/query/getStmtLocationRange.cpp
     src/cppmanip/query/findLocalVariablesRequiredForStmts.cpp
     src/cppmanip/query/findVariablesDeclaredByAndUsedAfterStmts.cpp
@@ -67,7 +67,7 @@ add_executable(cppmaniptest
     test/cppmanip/text/OffsetConverterTest.cpp
     test/cppmanip/query/getFunctionFromAstInSelectionTest.cpp
     test/cppmanip/SourceLocationOperatorsTest.cpp
-    test/cppmanip/query/findStatementsInFunctionOverlappingSelectionTest.cpp
+    test/cppmanip/query/findSelectedStatementsInFunctionTest.cpp
     test/cppmanip/query/getStmtLocationRangeTest.cpp
     test/cppmanip/query/findLocalVariablesRequiredForStmtsTest.cpp
     test/cppmanip/getASTContextForSource.cpp

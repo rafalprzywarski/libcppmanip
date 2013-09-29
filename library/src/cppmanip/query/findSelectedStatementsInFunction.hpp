@@ -9,9 +9,8 @@ namespace cppmanip
 namespace query
 {
 
-typedef std::function<LocationRange(clang::SourceManager&, clang::Stmt& )> GetStmtRange;
-clang::StmtRange findStatementsInFunctionOverlappingSelection(
-    const clang::FunctionDecl& decl, LocationRange selection, GetStmtRange getStmtRange);
+clang::StmtRange findSelectedStatementsInFunction(
+    const clang::FunctionDecl& decl, std::function<bool(clang::Stmt&)> isSelected);
 
 }
 }

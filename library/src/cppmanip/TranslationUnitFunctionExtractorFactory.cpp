@@ -2,7 +2,7 @@
 #include "legacy/DelayedFunctionExtractor.hpp"
 #include "TranslationUnitFunctionExtractor.hpp"
 #include "query/getFunctionFromAstInSelection.hpp"
-#include "query/findStatementsInFunctionOverlappingSelection.hpp"
+#include "query/findSelectedStatementsInFunction.hpp"
 #include "query/getStmtLocationRange.hpp"
 #include "query/findLocalVariablesRequiredForStmts.hpp"
 #include "query/findVariablesDeclaredByAndUsedAfterStmts.hpp"
@@ -24,7 +24,11 @@ clangutil::HandleTranslationUnit TranslationUnitFunctionExtractorFactory::create
         WithDeps(const std::string& extractedMethodName, LocationRange selection, text::OffsetBasedTextModifier& sourceOperations)
             : functionExtractor(
                 bind(query::getFunctionFromAstInSelection, _1, selection),
-                bind(query::findStatementsInFunctionOverlappingSelection, _1, selection, query::getStmtLocationRange),
+                [=](const clang::FunctionDecl& decl) {
+                    return query::findSelectedStatementsInFunction(decl, [=](clang::Stmt& s) {
+                        return query::getStmtLocationRange(decl.getASTContext().getSourceManager(), s).overlapsWith(selection);
+                    });
+                },
                 [&](clang::ASTContext& ctx) {
                     auto& sourceManager = ctx.getSourceManager();
                     return std::make_shared<legacy::DelayedFunctionExtractor>(
