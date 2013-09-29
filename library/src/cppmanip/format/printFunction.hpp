@@ -9,6 +9,8 @@ namespace format
 {
 
 std::string printFunctionCall(const std::string& name, const std::vector<std::string>& args);
+std::string printFunctionDefinition(
+    const std::string& type, const std::string& name, const std::vector<std::string>& args, const std::string& body);
 
 }
 }

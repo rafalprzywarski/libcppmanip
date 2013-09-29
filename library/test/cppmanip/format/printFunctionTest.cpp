@@ -21,5 +21,10 @@ TEST(printFunctionCallTest, should_print_the_arguments_separated_by_commas)
     ASSERT_EQ("f(arg1, arg2, arg3)", printFunctionCall("f", { "arg1", "arg2", "arg3" }));
 }
 
+TEST(printFunctionDefinitionTest, should_print_the_type_name_and_body_if_there_are_no_arguments)
+{
+    ASSERT_EQ("type name()\n{    body;\n}\n", printFunctionDefinition("type", "name", {}, "body;\n"));
+}
+
 }
 }
