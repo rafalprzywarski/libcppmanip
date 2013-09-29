@@ -38,6 +38,12 @@ struct findStatementsInFunctionOverlappingSelectionTest : testing::Test
             .WillRepeatedly(Return(range));
     }
 
+    void stmtRanges(std::map<int, LocationRange> rs)
+    {
+        for (auto r : rs)
+            expectGetRangeForStmtNoAndReturn(r.first, r.second);
+    }
+
     void expectRangeIs(clang::StmtRange range, std::vector<clang::Stmt *> stmts)
     {
         ASSERT_EQ(stmts.size(), std::distance(begin(range), end(range)));
@@ -62,10 +68,11 @@ TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_statement
     LocationRange selection{ rowCol(2, 0), rowCol(3, 4)};
     parseFunctionWithStmts("\n  int x;\n  int y;\n  int z;\n  int w;\n");
     const auto INT_X = 0, INT_Y = 1, INT_Z = 2, INT_W = 3;
-    expectGetRangeForStmtNoAndReturn(INT_X, { rowCol(1, 2), rowCol(1, 8) });
-    expectGetRangeForStmtNoAndReturn(INT_Y, { rowCol(2, 2), rowCol(2, 8) });
-    expectGetRangeForStmtNoAndReturn(INT_Z, { rowCol(3, 2), rowCol(3, 8) });
-    expectGetRangeForStmtNoAndReturn(INT_W, { rowCol(4, 2), rowCol(4, 8) });
+    stmtRanges({
+        { INT_X, { rowCol(1, 2), rowCol(1, 8) } },
+        { INT_Y, { rowCol(2, 2), rowCol(2, 8) } },
+        { INT_Z, { rowCol(3, 2), rowCol(3, 8) } },
+        { INT_W, { rowCol(4, 2), rowCol(4, 8) } } });
 
     auto stmts = findStatementsInFunctionOverlappingSelection(
         *parsedFunctionDecl, selection, [&](clang::SourceManager& sm, clang::Stmt& s) { return getStmtRange(sm, s); });
@@ -78,8 +85,9 @@ TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_an_empty_
     LocationRange selection{ rowCol(0, 1), rowCol(0, 3) };
     parseFunctionWithStmts("\n  int a;\nint b;");
     const auto INT_A = 0, INT_B = 1;
-    expectGetRangeForStmtNoAndReturn(INT_A, { rowCol(1, 2), rowCol(1, 8) });
-    expectGetRangeForStmtNoAndReturn(INT_B, { rowCol(2, 0), rowCol(2, 6) });
+    stmtRanges({
+        { INT_A, { rowCol(1, 2), rowCol(1, 8) } },
+        { INT_B, { rowCol(2, 0), rowCol(2, 6) } } });
 
     auto stmts = findStatementsInFunctionOverlappingSelection(
         *parsedFunctionDecl, selection, [&](clang::SourceManager& sm, clang::Stmt& s) { return getStmtRange(sm, s); });
