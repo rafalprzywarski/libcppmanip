@@ -14,42 +14,10 @@ namespace cppmanip
 namespace legacy
 {
 
-void DelayedFunctionExtractor::extractStatmentsFromFunction(clang::StmtRange stmts, clang::FunctionDecl& originalFunction)
-{
-    failIfVariablesAreDeclaredByAndUsedAfterStmts(stmts, originalFunction);
-    auto requiredVars = findLocalVariablesRequiredForStmts(stmts);
-
-    printExtractedFunction(originalFunction, requiredVars, stmts);
-    replaceStatementsWithFunctionCall(stmts, requiredVars);
-}
-
-void DelayedFunctionExtractor::printExtractedFunction(
-    clang::FunctionDecl& originalFunction, const DelayedFunctionExtractor::Variables& variables, clang::StmtRange stmts)
-{
-    auto at = getLocationOffset(getFunctionDefinitionLocation(originalFunction));
-    auto source = printFunction(extractedFunctionName, variables, getStmtsSource(getSourceFromRange(stmts)));
-    sourceOperations.insertTextAt(source, at);
-}
-
-void DelayedFunctionExtractor::replaceStatementsWithFunctionCall(
-    clang::StmtRange stmts, const DelayedFunctionExtractor::Variables& variables)
-{
-    auto without = getSourceFromRange(stmts);
-    auto begin = getLocationOffset(without.getBegin());
-    auto end = getLocationOffset(without.getEnd());
-    replaceRangeWith(begin, end, printFunctionCallStmt(extractedFunctionName, variables));
-}
-
-void DelayedFunctionExtractor::replaceRangeWith(unsigned from, unsigned to, std::string replacement)
-{
-    sourceOperations.removeTextInRange(from, to);
-    sourceOperations.insertTextAt(replacement, from);
-}
-
 namespace
 {
 
-std::vector<std::string> getTypesAndNames(const std::vector<clang::VarDecl *>& variables)
+std::vector<std::string> getArgumentDeclarations(const std::vector<clang::VarDecl *>& variables)
 {
     std::vector<std::string> args;
     for (auto d : variables)
@@ -59,10 +27,34 @@ std::vector<std::string> getTypesAndNames(const std::vector<clang::VarDecl *>& v
 
 }
 
-std::string DelayedFunctionExtractor::printFunction(const std::string& name, const Variables& vars, const std::string& body)
+void DelayedFunctionExtractor::extractStatmentsFromFunction(clang::StmtRange stmts, clang::FunctionDecl& originalFunction)
 {
-    auto args = getTypesAndNames(vars);
-    return printFunctionDefinition("void", name, args, body);
+    failIfVariablesAreDeclaredByAndUsedAfterStmts(stmts, *originalFunction.getBody());
+    auto requiredVars = findLocalVariablesRequiredForStmts(stmts);
+
+    insertFunctionWithArgsAndBody(getFunctionDefinitionLocation(originalFunction), getArgumentDeclarations(requiredVars), getStmtsSource(getSourceFromRange(stmts)));
+    replaceStatementsWithFunctionCall(getSourceFromRange(stmts), requiredVars);
+}
+
+void DelayedFunctionExtractor::insertFunctionWithArgsAndBody(
+    clang::SourceLocation at, const std::vector<std::string>& variables, std::string body)
+{
+    auto function = printFunctionDefinition("void", extractedFunctionName, variables, body);
+    sourceOperations.insertTextAt(function, getLocationOffset(at));
+}
+
+void DelayedFunctionExtractor::replaceStatementsWithFunctionCall(
+    clang::SourceRange stmts, const DelayedFunctionExtractor::Variables& variables)
+{
+    auto begin = getLocationOffset(stmts.getBegin());
+    auto end = getLocationOffset(stmts.getEnd());
+    replaceRangeWith(begin, end, printFunctionCallStmt(extractedFunctionName, variables));
+}
+
+void DelayedFunctionExtractor::replaceRangeWith(unsigned from, unsigned to, std::string replacement)
+{
+    sourceOperations.removeTextInRange(from, to);
+    sourceOperations.insertTextAt(replacement, from);
 }
 
 std::string DelayedFunctionExtractor::printFunctionCallStmt(const std::string& name, const Variables& args)
@@ -87,10 +79,9 @@ std::string printOrderedVariableNameList(std::vector<clang::VarDecl *> variables
 
 }
 
-void DelayedFunctionExtractor::failIfVariablesAreDeclaredByAndUsedAfterStmts(
-    clang::StmtRange stmts, const clang::FunctionDecl& originalFunction)
+void DelayedFunctionExtractor::failIfVariablesAreDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, clang::Stmt& parent)
 {
-    auto usedVars = findVariablesDeclaredByAndUsedAfterStmts(stmts, *originalFunction.getBody());
+    auto usedVars = findVariablesDeclaredByAndUsedAfterStmts(stmts, parent);
     if (!usedVars.empty())
         throw ExtractMethodError("Cannot extract \'" + extractedFunctionName +
             "\'. Following variables are in use after the selected statements: " + printOrderedVariableNameList(usedVars));

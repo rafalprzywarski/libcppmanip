@@ -49,12 +49,11 @@ private:
     const std::string extractedFunctionName;
     GetSourceFromRange getStmtsSource;
 
-    void printExtractedFunction(clang::FunctionDecl& originalFunction, const Variables& variables, clang::StmtRange stmts);
-    void replaceStatementsWithFunctionCall(clang::StmtRange stmts, const Variables& variables);
+    void insertFunctionWithArgsAndBody(clang::SourceLocation at, const std::vector<std::string>& variables, std::string body);
+    void replaceStatementsWithFunctionCall(clang::SourceRange stmts, const Variables& variables);
     void replaceRangeWith(unsigned int from, unsigned int to, std::string replacement);
     std::string printVariableNames(Variables variables);
-    void failIfVariablesAreDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, const clang::FunctionDecl& originalFunction);
-    std::string printFunction(const std::string& name, const Variables& vars, const std::string& body);
+    void failIfVariablesAreDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, clang::Stmt& parent);
     std::string printFunctionCallStmt(const std::string& name, const Variables& args);
 };
 
