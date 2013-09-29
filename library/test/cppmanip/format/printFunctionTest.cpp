@@ -23,7 +23,12 @@ TEST(printFunctionCallTest, should_print_the_arguments_separated_by_commas)
 
 TEST(printFunctionDefinitionTest, should_print_the_type_name_and_body_if_there_are_no_arguments)
 {
-    ASSERT_EQ("type name()\n{    body;\n}\n", printFunctionDefinition("type", "name", {}, "body;\n"));
+    ASSERT_EQ("type name()\n{\n    body;\n}\n", printFunctionDefinition("type", "name", {}, "body;\n"));
+}
+
+TEST(printFunctionDefinitionTest, should_print_the_arguments_separated_by_commas)
+{
+    ASSERT_EQ("t n(arg1, arg2, arg3)\n{\n    body;\n}\n", printFunctionDefinition("t", "n", { "arg1", "arg2", "arg3" }, "body;\n"));
 }
 
 }

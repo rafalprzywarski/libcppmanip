@@ -14,7 +14,7 @@ std::string printFunctionCall(const std::string& name, const std::vector<std::st
 std::string printFunctionDefinition(
     const std::string& type, const std::string& name, const std::vector<std::string>& args, const std::string& body)
 {
-    return type + " " + name + "()\n{    " + body + "}\n";
+    return type + " " + name + "(" + boost::algorithm::join(args, ", ") + ")\n{\n    " + body + "}\n";
 }
 
 }
