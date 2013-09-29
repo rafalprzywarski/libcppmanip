@@ -96,9 +96,10 @@ Feature: As a developer I want to extract code into methods to make my code more
         }
         """
         When I run function extraction from "other1(i)" to "other3(i + 5" with name "with_args"
-        Then there should be an insertion:
+        Then there should be 2 changes
+        And there should be an insertion containing "void with_args(int i, float f)" or "void with_args(float f, int i)"
+        And there should be an insertion containing:
         """
-        void with_args(int i, float f)
         {
             other1(i);
             other2();
