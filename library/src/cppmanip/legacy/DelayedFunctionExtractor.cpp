@@ -1,4 +1,4 @@
-#include "DelayedMethodExtractor.hpp"
+#include "DelayedFunctionExtractor.hpp"
 #include "SourceExtractor.hpp"
 #include "FunctionPrinter.hpp"
 #include <cppmanip/ExtractMethodError.hpp>
@@ -16,7 +16,7 @@ namespace cppmanip
 namespace legacy
 {
 
-void DelayedMethodExtractor::extractStatmentsFromFunction(clang::StmtRange stmts, const clang::FunctionDecl& originalFunction)
+void DelayedFunctionExtractor::extractStatmentsFromFunction(clang::StmtRange stmts, const clang::FunctionDecl& originalFunction)
 {
     failIfVariablesAreDeclaredByAndUsedAfterStmts(stmts, originalFunction);
     auto requiredVars = findLocalVariablesRequiredForStmts(stmts);
@@ -26,16 +26,16 @@ void DelayedMethodExtractor::extractStatmentsFromFunction(clang::StmtRange stmts
     replaceStatementsWithFunctionCall(stmts, requiredVars, sourceExtractor);
 }
 
-void DelayedMethodExtractor::printExtractedFunction(
-    const clang::FunctionDecl& originalFunction, const DelayedMethodExtractor::Variables& variables, clang::StmtRange stmts, SourceExtractor& sourceExtractor)
+void DelayedFunctionExtractor::printExtractedFunction(
+    const clang::FunctionDecl& originalFunction, const DelayedFunctionExtractor::Variables& variables, clang::StmtRange stmts, SourceExtractor& sourceExtractor)
 {
     auto at = sourceExtractor.getCorrectSourceRange(originalFunction).getBegin();
     auto source = functionPrinter.printFunction(extractedFunctionName, variables, sourceExtractor.getSource(stmts));
     sourceOperations.insertTextAt(source, sourceExtractor.getOffset(at));
 }
 
-void DelayedMethodExtractor::replaceStatementsWithFunctionCall(
-    clang::StmtRange stmts, const DelayedMethodExtractor::Variables& variables, SourceExtractor& sourceExtractor)
+void DelayedFunctionExtractor::replaceStatementsWithFunctionCall(
+    clang::StmtRange stmts, const DelayedFunctionExtractor::Variables& variables, SourceExtractor& sourceExtractor)
 {
     auto without = sourceExtractor.getCorrectSourceRange(stmts);
     auto begin = sourceExtractor.getOffset(without.getBegin());
@@ -43,13 +43,13 @@ void DelayedMethodExtractor::replaceStatementsWithFunctionCall(
     replaceRangeWith(begin, end, functionPrinter.printFunctionCall(extractedFunctionName, variables));
 }
 
-void DelayedMethodExtractor::replaceRangeWith(unsigned from, unsigned to, std::string replacement)
+void DelayedFunctionExtractor::replaceRangeWith(unsigned from, unsigned to, std::string replacement)
 {
     sourceOperations.removeTextInRange(from, to);
     sourceOperations.insertTextAt(replacement, from);
 }
 
-std::string DelayedMethodExtractor::getNames(Variables variables)
+std::string DelayedFunctionExtractor::getNames(Variables variables)
 {
     using boost::adaptors::transformed;
     std::vector<std::string> names;
@@ -58,7 +58,7 @@ std::string DelayedMethodExtractor::getNames(Variables variables)
     return boost::algorithm::join(names, ", ");
 }
 
-void DelayedMethodExtractor::failIfVariablesAreDeclaredByAndUsedAfterStmts(
+void DelayedFunctionExtractor::failIfVariablesAreDeclaredByAndUsedAfterStmts(
     clang::StmtRange stmts, const clang::FunctionDecl& originalFunction)
 {
     auto usedVars = findVariablesDeclaredByAndUsedAfterStmts(stmts, *originalFunction.getBody());

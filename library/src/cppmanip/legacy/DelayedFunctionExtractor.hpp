@@ -10,13 +10,13 @@ namespace cppmanip
 namespace legacy
 {
 
-class DelayedMethodExtractor : public StatementExtractor
+class DelayedFunctionExtractor : public StatementExtractor
 {
 public:
     typedef std::vector<clang::VarDecl *> Variables;
     typedef std::function<Variables(clang::StmtRange stmts)> FindLocalVariablesRequiredForStmts;
     typedef std::function<Variables(clang::StmtRange stmts, clang::Stmt& parent)> FindVariablesDeclaredByAndUsedAfterStmts;
-    DelayedMethodExtractor(
+    DelayedFunctionExtractor(
         text::OffsetBasedTextModifier& sourceOperations, FunctionPrinter& functionPrinter,
         FindLocalVariablesRequiredForStmts findLocalVariablesRequiredForStmts,
         FindVariablesDeclaredByAndUsedAfterStmts findVariablesDeclaredByAndUsedAfterStmts, const std::string& extractedFunctionName)

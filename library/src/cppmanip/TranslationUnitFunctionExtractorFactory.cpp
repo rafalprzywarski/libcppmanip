@@ -1,6 +1,6 @@
 #include "TranslationUnitFunctionExtractorFactory.hpp"
 #include "legacy/PrettyFunctionPrinter.hpp"
-#include "legacy/DelayedMethodExtractor.hpp"
+#include "legacy/DelayedFunctionExtractor.hpp"
 #include "TranslationUnitFunctionExtractor.hpp"
 #include "query/getFunctionFromAstInSelection.hpp"
 #include "query/findStatementsInFunctionOverlappingSelection.hpp"
@@ -25,7 +25,7 @@ clangutil::HandleTranslationUnit TranslationUnitFunctionExtractorFactory::create
                 bind(query::getFunctionFromAstInSelection, _1, selection),
                 bind(query::findStatementsInFunctionOverlappingSelection, _1, selection, query::getStmtLocationRange),
                 [&](clang::ASTContext& ) {
-                    return std::make_shared<legacy::DelayedMethodExtractor>(
+                    return std::make_shared<legacy::DelayedFunctionExtractor>(
                         sourceOperations, printer, query::findLocalVariablesRequiredForStmts,
                         query::findVariablesDeclaredByAndUsedAfterStmts, extractedMethodName);
                 }) { }
