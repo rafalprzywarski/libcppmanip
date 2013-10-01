@@ -34,7 +34,7 @@ FunctionExtractorPtr ClangFunctionExtractorFactory::createFunctionExtractor(
             : extractor(
                 [&]{ clangutil::runTranslationUnitHandlerOnFile(
                     TranslationUnitFunctionExtractorFactory().createFunctionExtractor(
-                        functionName, LocationRange(selection.from, selection.to), textModifier), filename); },
+                        functionName, LocationRange({selection.from.row, selection.from.col}, {selection.to.row, selection.to.col}), textModifier), filename); },
                 [&]{ return recordReplacements(textModifier, filename); }) { }
     };
     auto withDeps = std::make_shared<WithDeps>(functionName, selection, filename);

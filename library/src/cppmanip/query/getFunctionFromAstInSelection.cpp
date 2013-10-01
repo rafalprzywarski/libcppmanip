@@ -33,8 +33,8 @@ private:
         auto s = decl->getBody()->getLocStart();
         auto e = decl->getBody()->getLocEnd().getLocWithOffset(CLOSING_BRACE);
         return LocationRange(
-            boundary::rowCol(sourceManager.getSpellingLineNumber(s) - 1, sourceManager.getSpellingColumnNumber(s) - 1),
-            boundary::rowCol(sourceManager.getSpellingLineNumber(e) - 1, sourceManager.getSpellingColumnNumber(e) - 1));
+            rowCol(sourceManager.getSpellingLineNumber(s) - 1, sourceManager.getSpellingColumnNumber(s) - 1),
+            rowCol(sourceManager.getSpellingLineNumber(e) - 1, sourceManager.getSpellingColumnNumber(e) - 1));
     }
 };
 
