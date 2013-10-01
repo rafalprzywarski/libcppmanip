@@ -1,6 +1,6 @@
 #include "getStmtLocationRange.hpp"
 #include <boost/optional.hpp>
-#include <cppmanip/ExtractMethodError.hpp>
+#include <cppmanip/boundary/ExtractMethodError.hpp>
 #include <clang/AST/StmtVisitor.h>
 #include <clang/Lex/Lexer.h>
 

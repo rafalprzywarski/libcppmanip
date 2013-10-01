@@ -1,7 +1,7 @@
 #include <cppmanip/query/getFunctionFromAstInSelection.hpp>
 #include "../ParsedFunction.hpp"
-#include <cppmanip/SourceSelection.hpp>
-#include <cppmanip/ExtractMethodError.hpp>
+#include <cppmanip/boundary/SourceSelection.hpp>
+#include <cppmanip/boundary/ExtractMethodError.hpp>
 #include <gtest/gtest.h>
 #include <memory>
 

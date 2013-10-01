@@ -50,12 +50,12 @@ install(FILES
         "${PROJECT_SOURCE_DIR}/include/CppManip.hpp"
         DESTINATION include)
 install(FILES
-        "${PROJECT_SOURCE_DIR}/include/cppmanip/SourceSelection.hpp"
-        "${PROJECT_SOURCE_DIR}/include/cppmanip/ExtractMethodError.hpp"
-        "${PROJECT_SOURCE_DIR}/include/cppmanip/SourceReplacement.hpp"
-        "${PROJECT_SOURCE_DIR}/include/cppmanip/SourceLocation.hpp"
-        "${PROJECT_SOURCE_DIR}/include/cppmanip/extractFunctionInFile.hpp"
-        DESTINATION include/cppmanip)
+        "${PROJECT_SOURCE_DIR}/include/cppmanip/boundary/SourceSelection.hpp"
+        "${PROJECT_SOURCE_DIR}/include/cppmanip/boundary/ExtractMethodError.hpp"
+        "${PROJECT_SOURCE_DIR}/include/cppmanip/boundary/SourceReplacement.hpp"
+        "${PROJECT_SOURCE_DIR}/include/cppmanip/boundary/SourceLocation.hpp"
+        "${PROJECT_SOURCE_DIR}/include/cppmanip/boundary/extractFunctionInFile.hpp"
+        DESTINATION include/cppmanip/boundary)
 
 add_executable(cppmaniptest
     test/cppmanip/ParsedFunction.cpp

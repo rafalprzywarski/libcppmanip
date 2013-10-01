@@ -1,6 +1,6 @@
 #ifndef CPPMANIP_B7961154F94A4B4090C2B1E100230246_HPP
 #define CPPMANIP_B7961154F94A4B4090C2B1E100230246_HPP
-#include <cppmanip/extractFunctionInFile.hpp>
+#include <cppmanip/boundary/extractFunctionInFile.hpp>
 
 namespace cppmanip
 {

@@ -2,7 +2,7 @@
 #define CPPMANIP_87BF0ADA8D254F05ADB329BD628E8995_HPP
 #include <string>
 #include <vector>
-#include <cppmanip/SourceLocation.hpp>
+#include <cppmanip/boundary/SourceLocation.hpp>
 
 namespace cppmanip
 {

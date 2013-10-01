@@ -1,5 +1,5 @@
 #include "DelayedFunctionExtractor.hpp"
-#include <cppmanip/ExtractMethodError.hpp>
+#include <cppmanip/boundary/ExtractMethodError.hpp>
 #include <clang/AST/Expr.h>
 #include <clang/AST/RecursiveASTVisitor.h>
 #include <clang/AST/ASTContext.h>

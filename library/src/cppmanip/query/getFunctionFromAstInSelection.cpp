@@ -1,5 +1,5 @@
 #include "getFunctionFromAstInSelection.hpp"
-#include <cppmanip/ExtractMethodError.hpp>
+#include <cppmanip/boundary/ExtractMethodError.hpp>
 #include <clang/AST/RecursiveASTVisitor.h>
 #include <clang/AST/ASTContext.h>
 

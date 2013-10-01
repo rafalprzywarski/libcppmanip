@@ -1,6 +1,6 @@
 #ifndef CPPMANIP_D2CBE39E835843F3956DC75AC0955354_HPP
 #define CPPMANIP_D2CBE39E835843F3956DC75AC0955354_HPP
-#include <cppmanip/SourceReplacement.hpp>
+#include <cppmanip/boundary/SourceReplacement.hpp>
 
 namespace cppmanip
 {

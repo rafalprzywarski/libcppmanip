@@ -1,4 +1,4 @@
-#include <cppmanip/extractFunctionInFile.hpp>
+#include <cppmanip/boundary/extractFunctionInFile.hpp>
 #include "ClangFunctionExtractorFactory.hpp"
 
 namespace cppmanip

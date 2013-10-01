@@ -1,9 +1,9 @@
 #ifndef CPPMANIP_5EDD069F04534471B823B01EB6DDFDD2_HPP
 #define CPPMANIP_5EDD069F04534471B823B01EB6DDFDD2_HPP
 #include <string>
-#include <cppmanip/SourceSelection.hpp>
-#include <cppmanip/SourceReplacement.hpp>
-#include <cppmanip/ExtractMethodError.hpp>
+#include <cppmanip/boundary/SourceSelection.hpp>
+#include <cppmanip/boundary/SourceReplacement.hpp>
+#include <cppmanip/boundary/ExtractMethodError.hpp>
 
 namespace cppmanip
 {

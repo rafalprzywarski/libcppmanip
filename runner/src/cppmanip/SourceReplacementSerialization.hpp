@@ -1,6 +1,6 @@
 #ifndef CPPMANIP_650003D942654C61B6F65F46A45BDDD7_HPP
 #define CPPMANIP_650003D942654C61B6F65F46A45BDDD7_HPP
-#include <cppmanip/SourceReplacement.hpp>
+#include <cppmanip/boundary/SourceReplacement.hpp>
 #include <boost/serialization/vector.hpp>
 
 namespace boost {

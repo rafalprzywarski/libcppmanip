@@ -1,6 +1,6 @@
 #include <cppmanip/query/getStmtLocationRange.hpp>
 #include "../ParsedFunction.hpp"
-#include <cppmanip/ExtractMethodError.hpp>
+#include <cppmanip/boundary/ExtractMethodError.hpp>
 #include <gtest/gtest.h>
 
 using namespace testing;
