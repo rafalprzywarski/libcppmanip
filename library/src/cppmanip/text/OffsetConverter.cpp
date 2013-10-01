@@ -7,10 +7,10 @@ namespace cppmanip
 namespace text
 {
 
-SourceLocation OffsetConverter::getLocationFromOffset(unsigned int offset) const
+boundary::SourceLocation OffsetConverter::getLocationFromOffset(unsigned int offset) const
 {
     validateOffset(offset);
-    SourceLocation loc;
+    boundary::SourceLocation loc;
     loc.col = calcColumn(offset);
     loc.row = calcRow(offset);
     return loc;

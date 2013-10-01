@@ -14,7 +14,7 @@ namespace cppmanip
 
 namespace
 {
-SourceReplacements recordReplacements(const text::OffsetBasedTextModifier& sourceOperations, const std::string& filename)
+boundary::SourceReplacements recordReplacements(const text::OffsetBasedTextModifier& sourceOperations, const std::string& filename)
 {
     text::OffsetConverter offsetCoverter(io::loadTextFromFile(filename));
     text::TextReplacementRecorder recorder([&](unsigned offset) { return offsetCoverter.getLocationFromOffset(offset); });
@@ -24,13 +24,13 @@ SourceReplacements recordReplacements(const text::OffsetBasedTextModifier& sourc
 }
 
 FunctionExtractorPtr ClangFunctionExtractorFactory::createFunctionExtractor(
-    const std::string& functionName, SourceSelection selection, const std::string& filename)
+    const std::string& functionName, boundary::SourceSelection selection, const std::string& filename)
 {
     struct WithDeps
     {
         text::OffsetBasedTextOperationApplier textModifier;
         ClangFunctionExtractor extractor;
-        WithDeps(const std::string& functionName, SourceSelection selection, const std::string& filename)
+        WithDeps(const std::string& functionName, boundary::SourceSelection selection, const std::string& filename)
             : extractor(
                 [&]{ clangutil::runTranslationUnitHandlerOnFile(
                     TranslationUnitFunctionExtractorFactory().createFunctionExtractor(

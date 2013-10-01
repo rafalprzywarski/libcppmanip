@@ -9,11 +9,11 @@ namespace cppmanip
 class ClangFunctionExtractor : public FunctionExtractor
 {
 public:
-    typedef std::function<SourceReplacements()> GetReplacements;
+    typedef std::function<boundary::SourceReplacements()> GetReplacements;
     typedef std::function<void()> RunTranslationUnitHandler;
     ClangFunctionExtractor(RunTranslationUnitHandler runTranslationUnitHandler, GetReplacements getReplacements)
         : runTranslationUnitHandler(runTranslationUnitHandler), getReplacements(getReplacements) { }
-    virtual SourceReplacements extractFunctionInFile();
+    virtual boundary::SourceReplacements extractFunctionInFile();
 private:
     const RunTranslationUnitHandler runTranslationUnitHandler;
     const GetReplacements getReplacements;

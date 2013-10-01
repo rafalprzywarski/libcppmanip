@@ -6,6 +6,8 @@
 
 namespace cppmanip
 {
+namespace boundary
+{
 
 struct SourceReplacement
 {
@@ -15,5 +17,6 @@ struct SourceReplacement
 
 typedef std::vector<SourceReplacement> SourceReplacements;
 
+}
 }
 #endif // CPPMANIP_87BF0ADA8D254F05ADB329BD628E8995_HPP

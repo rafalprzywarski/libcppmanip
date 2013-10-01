@@ -83,7 +83,7 @@ void DelayedFunctionExtractor::failIfVariablesAreDeclaredByAndUsedAfterStmts(cla
 {
     auto usedVars = findVariablesDeclaredByAndUsedAfterStmts(stmts, parent);
     if (!usedVars.empty())
-        throw ExtractMethodError("Cannot extract \'" + extractedFunctionName +
+        throw boundary::ExtractMethodError("Cannot extract \'" + extractedFunctionName +
             "\'. Following variables are in use after the selected statements: " + printOrderedVariableNameList(usedVars));
 
 }

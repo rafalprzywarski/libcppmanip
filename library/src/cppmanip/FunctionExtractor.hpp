@@ -11,7 +11,7 @@ class FunctionExtractor
 {
 public:
     virtual ~FunctionExtractor() { }
-    virtual SourceReplacements extractFunctionInFile() = 0;
+    virtual boundary::SourceReplacements extractFunctionInFile() = 0;
 };
 
 typedef std::shared_ptr<FunctionExtractor> FunctionExtractorPtr;

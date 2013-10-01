@@ -1,4 +1,4 @@
-#include <cppmanip/SourceLocationOperators.hpp>
+#include <cppmanip/boundary/SourceLocationOperators.hpp>
 #include <gtest/gtest.h>
 
 namespace cppmanip
@@ -6,6 +6,7 @@ namespace cppmanip
 
 TEST(SourceLocationOperatorsTest, should_equal_iff_all_fields_equal)
 {
+    using boundary::rowCol;
     ASSERT_TRUE(rowCol(10, 15) == rowCol(10, 15));
     ASSERT_FALSE(rowCol(10, 15) == rowCol(7, 15));
     ASSERT_FALSE(rowCol(10, 15) == rowCol(10, 6));
@@ -14,6 +15,7 @@ TEST(SourceLocationOperatorsTest, should_equal_iff_all_fields_equal)
 
 TEST(SourceLocationOperatorsTest, should_order_by_row_then_by_column)
 {
+    using boundary::rowCol;
     ASSERT_TRUE(rowCol(5, 8) < rowCol(6, 8));
     ASSERT_FALSE(rowCol(6, 8) < rowCol(6, 8));
     ASSERT_FALSE(rowCol(7, 8) < rowCol(7, 8));

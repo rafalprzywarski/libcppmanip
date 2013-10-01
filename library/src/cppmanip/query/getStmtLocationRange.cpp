@@ -63,9 +63,9 @@ unsigned toZeroBased(unsigned n)
     return n - 1;
 }
 
-SourceLocation toRowCol(clang::SourceManager& sm, clang::SourceLocation l)
+boundary::SourceLocation toRowCol(clang::SourceManager& sm, clang::SourceLocation l)
 {
-    return rowCol(
+    return boundary::rowCol(
         toZeroBased(sm.getSpellingLineNumber(l)),
         toZeroBased(sm.getSpellingColumnNumber(l)));
 }
@@ -90,7 +90,7 @@ clang::SourceRange getStmtRange(clang::SourceManager& sourceManager, clang::Stmt
     StmtVisitor v(sourceManager);
     auto range = v.Visit(&stmt);
     if (!range)
-        throw cppmanip::ExtractMethodError(std::string("Unhandled statement"));
+        throw boundary::ExtractMethodError(std::string("Unhandled statement"));
     return *range;
 }
 

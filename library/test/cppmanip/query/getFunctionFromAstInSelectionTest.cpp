@@ -17,20 +17,21 @@ struct getFunctionFromAstInSelectionTest : testing::Test
     {
         func.reset(new test::ParsedFunction(source));
     }
-    void assertFunctionContainsSelection(const std::string& name, SourceLocation from, SourceLocation to)
+    void assertFunctionContainsSelection(const std::string& name, boundary::SourceLocation from, boundary::SourceLocation to)
     {
         ASSERT_EQ(name, getFunctionFromAstInSelection(func->getASTContext(), LocationRange(from, to)).getNameAsString())
             << "[" << from.row << ", " << from.col << "; " << to.row << ", " << to.col << ")";
     }
-    void assertFailsForSelection(SourceLocation from, SourceLocation to)
+    void assertFailsForSelection(boundary::SourceLocation from, boundary::SourceLocation to)
     {
-        ASSERT_THROW(getFunctionFromAstInSelection(func->getASTContext(), LocationRange(from, to)), ExtractMethodError)
+        ASSERT_THROW(getFunctionFromAstInSelection(func->getASTContext(), LocationRange(from, to)), boundary::ExtractMethodError)
             << "[" << from.row << ", " << from.col << "; " << to.row << ", " << to.col << ")";
     }
 };
 
 TEST_F(getFunctionFromAstInSelectionTest, should_get_the_function_containing_given_selection)
 {
+    using boundary::rowCol;
     parse("void f()\n{\n  /*here*/\n}\n");
     ASSERT_NO_THROW(assertFunctionContainsSelection("f", rowCol(2, 0), rowCol(2, 8)));
     ASSERT_NO_THROW(assertFunctionContainsSelection("f", rowCol(2, 2), rowCol(2, 2)));
@@ -40,6 +41,7 @@ TEST_F(getFunctionFromAstInSelectionTest, should_get_the_function_containing_giv
 
 TEST_F(getFunctionFromAstInSelectionTest, should_fail_when_the_selection_is_not_overlapping_the_body)
 {
+    using boundary::rowCol;
     parse("void f()\n{\n /*...*/\n}\n");
     assertFailsForSelection(rowCol(0, 1), rowCol(0, 9));
     assertFailsForSelection(rowCol(3, 1), rowCol(4, 0));
@@ -47,12 +49,14 @@ TEST_F(getFunctionFromAstInSelectionTest, should_fail_when_the_selection_is_not_
 
 TEST_F(getFunctionFromAstInSelectionTest, should_search_through_all_the_functions)
 {
+    using boundary::rowCol;
     parse("void f()\n{\n \n}\nvoid g()\n{\n /*here*/ \n}\nvoid h()\n{\n \n}\n");
     ASSERT_NO_THROW(assertFunctionContainsSelection("g", rowCol(6, 1), rowCol(6, 14)));
 }
 
 TEST_F(getFunctionFromAstInSelectionTest, should_ignore_functions_without_bodies)
 {
+    using boundary::rowCol;
     parse("void f(); void g(); void h() { \n }"); // \n is needed because of clang bug
     ASSERT_NO_THROW(assertFunctionContainsSelection("h", rowCol(0, 30), rowCol(0, 30)));
 }

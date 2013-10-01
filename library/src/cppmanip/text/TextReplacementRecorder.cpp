@@ -7,14 +7,14 @@ namespace text
 
 void TextReplacementRecorder::replaceWithTextInRange(const std::string& replacement, unsigned int from, unsigned int to)
 {
-    SourceReplacement r;
+    boundary::SourceReplacement r;
     r.text = replacement;
     r.from = getSourceLocationFromOffset(from);
     r.to = getSourceLocationFromOffset(to);
     replacements.push_back(r);
 }
 
-SourceReplacements TextReplacementRecorder::getReplacements() const
+boundary::SourceReplacements TextReplacementRecorder::getReplacements() const
 {
     return replacements;
 }

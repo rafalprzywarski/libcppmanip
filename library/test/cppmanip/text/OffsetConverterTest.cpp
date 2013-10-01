@@ -10,7 +10,7 @@ namespace text
 TEST(OffsetConverterTest, should_return_offset_in_the_first_line)
 {
     OffsetConverter coverter("xxxxx\nx\nxxxxxxxxx");
-    SourceLocation loc = coverter.getLocationFromOffset(5);
+    boundary::SourceLocation loc = coverter.getLocationFromOffset(5);
     ASSERT_EQ(5, loc.col);
     ASSERT_EQ(0, loc.row);
     ASSERT_EQ(4, coverter.getLocationFromOffset(4).col);

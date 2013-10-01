@@ -3,6 +3,8 @@
 
 namespace cppmanip
 {
+namespace boundary
+{
 
 struct SourceLocation
 {
@@ -18,5 +20,6 @@ inline SourceLocation rowCol(unsigned row, unsigned col)
     return loc;
 }
 
+}
 }
 #endif // CPPMANIP_33B7E112BA6B4F6995C3437C9A2FFE96_HPP

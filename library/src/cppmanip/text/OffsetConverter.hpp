@@ -11,7 +11,7 @@ class OffsetConverter
 {
 public:
     OffsetConverter(const std::string& source) : source(source) { }
-    SourceLocation getLocationFromOffset(unsigned offset) const;
+    boundary::SourceLocation getLocationFromOffset(unsigned offset) const;
 private:
     const std::string source;
     void validateOffset(unsigned int offset) const;

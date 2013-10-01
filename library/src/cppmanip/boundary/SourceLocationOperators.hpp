@@ -5,6 +5,8 @@
 
 namespace cppmanip
 {
+namespace boundary
+{
 
 inline bool operator==(const SourceLocation& left, const SourceLocation& right)
 {
@@ -23,5 +25,6 @@ inline std::ostream& operator<<(std::ostream& os, SourceLocation l)
     return os << "(" << l.row << ", " << l.col << ")";
 }
 
+}
 }
 #endif // CPPMANIP_EE24E457CC0A4AC18FC06940E80416B9_HPP

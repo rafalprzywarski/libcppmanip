@@ -54,6 +54,7 @@ install(FILES
         "${PROJECT_SOURCE_DIR}/include/cppmanip/ExtractMethodError.hpp"
         "${PROJECT_SOURCE_DIR}/include/cppmanip/SourceReplacement.hpp"
         "${PROJECT_SOURCE_DIR}/include/cppmanip/SourceLocation.hpp"
+        "${PROJECT_SOURCE_DIR}/include/cppmanip/extractFunctionInFile.hpp"
         DESTINATION include/cppmanip)
 
 add_executable(cppmaniptest

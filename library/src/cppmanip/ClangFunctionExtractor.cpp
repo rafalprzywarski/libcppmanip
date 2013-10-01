@@ -7,7 +7,7 @@
 
 namespace cppmanip
 {
-SourceReplacements ClangFunctionExtractor::extractFunctionInFile()
+boundary::SourceReplacements ClangFunctionExtractor::extractFunctionInFile()
 {
     runTranslationUnitHandler();
     return getReplacements();

@@ -33,8 +33,8 @@ private:
         auto s = decl->getBody()->getLocStart();
         auto e = decl->getBody()->getLocEnd().getLocWithOffset(CLOSING_BRACE);
         return LocationRange(
-            rowCol(sourceManager.getSpellingLineNumber(s) - 1, sourceManager.getSpellingColumnNumber(s) - 1),
-            rowCol(sourceManager.getSpellingLineNumber(e) - 1, sourceManager.getSpellingColumnNumber(e) - 1));
+            boundary::rowCol(sourceManager.getSpellingLineNumber(s) - 1, sourceManager.getSpellingColumnNumber(s) - 1),
+            boundary::rowCol(sourceManager.getSpellingLineNumber(e) - 1, sourceManager.getSpellingColumnNumber(e) - 1));
     }
 };
 
@@ -45,7 +45,7 @@ clang::FunctionDecl& getFunctionFromAstInSelection(clang::ASTContext& context, L
     Visitor v(selection);
     v.TraverseDecl(context.getTranslationUnitDecl());
     if (!v.getFoundDecl())
-        throw ExtractMethodError("Selection not found");
+        throw boundary::ExtractMethodError("Selection not found");
     return *v.getFoundDecl();
 }
 

@@ -62,6 +62,7 @@ struct getStmtLocationRangeTest : testing::TestWithParam<Stmt>
 
     void expectStmtRangeIs(LocationRange range, const std::string& phrase)
     {
+        using boundary::rowCol;
         auto phraseOffset = parsedSource.find(phrase);
         ASSERT_EQ(LocationRange(rowCol(0, phraseOffset), rowCol(0, phraseOffset + phrase.length())), range)
             << (*func->stmts())->getStmtClassName();
@@ -70,6 +71,7 @@ struct getStmtLocationRangeTest : testing::TestWithParam<Stmt>
 
 TEST_F(getStmtLocationRangeTest, should_handle_multiline_statements)
 {
+    using boundary::rowCol;
     auto range = getRangeFromSource("void dummy_function__() {\n  int\n x;\n}");
     ASSERT_EQ(LocationRange(rowCol(1, 2), rowCol(2, 3)), range);
 }
@@ -77,7 +79,7 @@ TEST_F(getStmtLocationRangeTest, should_handle_multiline_statements)
 TEST_F(getStmtLocationRangeTest, should_throw_an_exception_for_unknown_statement)
 {
     auto source = "int dummy_function__() {\n  return 4 + 2;\n}";
-    ASSERT_THROW(getRangeFromSource(source), cppmanip::ExtractMethodError);
+    ASSERT_THROW(getRangeFromSource(source), boundary::ExtractMethodError);
 }
 
 TEST_P(getStmtLocationRangeTest, should_find_correct_source_range_for_a_statement)
@@ -114,6 +116,7 @@ INSTANTIATE_TEST_CASE_P(
 
 TEST_F(getStmtLocationRangeTest, getStmtsLocationRange_should_return_the_range_of_all_statements)
 {
+    using boundary::rowCol;
     parse("void f() {\n  int x;\n  f();\n}");
     auto range = getStmtsLocationRange(func->getDecl()->getASTContext().getSourceManager(), func->stmts());
     ASSERT_EQ(LocationRange(rowCol(1, 2), rowCol(2, 6)), range);

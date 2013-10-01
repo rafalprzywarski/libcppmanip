@@ -1,6 +1,6 @@
 #ifndef CPPMANIP_C20DF98AB97E467387AA8DD21F900A0E_HPP
 #define CPPMANIP_C20DF98AB97E467387AA8DD21F900A0E_HPP
-#include <cppmanip/SourceSelection.hpp>
+#include <CppManip.hpp>
 #include <string>
 #include <vector>
 

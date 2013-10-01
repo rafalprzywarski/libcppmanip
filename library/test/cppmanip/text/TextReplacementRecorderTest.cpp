@@ -15,9 +15,9 @@ namespace text
 struct TextReplacementRecorderTest : testing::Test
 {
     TextReplacementRecorder recorder;
-    SourceLocation FROM, TO;
+    boundary::SourceLocation FROM, TO;
 
-    MOCK_METHOD1(fromOffsetToSourceLocation, SourceLocation(unsigned offset));
+    MOCK_METHOD1(fromOffsetToSourceLocation, boundary::SourceLocation(unsigned offset));
 
     TextReplacementRecorderTest()
         : recorder([&](unsigned offset) { return fromOffsetToSourceLocation(offset); })
@@ -31,7 +31,7 @@ struct TextReplacementRecorderTest : testing::Test
 
 TEST_F(TextReplacementRecorderTest, should_return_no_replacements_when_constructed)
 {
-    SourceReplacements replacements = recorder.getReplacements();
+    boundary::SourceReplacements replacements = recorder.getReplacements();
     ASSERT_TRUE(replacements.empty());
 }
 
@@ -40,7 +40,7 @@ TEST_F(TextReplacementRecorderTest, should_record_a_text_replacement)
     EXPECT_CALL(*this, fromOffsetToSourceLocation(4)).WillOnce(Return(FROM));
     EXPECT_CALL(*this, fromOffsetToSourceLocation(7)).WillOnce(Return(TO));
     recorder.replaceWithTextInRange("text", 4, 7);
-    SourceReplacements replacements = recorder.getReplacements();
+    boundary::SourceReplacements replacements = recorder.getReplacements();
     ASSERT_EQ(1u, replacements.size());
     ASSERT_EQ("text", replacements[0].text);
     ASSERT_EQ(FROM.row, replacements[0].from.row);
@@ -51,11 +51,11 @@ TEST_F(TextReplacementRecorderTest, should_record_a_text_replacement)
 
 TEST_F(TextReplacementRecorderTest, should_record_all_replacements)
 {
-    ALLOWING_CALL(*this, fromOffsetToSourceLocation(_)).Times(2 * 3).WillRepeatedly(Return(SourceLocation()));
+    ALLOWING_CALL(*this, fromOffsetToSourceLocation(_)).Times(2 * 3).WillRepeatedly(Return(boundary::SourceLocation()));
     recorder.replaceWithTextInRange("a", 0, 0);
     recorder.replaceWithTextInRange("b", 0, 0);
     recorder.replaceWithTextInRange("c", 0, 0);
-    SourceReplacements replacements = recorder.getReplacements();
+    boundary::SourceReplacements replacements = recorder.getReplacements();
     ASSERT_EQ(3u, replacements.size());
     ASSERT_EQ("a", replacements[0].text);
     ASSERT_EQ("b", replacements[1].text);
