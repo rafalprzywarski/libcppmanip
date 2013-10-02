@@ -46,7 +46,8 @@ ast::Function getFunctionFromAstInSelection(clang::ASTContext& context, Location
     v.TraverseDecl(context.getTranslationUnitDecl());
     if (!v.getFoundDecl())
         throw boundary::ExtractMethodError("Selection not found");
-    return *v.getFoundDecl();
+    auto func = v.getFoundDecl();
+    return ast::Function(*func, context.getSourceManager().getFileOffset(func->getLocStart()));
 }
 
 }

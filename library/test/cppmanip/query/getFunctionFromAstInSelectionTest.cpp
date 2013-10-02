@@ -60,5 +60,13 @@ TEST_F(getFunctionFromAstInSelectionTest, should_ignore_functions_without_bodies
     ASSERT_NO_THROW(assertFunctionContainsSelection("h", rowCol(0, 30), rowCol(0, 30)));
 }
 
+TEST_F(getFunctionFromAstInSelectionTest, should_return_the_offset_of_the_function)
+{
+    using cppmanip::ast::rowCol;
+    parse("void f() { \n }\nvoid g() { \n }"); // \n is needed because of clang bug
+    ASSERT_EQ(0, getFunctionFromAstInSelection(func->getASTContext(), { rowCol(0, 10), rowCol(0, 10) }).getDefinitionOffset());
+    ASSERT_EQ(15, getFunctionFromAstInSelection(func->getASTContext(), { rowCol(2, 10), rowCol(2, 10) }).getDefinitionOffset());
+}
+
 }
 }
