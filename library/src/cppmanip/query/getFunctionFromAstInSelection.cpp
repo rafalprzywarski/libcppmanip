@@ -40,7 +40,7 @@ private:
 
 }
 
-clang::FunctionDecl& getFunctionFromAstInSelection(clang::ASTContext& context, LocationRange selection)
+ast::Function getFunctionFromAstInSelection(clang::ASTContext& context, LocationRange selection)
 {
     Visitor v(selection);
     v.TraverseDecl(context.getTranslationUnitDecl());

@@ -17,7 +17,7 @@ namespace legacy
 namespace
 {
 
-std::vector<std::string> getArgumentDeclarations(const ast::LocalVariables& variables)
+std::vector<std::string> getArgumentDeclarations(const std::vector<ast::LocalVariable>& variables)
 {
     std::vector<std::string> args;
     for (auto d : variables)
@@ -27,12 +27,12 @@ std::vector<std::string> getArgumentDeclarations(const ast::LocalVariables& vari
 
 }
 
-void DelayedFunctionExtractor::extractStatmentsFromFunction(clang::StmtRange stmts, clang::FunctionDecl& originalFunction)
+void DelayedFunctionExtractor::extractStatmentsFromFunction(clang::StmtRange stmts, const ast::Function& originalFunction)
 {
-    failIfVariablesAreDeclaredByAndUsedAfterStmts(stmts, *originalFunction.getBody());
+    failIfVariablesAreDeclaredByAndUsedAfterStmts(stmts, *originalFunction.getDecl().getBody());
     auto requiredVars = findLocalVariablesRequiredForStmts(stmts);
 
-    insertFunctionWithArgsAndBody(getFunctionDefinitionLocation(originalFunction), getArgumentDeclarations(requiredVars), getStmtsSource(getSourceFromRange(stmts)));
+    insertFunctionWithArgsAndBody(getFunctionDefinitionLocation(originalFunction.getDecl()), getArgumentDeclarations(requiredVars), getStmtsSource(getSourceFromRange(stmts)));
     replaceStatementsWithFunctionCall(getSourceFromRange(stmts), requiredVars);
 }
 
@@ -44,7 +44,7 @@ void DelayedFunctionExtractor::insertFunctionWithArgsAndBody(
 }
 
 void DelayedFunctionExtractor::replaceStatementsWithFunctionCall(
-    clang::SourceRange stmts, const ast::LocalVariables& variables)
+    clang::SourceRange stmts, const std::vector<ast::LocalVariable>& variables)
 {
     auto begin = getLocationOffset(stmts.getBegin());
     auto end = getLocationOffset(stmts.getEnd());
@@ -57,7 +57,7 @@ void DelayedFunctionExtractor::replaceRangeWith(unsigned from, unsigned to, std:
     sourceOperations.insertTextAt(replacement, from);
 }
 
-std::string DelayedFunctionExtractor::printFunctionCallStmt(const std::string& name, const ast::LocalVariables& args)
+std::string DelayedFunctionExtractor::printFunctionCallStmt(const std::string& name, const std::vector<ast::LocalVariable>& args)
 {
     using boost::adaptors::transformed;
     std::vector<std::string> argNames;
@@ -68,7 +68,7 @@ std::string DelayedFunctionExtractor::printFunctionCallStmt(const std::string& n
 namespace
 {
 
-std::string printOrderedVariableNameList(const ast::LocalVariables& variables)
+std::string printOrderedVariableNameList(const std::vector<ast::LocalVariable>& variables)
 {
     using boost::adaptors::transformed;
     std::vector<std::string> names;

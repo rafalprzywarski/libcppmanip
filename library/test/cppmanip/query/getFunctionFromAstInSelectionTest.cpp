@@ -18,7 +18,7 @@ struct getFunctionFromAstInSelectionTest : testing::Test
     }
     void assertFunctionContainsSelection(const std::string& name, ast::SourceLocation from, ast::SourceLocation to)
     {
-        ASSERT_EQ(name, getFunctionFromAstInSelection(func->getASTContext(), LocationRange(from, to)).getNameAsString())
+        ASSERT_EQ(name, getFunctionFromAstInSelection(func->getASTContext(), LocationRange(from, to)).getDecl().getNameAsString())
             << "[" << from << "; " << to << ")";
     }
     void assertFailsForSelection(ast::SourceLocation from, ast::SourceLocation to)

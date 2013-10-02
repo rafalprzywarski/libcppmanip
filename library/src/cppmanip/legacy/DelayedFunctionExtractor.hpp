@@ -34,7 +34,7 @@ public:
     {
     }
 
-    void extractStatmentsFromFunction(clang::StmtRange stmts, clang::FunctionDecl& originalFunction);
+    void extractStatmentsFromFunction(clang::StmtRange stmts, const ast::Function& originalFunction);
 
 private:
 
