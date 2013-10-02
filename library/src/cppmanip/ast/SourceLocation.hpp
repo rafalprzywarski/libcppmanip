@@ -3,6 +3,8 @@
 #include <ostream>
 namespace cppmanip
 {
+namespace ast
+{
 
 class SourceLocation
 {
@@ -36,5 +38,6 @@ inline std::ostream& operator<<(std::ostream& os, SourceLocation l)
     return os << "(" << l.getRow() << ", " << l.getCol() << ")";
 }
 
+}
 }
 #endif // CPPMANIP_0268B93F0DA54054804296C6E2EDEC6B_HPP

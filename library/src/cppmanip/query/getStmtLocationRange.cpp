@@ -63,9 +63,9 @@ unsigned toZeroBased(unsigned n)
     return n - 1;
 }
 
-SourceLocation toRowCol(clang::SourceManager& sm, clang::SourceLocation l)
+ast::SourceLocation toRowCol(clang::SourceManager& sm, clang::SourceLocation l)
 {
-    return rowCol(
+    return ast::rowCol(
         toZeroBased(sm.getSpellingLineNumber(l)),
         toZeroBased(sm.getSpellingColumnNumber(l)));
 }

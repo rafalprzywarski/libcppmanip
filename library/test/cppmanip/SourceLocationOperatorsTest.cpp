@@ -1,7 +1,9 @@
-#include <cppmanip/SourceLocation.hpp>
+#include <cppmanip/ast/SourceLocation.hpp>
 #include <gtest/gtest.h>
 
 namespace cppmanip
+{
+namespace ast
 {
 
 TEST(SourceLocationOperatorsTest, should_equal_iff_all_fields_equal)
@@ -26,4 +28,5 @@ TEST(SourceLocationOperatorsTest, should_order_by_row_then_by_column)
     ASSERT_FALSE(rowCol(2, 1) < rowCol(1, 2));
 }
 
+}
 }
