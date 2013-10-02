@@ -12,9 +12,8 @@ namespace legacy
 class DelayedFunctionExtractor : public StatementExtractor
 {
 public:
-    typedef std::vector<clang::VarDecl *> Variables;
     typedef std::function<std::vector<LocalVariable>(clang::StmtRange stmts)> FindLocalVariablesRequiredForStmts;
-    typedef std::function<Variables(clang::StmtRange stmts, clang::Stmt& parent)> FindVariablesDeclaredByAndUsedAfterStmts;
+    typedef std::function<std::vector<LocalVariable>(clang::StmtRange stmts, clang::Stmt& parent)> FindVariablesDeclaredByAndUsedAfterStmts;
     typedef std::function<std::string(const std::string&, const std::vector<std::string>&)> PrintFunctionCall;
     typedef std::function<std::string(const std::string&, const std::string&, const std::vector<std::string>&, const std::string&)> PrintFunctionDefinition;
     typedef std::function<unsigned(clang::SourceLocation)> GetLocationOffset;
@@ -53,7 +52,7 @@ private:
     void insertFunctionWithArgsAndBody(clang::SourceLocation at, const std::vector<std::string>& variables, std::string body);
     void replaceStatementsWithFunctionCall(clang::SourceRange stmts, const std::vector<LocalVariable>& variables);
     void replaceRangeWith(unsigned int from, unsigned int to, std::string replacement);
-    std::string printVariableNames(Variables variables);
+    std::string printVariableNames(const std::vector<LocalVariable>& variables);
     void failIfVariablesAreDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, clang::Stmt& parent);
     std::string printFunctionCallStmt(const std::string& name, const std::vector<LocalVariable>& args);
 };

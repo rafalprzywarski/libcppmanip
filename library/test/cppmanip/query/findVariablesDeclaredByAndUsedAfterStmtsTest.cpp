@@ -42,17 +42,22 @@ struct findVariablesDeclaredByAndUsedAfterStmtsTest : testing::Test
         return { boost::next(begin(r), n), end(r) };
     }
 
-    clang::VarDecl *varDecl(unsigned n, StmtsWithScope stmts)
+    void expectEqUnordered(std::vector<LocalVariable> found, std::vector<LocalVariable> expected)
     {
-        return clang::dyn_cast<clang::VarDecl>(clang::dyn_cast<clang::DeclStmt>(*boost::next(begin(stmts.range), n))->getSingleDecl());
+        auto order = [](LocalVariable left, LocalVariable right) { return left.getNameWithType() < right.getNameWithType(); };
+        std::sort(found.begin(), found.end(), order);
+        std::sort(expected.begin(), expected.end(), order);
+        expectEqOrdered(found, expected);
     }
 
-    void expectEqUnordered(std::vector<clang::VarDecl *> found, std::vector<clang::VarDecl *> expected)
+    void expectEqOrdered(std::vector<LocalVariable> found, std::vector<LocalVariable> expected)
     {
         ASSERT_EQ(expected.size(), found.size());
-        std::sort(found.begin(), found.end());
-        std::sort(expected.begin(), expected.end());
-        ASSERT_TRUE(expected == found);
+        for (decltype(found.size()) i = 0; i < found.size(); ++i)
+        {
+            ASSERT_EQ(expected[i].getName(), found[i].getName());
+            ASSERT_EQ(expected[i].getNameWithType(), found[i].getNameWithType());
+        }
     }
 };
 
@@ -68,21 +73,19 @@ TEST_F(findVariablesDeclaredByAndUsedAfterStmtsTest, should_return_variables_use
 {
     declareGlobal("void f(int); void g(int);");
     auto stmts = parseStmts("int i = 1; int j = 2; int x = 3; f(j); g(i + j);");
-    const auto INT_I = 0, INT_J = 1;
 
     auto found = findVariablesDeclaredByAndUsedAfterStmts(first(3, stmts.range), stmts.scope);
-    expectEqUnordered(found, { varDecl(INT_I, stmts), varDecl(INT_J, stmts) });
+    expectEqUnordered(found, { { "i", "int i" }, { "j", "int j" } });
 }
 
 TEST_F(findVariablesDeclaredByAndUsedAfterStmtsTest, should_only_return_variables_declared_by_given_statements)
 {
     declareGlobal("void f(int); void g(int);");
     auto stmts = parseStmts("int x = 1; int y = 2; int z = 3; int w = 4; f(x + y); g(z + w);");
-    const auto INT_X = 0, INT_Y = 1, INT_Z = 2, INT_W = 3;
 
     auto checked = first(2, skip(2, stmts.range));
     auto found = findVariablesDeclaredByAndUsedAfterStmts(checked, stmts.scope);
-    expectEqUnordered(found, { varDecl(INT_Z, stmts), varDecl(INT_W, stmts) });
+    expectEqUnordered(found, { { "z", "int z" }, { "w", "int w" } });
 }
 
 }

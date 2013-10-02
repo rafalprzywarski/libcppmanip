@@ -2,15 +2,14 @@
 #define FINDVARIABLESDECLAREDBYANDUSEDAFTERSTMTS_HPP
 #include <vector>
 #include <clang/AST/StmtIterator.h>
-
-namespace clang { class VarDecl; }
+#include <cppmanip/LocalVariable.hpp>
 
 namespace cppmanip
 {
 namespace query
 {
 
-std::vector<clang::VarDecl *> findVariablesDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, clang::Stmt& parent);
+std::vector<LocalVariable> findVariablesDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, clang::Stmt& parent);
 
 }
 }

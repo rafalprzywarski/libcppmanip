@@ -68,11 +68,11 @@ std::string DelayedFunctionExtractor::printFunctionCallStmt(const std::string& n
 namespace
 {
 
-std::string printOrderedVariableNameList(std::vector<clang::VarDecl *> variables)
+std::string printOrderedVariableNameList(const std::vector<LocalVariable>& variables)
 {
     using boost::adaptors::transformed;
     std::vector<std::string> names;
-    boost::push_back(names, variables | transformed(std::mem_fun(&clang::VarDecl::getNameAsString)));
+    boost::push_back(names, variables | transformed(std::bind(&LocalVariable::getName, std::placeholders::_1)));
     boost::sort(names);
     return boost::algorithm::join(names, ", ");
 }
