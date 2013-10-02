@@ -30,10 +30,10 @@ public:
         return true;
     }
 
-    std::vector<ast::LocalVariable> getRequired() const
+    ast::LocalVariables getRequired() const
     {
         using namespace boost::adaptors;
-        std::vector<ast::LocalVariable> required;
+        ast::LocalVariables required;
         auto notDeclared = [&](clang::VarDecl *d) { return declared.count(d) == 0; };
         std::vector<clang::VarDecl *> usedOrdered(used.begin(), used.end());
         boost::sort(usedOrdered, [](clang::VarDecl *left, clang::VarDecl *right) { return left->getLocation() < right->getLocation(); });
@@ -57,7 +57,7 @@ private:
 
 }
 
-std::vector<ast::LocalVariable> findLocalVariablesRequiredForStmts(
+ast::LocalVariables findLocalVariablesRequiredForStmts(
     clang::StmtRange stmts)
 {
     RequiredVariablesVisitor v;

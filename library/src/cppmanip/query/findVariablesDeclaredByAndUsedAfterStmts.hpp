@@ -9,7 +9,7 @@ namespace cppmanip
 namespace query
 {
 
-std::vector<ast::LocalVariable> findVariablesDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, clang::Stmt& parent);
+ast::LocalVariables findVariablesDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, clang::Stmt& parent);
 
 }
 }

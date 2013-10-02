@@ -38,7 +38,7 @@ struct findLocalVariablesRequiredForStmtsTest : testing::Test
         return clang::dyn_cast<clang::VarDecl>(clang::dyn_cast<clang::DeclStmt>(*boost::next(begin(stmts), n))->getSingleDecl());
     }
 
-    void expectEqUnordered(std::vector<ast::LocalVariable> found, std::vector<ast::LocalVariable> expected)
+    void expectEqUnordered(ast::LocalVariables found, ast::LocalVariables expected)
     {
         auto order = [](ast::LocalVariable left, ast::LocalVariable right) { return left.getNameWithType() < right.getNameWithType(); };
         std::sort(found.begin(), found.end(), order);
@@ -46,7 +46,7 @@ struct findLocalVariablesRequiredForStmtsTest : testing::Test
         expectEqOrdered(found, expected);
     }
 
-    void expectEqOrdered(std::vector<ast::LocalVariable> found, std::vector<ast::LocalVariable> expected)
+    void expectEqOrdered(ast::LocalVariables found, ast::LocalVariables expected)
     {
         ASSERT_EQ(expected.size(), found.size());
         for (decltype(found.size()) i = 0; i < found.size(); ++i)

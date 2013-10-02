@@ -63,12 +63,12 @@ ast::LocalVariable asLocalVariable(clang::VarDecl *d)
 
 }
 
-std::vector<ast::LocalVariable> findVariablesDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, clang::Stmt& parent)
+ast::LocalVariables findVariablesDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, clang::Stmt& parent)
 {
     using namespace boost::adaptors;
     auto declared = findVariablesDeclaredByStmts(stmts);
     auto used = findVariablesUsedByStmts({end(stmts), parent.child_end()});
-    std::vector<ast::LocalVariable> result;
+    ast::LocalVariables result;
     auto isDeclared = [&](clang::VarDecl *d) { return declared.count(d) != 0; };
     boost::push_back(result, used | filtered(isDeclared) | transformed(std::ptr_fun(&asLocalVariable)));
     return result;

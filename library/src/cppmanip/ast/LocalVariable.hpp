@@ -1,6 +1,7 @@
 #ifndef CPPMANIP_B40BEC39700E4028957DA15BE006B348_HPP
 #define CPPMANIP_B40BEC39700E4028957DA15BE006B348_HPP
 #include <string>
+#include <vector>
 
 namespace cppmanip
 {
@@ -18,6 +19,8 @@ private:
     std::string name;
     std::string nameWithType;
 };
+
+typedef std::vector<LocalVariable> LocalVariables;
 
 }
 }

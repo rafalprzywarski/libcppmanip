@@ -9,7 +9,7 @@ namespace cppmanip
 namespace query
 {
 
-std::vector<ast::LocalVariable> findLocalVariablesRequiredForStmts(clang::StmtRange stmts);
+ast::LocalVariables findLocalVariablesRequiredForStmts(clang::StmtRange stmts);
 
 }
 }
