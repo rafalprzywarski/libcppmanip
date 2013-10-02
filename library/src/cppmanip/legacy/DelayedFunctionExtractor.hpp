@@ -2,6 +2,7 @@
 #define CPPMANIP_799523E01B0442A6ABBA2BFB7EF4F97A_HPP
 #include <cppmanip/StatementExtractor.hpp>
 #include <cppmanip/text/TextModifier.hpp>
+#include <cppmanip/LocalVariable.hpp>
 
 namespace cppmanip
 {
@@ -12,7 +13,7 @@ class DelayedFunctionExtractor : public StatementExtractor
 {
 public:
     typedef std::vector<clang::VarDecl *> Variables;
-    typedef std::function<Variables(clang::StmtRange stmts)> FindLocalVariablesRequiredForStmts;
+    typedef std::function<std::vector<LocalVariable>(clang::StmtRange stmts)> FindLocalVariablesRequiredForStmts;
     typedef std::function<Variables(clang::StmtRange stmts, clang::Stmt& parent)> FindVariablesDeclaredByAndUsedAfterStmts;
     typedef std::function<std::string(const std::string&, const std::vector<std::string>&)> PrintFunctionCall;
     typedef std::function<std::string(const std::string&, const std::string&, const std::vector<std::string>&, const std::string&)> PrintFunctionDefinition;
@@ -50,11 +51,11 @@ private:
     GetSourceFromRange getStmtsSource;
 
     void insertFunctionWithArgsAndBody(clang::SourceLocation at, const std::vector<std::string>& variables, std::string body);
-    void replaceStatementsWithFunctionCall(clang::SourceRange stmts, const Variables& variables);
+    void replaceStatementsWithFunctionCall(clang::SourceRange stmts, const std::vector<LocalVariable>& variables);
     void replaceRangeWith(unsigned int from, unsigned int to, std::string replacement);
     std::string printVariableNames(Variables variables);
     void failIfVariablesAreDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, clang::Stmt& parent);
-    std::string printFunctionCallStmt(const std::string& name, const Variables& args);
+    std::string printFunctionCallStmt(const std::string& name, const std::vector<LocalVariable>& args);
 };
 
 }

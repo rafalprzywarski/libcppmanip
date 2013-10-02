@@ -1,4 +1,5 @@
 #include <cppmanip/query/findLocalVariablesRequiredForStmts.hpp>
+#include <cppmanip/LocalVariable.hpp>
 #include "../ParsedFunction.hpp"
 #include <gtest/gtest.h>
 #include <memory>
@@ -37,18 +38,22 @@ struct findLocalVariablesRequiredForStmtsTest : testing::Test
         return clang::dyn_cast<clang::VarDecl>(clang::dyn_cast<clang::DeclStmt>(*boost::next(begin(stmts), n))->getSingleDecl());
     }
 
-    void expectEqUnordered(std::vector<clang::VarDecl *> found, std::vector<clang::VarDecl *> expected)
+    void expectEqUnordered(std::vector<LocalVariable> found, std::vector<LocalVariable> expected)
     {
-        ASSERT_EQ(expected.size(), found.size());
-        std::sort(found.begin(), found.end());
-        std::sort(expected.begin(), expected.end());
-        ASSERT_TRUE(expected == found);
+        auto order = [](LocalVariable left, LocalVariable right) { return left.getNameWithType() < right.getNameWithType(); };
+        std::sort(found.begin(), found.end(), order);
+        std::sort(expected.begin(), expected.end(), order);
+        expectEqOrdered(found, expected);
     }
 
-    void expectEqOrdered(std::vector<clang::VarDecl *> found, std::vector<clang::VarDecl *> expected)
+    void expectEqOrdered(std::vector<LocalVariable> found, std::vector<LocalVariable> expected)
     {
         ASSERT_EQ(expected.size(), found.size());
-        ASSERT_TRUE(expected == found);
+        for (decltype(found.size()) i = 0; i < found.size(); ++i)
+        {
+            ASSERT_EQ(expected[i].getName(), found[i].getName());
+            ASSERT_EQ(expected[i].getNameWithType(), found[i].getNameWithType());
+        }
     }
 };
 
@@ -68,7 +73,7 @@ TEST_F(findLocalVariablesRequiredForStmtsTest, should_return_variables_in_given_
     auto checked = skip(2, stmts);
 
     auto found = findLocalVariablesRequiredForStmts(checked);
-    expectEqUnordered(found, { varDecl(INT_X, stmts), varDecl(INT_Y, stmts) });
+    expectEqUnordered(found, { { "x", "int x" }, { "y", "int y" } });
 }
 
 TEST_F(findLocalVariablesRequiredForStmtsTest, should_not_return_the_same_variable_twice)
@@ -88,7 +93,7 @@ TEST_F(findLocalVariablesRequiredForStmtsTest, should_not_return_variables_decla
     const auto INT_X = 0;
     auto checked = skip(1, stmts);
     auto found = findLocalVariablesRequiredForStmts(checked);
-    expectEqUnordered(found, { varDecl(INT_X, stmts) });
+    expectEqUnordered(found, { { "x", "int x" } });
 }
 
 TEST_F(findLocalVariablesRequiredForStmtsTest, should_not_return_global_variables)
@@ -104,7 +109,7 @@ TEST_F(findLocalVariablesRequiredForStmtsTest, should_return_variables_in_order_
     auto stmts = parseStmts("int c(0); int a(0); int b(0); f(b, c, a);");
     const auto INT_C = 0, INT_A = 1, INT_B = 2;
     auto found = findLocalVariablesRequiredForStmts(skip(3, stmts));
-    expectEqOrdered(found, { varDecl(INT_C, stmts), varDecl(INT_A, stmts), varDecl(INT_B, stmts) });
+    expectEqOrdered(found, { { "c", "int c" }, { "a", "int a" }, { "b", "int b" } });
 }
 
 }

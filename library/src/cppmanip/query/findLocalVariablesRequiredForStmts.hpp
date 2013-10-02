@@ -2,6 +2,7 @@
 #define CPPMANIP_0ACCB425139A4912A691719B3EE19B55_HPP
 #include <vector>
 #include <clang/AST/StmtIterator.h>
+#include <cppmanip/LocalVariable.hpp>
 
 namespace clang { class VarDecl; }
 
@@ -10,7 +11,7 @@ namespace cppmanip
 namespace query
 {
 
-std::vector<clang::VarDecl *> findLocalVariablesRequiredForStmts(clang::StmtRange stmts);
+std::vector<LocalVariable> findLocalVariablesRequiredForStmts(clang::StmtRange stmts);
 
 }
 }

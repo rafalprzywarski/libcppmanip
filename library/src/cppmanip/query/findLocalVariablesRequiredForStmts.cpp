@@ -1,7 +1,7 @@
 #include "findLocalVariablesRequiredForStmts.hpp"
 #include <clang/AST/RecursiveASTVisitor.h>
 #include <unordered_set>
-#include <boost/range/adaptor/filtered.hpp>
+#include <boost/range/adaptors.hpp>
 #include <boost/range/algorithm/sort.hpp>
 #include <boost/range/algorithm_ext/push_back.hpp>
 
@@ -30,12 +30,14 @@ public:
         return true;
     }
 
-    std::vector<clang::VarDecl *> getRequired() const
+    std::vector<LocalVariable> getRequired() const
     {
-        std::vector<clang::VarDecl *> required;
+        using namespace boost::adaptors;
+        std::vector<LocalVariable> required;
         auto notDeclared = [&](clang::VarDecl *d) { return declared.count(d) == 0; };
-        boost::push_back(required, used | boost::adaptors::filtered(notDeclared));
-        boost::sort(required, [](clang::VarDecl *left, clang::VarDecl *right) { return left->getLocation() < right->getLocation(); });
+        std::vector<clang::VarDecl *> usedOrdered(used.begin(), used.end());
+        boost::sort(usedOrdered, [](clang::VarDecl *left, clang::VarDecl *right) { return left->getLocation() < right->getLocation(); });
+        boost::push_back(required, usedOrdered | filtered(notDeclared) | transformed(std::ptr_fun(&asLocalVariable)));
         return required;
     }
 private:
@@ -46,11 +48,16 @@ private:
     {
         return d->getParentFunctionOrMethod() == nullptr;
     }
+
+    static LocalVariable asLocalVariable(clang::VarDecl *d)
+    {
+        return LocalVariable(d->getNameAsString(), d->getType().getAsString() + " " + d->getNameAsString());
+    }
 };
 
 }
 
-std::vector<clang::VarDecl *> findLocalVariablesRequiredForStmts(
+std::vector<LocalVariable> findLocalVariablesRequiredForStmts(
     clang::StmtRange stmts)
 {
     RequiredVariablesVisitor v;

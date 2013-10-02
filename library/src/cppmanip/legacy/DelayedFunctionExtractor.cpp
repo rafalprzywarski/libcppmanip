@@ -17,11 +17,11 @@ namespace legacy
 namespace
 {
 
-std::vector<std::string> getArgumentDeclarations(const std::vector<clang::VarDecl *>& variables)
+std::vector<std::string> getArgumentDeclarations(const std::vector<LocalVariable>& variables)
 {
     std::vector<std::string> args;
     for (auto d : variables)
-        args.push_back(d->getType().getAsString() + " " + d->getNameAsString());
+        args.push_back(d.getNameWithType());
     return args;
 }
 
@@ -44,7 +44,7 @@ void DelayedFunctionExtractor::insertFunctionWithArgsAndBody(
 }
 
 void DelayedFunctionExtractor::replaceStatementsWithFunctionCall(
-    clang::SourceRange stmts, const DelayedFunctionExtractor::Variables& variables)
+    clang::SourceRange stmts, const std::vector<LocalVariable>& variables)
 {
     auto begin = getLocationOffset(stmts.getBegin());
     auto end = getLocationOffset(stmts.getEnd());
@@ -57,11 +57,11 @@ void DelayedFunctionExtractor::replaceRangeWith(unsigned from, unsigned to, std:
     sourceOperations.insertTextAt(replacement, from);
 }
 
-std::string DelayedFunctionExtractor::printFunctionCallStmt(const std::string& name, const Variables& args)
+std::string DelayedFunctionExtractor::printFunctionCallStmt(const std::string& name, const std::vector<LocalVariable>& args)
 {
     using boost::adaptors::transformed;
     std::vector<std::string> argNames;
-    boost::push_back(argNames, args | transformed(std::mem_fun(&clang::VarDecl::getNameAsString)));
+    boost::push_back(argNames, args | transformed(std::bind(&LocalVariable::getName, std::placeholders::_1)));
     return printFunctionCall(name, argNames) + ";";
 }
 
