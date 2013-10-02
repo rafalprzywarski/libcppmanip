@@ -32,15 +32,15 @@ void DelayedFunctionExtractor::extractStatmentsFromFunction(clang::StmtRange stm
     failIfVariablesAreDeclaredByAndUsedAfterStmts(stmts, *originalFunction.getDecl().getBody());
     auto requiredVars = findLocalVariablesRequiredForStmts(stmts);
 
-    insertFunctionWithArgsAndBody(getFunctionDefinitionLocation(originalFunction.getDecl()), getArgumentDeclarations(requiredVars), getStmtsSource(getSourceFromRange(stmts)));
+    insertFunctionWithArgsAndBody(originalFunction.getDefinitionOffset(), getArgumentDeclarations(requiredVars), getStmtsSource(getSourceFromRange(stmts)));
     replaceStatementsWithFunctionCall(getSourceFromRange(stmts), requiredVars);
 }
 
 void DelayedFunctionExtractor::insertFunctionWithArgsAndBody(
-    clang::SourceLocation at, const std::vector<std::string>& variables, std::string body)
+    ast::SourceOffset at, const std::vector<std::string>& variables, std::string body)
 {
     auto function = printFunctionDefinition("void", extractedFunctionName, variables, body);
-    sourceOperations.insertTextAt(function, getLocationOffset(at));
+    sourceOperations.insertTextAt(function, at);
 }
 
 void DelayedFunctionExtractor::replaceStatementsWithFunctionCall(

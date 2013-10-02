@@ -35,7 +35,6 @@ add_library(cppmanip SHARED
     src/cppmanip/query/findLocalVariablesRequiredForStmts.cpp
     src/cppmanip/query/findVariablesDeclaredByAndUsedAfterStmts.cpp
     src/cppmanip/format/printFunction.cpp
-    src/cppmanip/query/getFunctionDefinitionLocation.cpp
 )
 
 target_link_libraries(cppmanip LINK_PRIVATE
@@ -74,7 +73,6 @@ add_executable(cppmaniptest
     test/cppmanip/getASTContextForSource.cpp
     test/cppmanip/query/findVariablesDeclaredByAndUsedAfterStmtsTest.cpp
     test/cppmanip/format/printFunctionTest.cpp
-    test/cppmanip/query/getFunctionDefinitionLocationTest.cpp
 ) 
 
 target_link_libraries(cppmaniptest cppmanip gtest gmock boost_thread boost_system pthread)
