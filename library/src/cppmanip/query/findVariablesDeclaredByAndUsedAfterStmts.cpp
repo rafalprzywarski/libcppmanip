@@ -56,19 +56,19 @@ std::unordered_set<clang::VarDecl *> findVariablesDeclaredByStmts(clang::StmtRan
     return v.getDeclared();
 }
 
-LocalVariable asLocalVariable(clang::VarDecl *d)
+ast::LocalVariable asLocalVariable(clang::VarDecl *d)
 {
-    return LocalVariable(d->getNameAsString(), d->getType().getAsString() + " " + d->getNameAsString());
+    return { d->getNameAsString(), d->getType().getAsString() + " " + d->getNameAsString() };
 }
 
 }
 
-std::vector<LocalVariable> findVariablesDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, clang::Stmt& parent)
+std::vector<ast::LocalVariable> findVariablesDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, clang::Stmt& parent)
 {
     using namespace boost::adaptors;
     auto declared = findVariablesDeclaredByStmts(stmts);
     auto used = findVariablesUsedByStmts({end(stmts), parent.child_end()});
-    std::vector<LocalVariable> result;
+    std::vector<ast::LocalVariable> result;
     auto isDeclared = [&](clang::VarDecl *d) { return declared.count(d) != 0; };
     boost::push_back(result, used | filtered(isDeclared) | transformed(std::ptr_fun(&asLocalVariable)));
     return result;

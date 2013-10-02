@@ -1,5 +1,5 @@
 #include <cppmanip/query/findLocalVariablesRequiredForStmts.hpp>
-#include <cppmanip/LocalVariable.hpp>
+#include <cppmanip/ast/LocalVariable.hpp>
 #include "../ParsedFunction.hpp"
 #include <gtest/gtest.h>
 #include <memory>
@@ -38,15 +38,15 @@ struct findLocalVariablesRequiredForStmtsTest : testing::Test
         return clang::dyn_cast<clang::VarDecl>(clang::dyn_cast<clang::DeclStmt>(*boost::next(begin(stmts), n))->getSingleDecl());
     }
 
-    void expectEqUnordered(std::vector<LocalVariable> found, std::vector<LocalVariable> expected)
+    void expectEqUnordered(std::vector<ast::LocalVariable> found, std::vector<ast::LocalVariable> expected)
     {
-        auto order = [](LocalVariable left, LocalVariable right) { return left.getNameWithType() < right.getNameWithType(); };
+        auto order = [](ast::LocalVariable left, ast::LocalVariable right) { return left.getNameWithType() < right.getNameWithType(); };
         std::sort(found.begin(), found.end(), order);
         std::sort(expected.begin(), expected.end(), order);
         expectEqOrdered(found, expected);
     }
 
-    void expectEqOrdered(std::vector<LocalVariable> found, std::vector<LocalVariable> expected)
+    void expectEqOrdered(std::vector<ast::LocalVariable> found, std::vector<ast::LocalVariable> expected)
     {
         ASSERT_EQ(expected.size(), found.size());
         for (decltype(found.size()) i = 0; i < found.size(); ++i)

@@ -17,7 +17,7 @@ namespace legacy
 namespace
 {
 
-std::vector<std::string> getArgumentDeclarations(const std::vector<LocalVariable>& variables)
+std::vector<std::string> getArgumentDeclarations(const std::vector<ast::LocalVariable>& variables)
 {
     std::vector<std::string> args;
     for (auto d : variables)
@@ -44,7 +44,7 @@ void DelayedFunctionExtractor::insertFunctionWithArgsAndBody(
 }
 
 void DelayedFunctionExtractor::replaceStatementsWithFunctionCall(
-    clang::SourceRange stmts, const std::vector<LocalVariable>& variables)
+    clang::SourceRange stmts, const std::vector<ast::LocalVariable>& variables)
 {
     auto begin = getLocationOffset(stmts.getBegin());
     auto end = getLocationOffset(stmts.getEnd());
@@ -57,22 +57,22 @@ void DelayedFunctionExtractor::replaceRangeWith(unsigned from, unsigned to, std:
     sourceOperations.insertTextAt(replacement, from);
 }
 
-std::string DelayedFunctionExtractor::printFunctionCallStmt(const std::string& name, const std::vector<LocalVariable>& args)
+std::string DelayedFunctionExtractor::printFunctionCallStmt(const std::string& name, const std::vector<ast::LocalVariable>& args)
 {
     using boost::adaptors::transformed;
     std::vector<std::string> argNames;
-    boost::push_back(argNames, args | transformed(std::bind(&LocalVariable::getName, std::placeholders::_1)));
+    boost::push_back(argNames, args | transformed(std::bind(&ast::LocalVariable::getName, std::placeholders::_1)));
     return printFunctionCall(name, argNames) + ";";
 }
 
 namespace
 {
 
-std::string printOrderedVariableNameList(const std::vector<LocalVariable>& variables)
+std::string printOrderedVariableNameList(const std::vector<ast::LocalVariable>& variables)
 {
     using boost::adaptors::transformed;
     std::vector<std::string> names;
-    boost::push_back(names, variables | transformed(std::bind(&LocalVariable::getName, std::placeholders::_1)));
+    boost::push_back(names, variables | transformed(std::bind(&ast::LocalVariable::getName, std::placeholders::_1)));
     boost::sort(names);
     return boost::algorithm::join(names, ", ");
 }

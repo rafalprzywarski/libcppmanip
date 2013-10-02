@@ -30,10 +30,10 @@ public:
         return true;
     }
 
-    std::vector<LocalVariable> getRequired() const
+    std::vector<ast::LocalVariable> getRequired() const
     {
         using namespace boost::adaptors;
-        std::vector<LocalVariable> required;
+        std::vector<ast::LocalVariable> required;
         auto notDeclared = [&](clang::VarDecl *d) { return declared.count(d) == 0; };
         std::vector<clang::VarDecl *> usedOrdered(used.begin(), used.end());
         boost::sort(usedOrdered, [](clang::VarDecl *left, clang::VarDecl *right) { return left->getLocation() < right->getLocation(); });
@@ -49,15 +49,15 @@ private:
         return d->getParentFunctionOrMethod() == nullptr;
     }
 
-    static LocalVariable asLocalVariable(clang::VarDecl *d)
+    static ast::LocalVariable asLocalVariable(clang::VarDecl *d)
     {
-        return LocalVariable(d->getNameAsString(), d->getType().getAsString() + " " + d->getNameAsString());
+        return { d->getNameAsString(), d->getType().getAsString() + " " + d->getNameAsString() };
     }
 };
 
 }
 
-std::vector<LocalVariable> findLocalVariablesRequiredForStmts(
+std::vector<ast::LocalVariable> findLocalVariablesRequiredForStmts(
     clang::StmtRange stmts)
 {
     RequiredVariablesVisitor v;

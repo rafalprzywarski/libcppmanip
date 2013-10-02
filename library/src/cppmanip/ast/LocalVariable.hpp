@@ -1,8 +1,11 @@
-#ifndef CPPMANIP_LOCALVARIABLE_HPP
-#define CPPMANIP_LOCALVARIABLE_HPP
+#ifndef CPPMANIP_B40BEC39700E4028957DA15BE006B348_HPP
+#define CPPMANIP_B40BEC39700E4028957DA15BE006B348_HPP
 #include <string>
 
-namespace cppmanip {
+namespace cppmanip
+{
+namespace ast
+{
 
 class LocalVariable
 {
@@ -17,5 +20,5 @@ private:
 };
 
 }
-
-#endif // CPPMANIP_LOCALVARIABLE_HPP
+}
+#endif // CPPMANIP_B40BEC39700E4028957DA15BE006B348_HPP
