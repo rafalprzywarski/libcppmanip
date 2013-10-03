@@ -27,12 +27,12 @@ std::vector<std::string> getArgumentDeclarations(const std::vector<ast::LocalVar
 
 }
 
-void DelayedFunctionExtractor::extractStatmentsFromFunction(clang::StmtRange stmts, const ast::Function& originalFunction)
+void DelayedFunctionExtractor::extractStatmentsFromFunction(clang::StmtRange stmts, ast::FunctionPtr originalFunction)
 {
-    failIfVariablesAreDeclaredByAndUsedAfterStmts(stmts, *originalFunction.getDecl().getBody());
+    failIfVariablesAreDeclaredByAndUsedAfterStmts(stmts, *originalFunction->getDecl().getBody());
     auto requiredVars = findLocalVariablesRequiredForStmts(stmts);
 
-    insertFunctionWithArgsAndBody(originalFunction.getDefinitionOffset(), getArgumentDeclarations(requiredVars), getStmtsSource(getSourceFromRange(stmts)));
+    insertFunctionWithArgsAndBody(originalFunction->getDefinitionOffset(), getArgumentDeclarations(requiredVars), getStmtsSource(getSourceFromRange(stmts)));
     replaceStatementsWithFunctionCall(getSourceFromRange(stmts), requiredVars);
 }
 

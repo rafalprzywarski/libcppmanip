@@ -12,7 +12,7 @@ class StatementExtractor
 public:
     virtual ~StatementExtractor() { }
     virtual void extractStatmentsFromFunction(
-        clang::StmtRange stmts, const ast::Function& originalFunction) = 0;
+        clang::StmtRange stmts, ast::FunctionPtr originalFunction) = 0;
 };
 
 typedef std::shared_ptr<StatementExtractor> StatementExtractorPtr;

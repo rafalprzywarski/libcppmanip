@@ -9,7 +9,7 @@ namespace cppmanip
 namespace query
 {
 
-ast::Function getFunctionFromAstInSelection(clang::ASTContext& context, LocationRange selection);
+ast::FunctionPtr getFunctionFromAstInSelection(clang::ASTContext& context, LocationRange selection);
 
 }
 }

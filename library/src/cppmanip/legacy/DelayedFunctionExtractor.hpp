@@ -33,7 +33,7 @@ public:
     {
     }
 
-    void extractStatmentsFromFunction(clang::StmtRange stmts, const ast::Function& originalFunction);
+    void extractStatmentsFromFunction(clang::StmtRange stmts, ast::FunctionPtr originalFunction);
 
 private:
 

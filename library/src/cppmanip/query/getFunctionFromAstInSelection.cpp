@@ -40,14 +40,14 @@ private:
 
 }
 
-ast::Function getFunctionFromAstInSelection(clang::ASTContext& context, LocationRange selection)
+ast::FunctionPtr getFunctionFromAstInSelection(clang::ASTContext& context, LocationRange selection)
 {
     Visitor v(selection);
     v.TraverseDecl(context.getTranslationUnitDecl());
     if (!v.getFoundDecl())
         throw boundary::ExtractMethodError("Selection not found");
     auto func = v.getFoundDecl();
-    return ast::Function(*func, context.getSourceManager().getFileOffset(func->getLocStart()));
+    return std::make_shared<ast::Function>(*func, context.getSourceManager().getFileOffset(func->getLocStart()));
 }
 
 }

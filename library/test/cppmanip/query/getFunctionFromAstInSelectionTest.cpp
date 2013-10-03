@@ -18,7 +18,7 @@ struct getFunctionFromAstInSelectionTest : testing::Test
     }
     void assertFunctionContainsSelection(const std::string& name, ast::SourceLocation from, ast::SourceLocation to)
     {
-        ASSERT_EQ(name, getFunctionFromAstInSelection(func->getASTContext(), LocationRange(from, to)).getDecl().getNameAsString())
+        ASSERT_EQ(name, getFunctionFromAstInSelection(func->getASTContext(), LocationRange(from, to))->getDecl().getNameAsString())
             << "[" << from << "; " << to << ")";
     }
     void assertFailsForSelection(ast::SourceLocation from, ast::SourceLocation to)
@@ -64,8 +64,8 @@ TEST_F(getFunctionFromAstInSelectionTest, should_return_the_offset_of_the_functi
 {
     using cppmanip::ast::rowCol;
     parse("void f() { \n }\nvoid g() { \n }"); // \n is needed because of clang bug
-    ASSERT_EQ(0, getFunctionFromAstInSelection(func->getASTContext(), { rowCol(0, 10), rowCol(0, 10) }).getDefinitionOffset());
-    ASSERT_EQ(15, getFunctionFromAstInSelection(func->getASTContext(), { rowCol(2, 10), rowCol(2, 10) }).getDefinitionOffset());
+    ASSERT_EQ(0, getFunctionFromAstInSelection(func->getASTContext(), { rowCol(0, 10), rowCol(0, 10) })->getDefinitionOffset());
+    ASSERT_EQ(15, getFunctionFromAstInSelection(func->getASTContext(), { rowCol(2, 10), rowCol(2, 10) })->getDefinitionOffset());
 }
 
 }

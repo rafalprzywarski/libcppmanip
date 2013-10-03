@@ -9,8 +9,8 @@ namespace cppmanip
 class TranslationUnitFunctionExtractor
 {
 public:
-    typedef std::function<ast::Function(clang::ASTContext&)> LocateFunction;
-    typedef std::function<clang::StmtRange(const ast::Function&)> LocateStatements;
+    typedef std::function<ast::FunctionPtr(clang::ASTContext&)> LocateFunction;
+    typedef std::function<clang::StmtRange(ast::FunctionPtr)> LocateStatements;
     typedef std::function<StatementExtractorPtr(clang::ASTContext& ctx)> CreateStatementExtractor;
     TranslationUnitFunctionExtractor(LocateFunction locateFunction, LocateStatements locateStatements, CreateStatementExtractor createStmtExtractor)
         : locateFunction(locateFunction), locateStatements(locateStatements), createStmtExtractor(createStmtExtractor) { }
