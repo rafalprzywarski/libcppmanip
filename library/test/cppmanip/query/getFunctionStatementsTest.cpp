@@ -41,5 +41,11 @@ TEST_F(getFunctionStatementsTest, should_return_the_ranges_of_each_statements)
     ASSERT_EQ(LOC2, stmts[1]->getRange());
 }
 
+TEST_F(getFunctionStatementsTest, should_return_no_statements_when_the_given_function_has_none)
+{
+    parse("void f() {\n }");
+    ASSERT_TRUE(getFunctionStatements(*func->getDecl(), getStmtRange).empty());
+}
+
 }
 }
