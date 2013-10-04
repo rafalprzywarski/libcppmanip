@@ -38,6 +38,11 @@ private:
     }
 };
 
+ast::SourceOffset getFunctionOffset(clang::ASTContext& context, clang::FunctionDecl *func)
+{
+    return context.getSourceManager().getFileOffset(func->getLocStart());
+}
+
 }
 
 ast::FunctionPtr getFunctionFromAstInSelection(clang::ASTContext& context, LocationRange selection)
@@ -47,7 +52,7 @@ ast::FunctionPtr getFunctionFromAstInSelection(clang::ASTContext& context, Locat
     if (!v.getFoundDecl())
         throw boundary::ExtractMethodError("Selection not found");
     auto func = v.getFoundDecl();
-    return std::make_shared<ast::Function>(*func, context.getSourceManager().getFileOffset(func->getLocStart()), ast::Statements());
+    return std::make_shared<ast::Function>(*func, getFunctionOffset(context, func), ast::Statements());
 }
 
 }
