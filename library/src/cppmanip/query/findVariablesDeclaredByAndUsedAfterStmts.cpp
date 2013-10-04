@@ -56,9 +56,9 @@ std::unordered_set<clang::VarDecl *> findVariablesDeclaredByStmts(clang::StmtRan
     return v.getDeclared();
 }
 
-ast::LocalVariable asLocalVariable(clang::VarDecl *d)
+ast::LocalVariablePtr asLocalVariable(clang::VarDecl *d)
 {
-    return { d->getNameAsString(), d->getType().getAsString() + " " + d->getNameAsString() };
+    return std::make_shared<ast::LocalVariable>(d->getNameAsString(), d->getType().getAsString() + " " + d->getNameAsString());
 }
 
 }

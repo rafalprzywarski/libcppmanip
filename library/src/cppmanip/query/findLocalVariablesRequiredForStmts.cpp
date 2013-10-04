@@ -49,9 +49,9 @@ private:
         return d->getParentFunctionOrMethod() == nullptr;
     }
 
-    static ast::LocalVariable asLocalVariable(clang::VarDecl *d)
+    static ast::LocalVariablePtr asLocalVariable(clang::VarDecl *d)
     {
-        return { d->getNameAsString(), d->getType().getAsString() + " " + d->getNameAsString() };
+        return std::make_shared<ast::LocalVariable>(d->getNameAsString(), d->getType().getAsString() + " " + d->getNameAsString());
     }
 };
 

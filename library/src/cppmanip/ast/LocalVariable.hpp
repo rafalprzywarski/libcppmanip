@@ -2,6 +2,7 @@
 #define CPPMANIP_B40BEC39700E4028957DA15BE006B348_HPP
 #include <string>
 #include <vector>
+#include <memory>
 
 namespace cppmanip
 {
@@ -20,7 +21,8 @@ private:
     std::string nameWithType;
 };
 
-typedef std::vector<LocalVariable> LocalVariables;
+typedef std::shared_ptr<const LocalVariable> LocalVariablePtr;
+typedef std::vector<LocalVariablePtr> LocalVariables;
 
 }
 }

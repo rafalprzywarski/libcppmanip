@@ -1,5 +1,6 @@
 #include <cppmanip/query/findVariablesDeclaredByAndUsedAfterStmts.hpp>
 #include "../ParsedFunction.hpp"
+#include "LocalVariablesAssert.hpp"
 #include <gtest/gtest.h>
 #include <memory>
 #include <boost/algorithm/string/join.hpp>
@@ -9,10 +10,13 @@ namespace cppmanip
 {
 namespace query
 {
+namespace test
+{
+using namespace cppmanip::test;
 
 struct findVariablesDeclaredByAndUsedAfterStmtsTest : testing::Test
 {
-    std::unique_ptr<test::ParsedFunction> func;
+    std::unique_ptr<ParsedFunction> func;
     std::string extraDeclarations;
 
     void declareGlobal(const std::string& functions)
@@ -40,24 +44,6 @@ struct findVariablesDeclaredByAndUsedAfterStmtsTest : testing::Test
     clang::StmtRange skip(unsigned n, clang::StmtRange r)
     {
         return { boost::next(begin(r), n), end(r) };
-    }
-
-    void expectEqUnordered(ast::LocalVariables found, ast::LocalVariables expected)
-    {
-        auto order = [](ast::LocalVariable left, ast::LocalVariable right) { return left.getNameWithType() < right.getNameWithType(); };
-        std::sort(found.begin(), found.end(), order);
-        std::sort(expected.begin(), expected.end(), order);
-        expectEqOrdered(found, expected);
-    }
-
-    void expectEqOrdered(ast::LocalVariables found, ast::LocalVariables expected)
-    {
-        ASSERT_EQ(expected.size(), found.size());
-        for (decltype(found.size()) i = 0; i < found.size(); ++i)
-        {
-            ASSERT_EQ(expected[i].getName(), found[i].getName());
-            ASSERT_EQ(expected[i].getNameWithType(), found[i].getNameWithType());
-        }
     }
 };
 
@@ -88,5 +74,6 @@ TEST_F(findVariablesDeclaredByAndUsedAfterStmtsTest, should_only_return_variable
     expectEqUnordered(found, { { "z", "int z" }, { "w", "int w" } });
 }
 
+}
 }
 }

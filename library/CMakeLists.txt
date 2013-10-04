@@ -73,6 +73,7 @@ add_executable(cppmaniptest
     test/cppmanip/getASTContextForSource.cpp
     test/cppmanip/query/findVariablesDeclaredByAndUsedAfterStmtsTest.cpp
     test/cppmanip/format/printFunctionTest.cpp
+    test/cppmanip/query/LocalVariablesAssert.cpp
 ) 
 
 target_link_libraries(cppmaniptest cppmanip gtest gmock boost_thread boost_system pthread)

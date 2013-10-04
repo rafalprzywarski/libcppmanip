@@ -1,6 +1,7 @@
 #include <cppmanip/query/findLocalVariablesRequiredForStmts.hpp>
 #include <cppmanip/ast/LocalVariable.hpp>
 #include "../ParsedFunction.hpp"
+#include "LocalVariablesAssert.hpp"
 #include <gtest/gtest.h>
 #include <memory>
 #include <boost/algorithm/string/join.hpp>
@@ -10,10 +11,13 @@ namespace cppmanip
 {
 namespace query
 {
+namespace test
+{
+using namespace cppmanip::test;
 
 struct findLocalVariablesRequiredForStmtsTest : testing::Test
 {
-    std::unique_ptr<test::ParsedFunction> func;
+    std::unique_ptr<ParsedFunction> func;
     std::string extraDeclarations;
 
     void declareGlobal(const std::string& functions)
@@ -24,7 +28,7 @@ struct findLocalVariablesRequiredForStmtsTest : testing::Test
     clang::StmtRange parseStmts(const std::string& stmts)
     {
         auto source = extraDeclarations + "void func__() {" + stmts + "}";
-        func.reset(new test::ParsedFunction(source));
+        func.reset(new ParsedFunction(source));
         return func->stmts();
     }
 
@@ -36,24 +40,6 @@ struct findLocalVariablesRequiredForStmtsTest : testing::Test
     clang::VarDecl *varDecl(unsigned n, clang::StmtRange stmts)
     {
         return clang::dyn_cast<clang::VarDecl>(clang::dyn_cast<clang::DeclStmt>(*boost::next(begin(stmts), n))->getSingleDecl());
-    }
-
-    void expectEqUnordered(ast::LocalVariables found, ast::LocalVariables expected)
-    {
-        auto order = [](ast::LocalVariable left, ast::LocalVariable right) { return left.getNameWithType() < right.getNameWithType(); };
-        std::sort(found.begin(), found.end(), order);
-        std::sort(expected.begin(), expected.end(), order);
-        expectEqOrdered(found, expected);
-    }
-
-    void expectEqOrdered(ast::LocalVariables found, ast::LocalVariables expected)
-    {
-        ASSERT_EQ(expected.size(), found.size());
-        for (decltype(found.size()) i = 0; i < found.size(); ++i)
-        {
-            ASSERT_EQ(expected[i].getName(), found[i].getName());
-            ASSERT_EQ(expected[i].getNameWithType(), found[i].getNameWithType());
-        }
     }
 };
 
@@ -112,5 +98,6 @@ TEST_F(findLocalVariablesRequiredForStmtsTest, should_return_variables_in_order_
     expectEqOrdered(found, { { "c", "int c" }, { "a", "int a" }, { "b", "int b" } });
 }
 
+}
 }
 }
