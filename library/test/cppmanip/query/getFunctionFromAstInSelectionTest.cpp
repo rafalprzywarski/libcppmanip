@@ -1,8 +1,13 @@
 #include <cppmanip/query/getFunctionFromAstInSelection.hpp>
 #include "../ParsedFunction.hpp"
 #include <cppmanip/boundary/ExtractMethodError.hpp>
-#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include <memory>
+
+#define EXPECT_FCALL(call) EXPECT_CALL(*this, call)
+#define ALLOWING_FCALL(call) EXPECT_CALL(*this, call)
+
+using namespace testing;
 
 namespace cppmanip
 {
@@ -12,20 +17,30 @@ namespace query
 struct getFunctionFromAstInSelectionTest : testing::Test
 {
     std::unique_ptr<test::ParsedFunction> func;
+    GetFunctionStatements getFunctionStatements;
+
+    getFunctionFromAstInSelectionTest()
+    {
+        getFunctionStatements = [this](clang::FunctionDecl& f) { return getFunctionStatementsMocked(f); };
+        ALLOWING_FCALL(getFunctionStatementsMocked(_)).WillRepeatedly(Return(ast::Statements()));
+    }
+
     void parse(const std::string& source)
     {
         func.reset(new test::ParsedFunction(source));
     }
     void assertFunctionContainsSelection(const std::string& name, ast::SourceLocation from, ast::SourceLocation to)
     {
-        ASSERT_EQ(name, getFunctionFromAstInSelection(func->getASTContext(), LocationRange(from, to))->getDecl().getNameAsString())
+        ASSERT_EQ(name, getFunctionFromAstInSelection(func->getASTContext(), LocationRange(from, to), getFunctionStatements)->getDecl().getNameAsString())
             << "[" << from << "; " << to << ")";
     }
     void assertFailsForSelection(ast::SourceLocation from, ast::SourceLocation to)
     {
-        ASSERT_THROW(getFunctionFromAstInSelection(func->getASTContext(), LocationRange(from, to)), boundary::ExtractMethodError)
+        ASSERT_THROW(getFunctionFromAstInSelection(func->getASTContext(), LocationRange(from, to), getFunctionStatements), boundary::ExtractMethodError)
             << "[" << from << "; " << to << ")";
     }
+
+    MOCK_METHOD1(getFunctionStatementsMocked, ast::Statements(clang::FunctionDecl& ));
 };
 
 TEST_F(getFunctionFromAstInSelectionTest, should_get_the_function_containing_given_selection)
@@ -64,8 +79,17 @@ TEST_F(getFunctionFromAstInSelectionTest, should_return_the_offset_of_the_functi
 {
     using cppmanip::ast::rowCol;
     parse("void f() { \n }\nvoid g() { \n }"); // \n is needed because of clang bug
-    ASSERT_EQ(0, getFunctionFromAstInSelection(func->getASTContext(), { rowCol(0, 10), rowCol(0, 10) })->getDefinitionOffset());
-    ASSERT_EQ(15, getFunctionFromAstInSelection(func->getASTContext(), { rowCol(2, 10), rowCol(2, 10) })->getDefinitionOffset());
+    ASSERT_EQ(0, getFunctionFromAstInSelection(func->getASTContext(), { rowCol(0, 10), rowCol(0, 10) }, getFunctionStatements)->getDefinitionOffset());
+    ASSERT_EQ(15, getFunctionFromAstInSelection(func->getASTContext(), { rowCol(2, 10), rowCol(2, 10) }, getFunctionStatements)->getDefinitionOffset());
+}
+
+TEST_F(getFunctionFromAstInSelectionTest, should_return_all_statements_of_the_function)
+{
+    using cppmanip::ast::rowCol;
+    parse("void f() {\nint x; int y = x + 2; }");
+    ast::Statements stmts(7);
+    EXPECT_FCALL(getFunctionStatementsMocked(Ref(*func->getDecl()))).WillRepeatedly(Return(stmts));
+    ASSERT_TRUE(stmts == getFunctionFromAstInSelection(func->getASTContext(), { rowCol(1, 0), rowCol(1, 0) }, getFunctionStatements)->getStatements());
 }
 
 }

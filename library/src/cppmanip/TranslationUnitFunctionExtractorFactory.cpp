@@ -22,7 +22,7 @@ clangutil::HandleTranslationUnit TranslationUnitFunctionExtractorFactory::create
         TranslationUnitFunctionExtractor functionExtractor;
         WithDeps(const std::string& extractedMethodName, LocationRange selection, text::OffsetBasedTextModifier& sourceOperations)
             : functionExtractor(
-                bind(query::getFunctionFromAstInSelection, _1, selection),
+                bind(query::getFunctionFromAstInSelection, _1, selection, [](clang::FunctionDecl& ) { return ast::Statements(); }),
                 [=](ast::FunctionPtr decl) {
                     return query::findSelectedStatementsInFunction(decl->getDecl(), [=](clang::Stmt& s) {
                         return query::getStmtLocationRange(decl->getDecl().getASTContext().getSourceManager(), s).overlapsWith(selection);

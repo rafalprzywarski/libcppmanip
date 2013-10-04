@@ -9,7 +9,8 @@ namespace cppmanip
 namespace query
 {
 
-ast::FunctionPtr getFunctionFromAstInSelection(clang::ASTContext& context, LocationRange selection);
+typedef std::function<ast::Statements(clang::FunctionDecl& )> GetFunctionStatements;
+ast::FunctionPtr getFunctionFromAstInSelection(clang::ASTContext& context, LocationRange selection, GetFunctionStatements getFunctionStatements);
 
 }
 }

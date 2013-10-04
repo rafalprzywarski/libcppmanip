@@ -45,14 +45,14 @@ ast::SourceOffset getFunctionOffset(clang::ASTContext& context, clang::FunctionD
 
 }
 
-ast::FunctionPtr getFunctionFromAstInSelection(clang::ASTContext& context, LocationRange selection)
+ast::FunctionPtr getFunctionFromAstInSelection(clang::ASTContext& context, LocationRange selection, GetFunctionStatements getFunctionStatements)
 {
     Visitor v(selection);
     v.TraverseDecl(context.getTranslationUnitDecl());
     if (!v.getFoundDecl())
         throw boundary::ExtractMethodError("Selection not found");
     auto func = v.getFoundDecl();
-    return std::make_shared<ast::Function>(*func, getFunctionOffset(context, func), ast::Statements());
+    return std::make_shared<ast::Function>(*func, getFunctionOffset(context, func), getFunctionStatements(*func));
 }
 
 }
