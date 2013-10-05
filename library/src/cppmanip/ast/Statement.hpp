@@ -3,6 +3,7 @@
 #include "LocalVariable.hpp"
 #include "SourceOffset.hpp"
 #include <memory>
+#include <boost/range/iterator_range.hpp>
 
 namespace cppmanip
 {
@@ -26,6 +27,8 @@ private:
 
 typedef std::shared_ptr<const Statement> StatementPtr;
 typedef std::vector<StatementPtr> Statements;
+typedef boost::iterator_range<Statements::const_iterator> StatementRange;
+
 
 }
 }
