@@ -1,11 +1,9 @@
 #include <cppmanip/text/TextReplacementRecorder.hpp>
-#include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include "../gtestdef.hpp"
 #include <functional>
 
 using namespace testing;
-
-#define ALLOWING_CALL EXPECT_CALL
 
 namespace cppmanip
 {
@@ -37,8 +35,8 @@ TEST_F(TextReplacementRecorderTest, should_return_no_replacements_when_construct
 
 TEST_F(TextReplacementRecorderTest, should_record_a_text_replacement)
 {
-    EXPECT_CALL(*this, fromOffsetToSourceLocation(4)).WillOnce(Return(FROM));
-    EXPECT_CALL(*this, fromOffsetToSourceLocation(7)).WillOnce(Return(TO));
+    EXPECT_FCALL(fromOffsetToSourceLocation(4)).WillOnce(Return(FROM));
+    EXPECT_FCALL(fromOffsetToSourceLocation(7)).WillOnce(Return(TO));
     recorder.replaceWithTextInRange("text", 4, 7);
     boundary::SourceReplacements replacements = recorder.getReplacements();
     ASSERT_EQ(1u, replacements.size());
@@ -51,7 +49,7 @@ TEST_F(TextReplacementRecorderTest, should_record_a_text_replacement)
 
 TEST_F(TextReplacementRecorderTest, should_record_all_replacements)
 {
-    ALLOWING_CALL(*this, fromOffsetToSourceLocation(_)).Times(2 * 3).WillRepeatedly(Return(boundary::SourceLocation()));
+    ALLOWING_FCALL(fromOffsetToSourceLocation(_)).Times(2 * 3).WillRepeatedly(Return(boundary::SourceLocation()));
     recorder.replaceWithTextInRange("a", 0, 0);
     recorder.replaceWithTextInRange("b", 0, 0);
     recorder.replaceWithTextInRange("c", 0, 0);

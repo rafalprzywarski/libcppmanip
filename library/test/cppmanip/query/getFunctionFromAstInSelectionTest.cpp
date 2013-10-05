@@ -2,10 +2,9 @@
 #include "../ParsedFunction.hpp"
 #include <cppmanip/boundary/ExtractMethodError.hpp>
 #include <gmock/gmock.h>
+#include "../gtestdef.hpp"
 #include <memory>
 
-#define EXPECT_FCALL(call) EXPECT_CALL(*this, call)
-#define ALLOWING_FCALL(call) EXPECT_CALL(*this, call)
 
 using namespace testing;
 

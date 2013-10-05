@@ -2,6 +2,7 @@
 #include "../ParsedFunction.hpp"
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include "../gtestdef.hpp"
 #include <clang/AST/Stmt.h>
 #include <boost/next_prior.hpp>
 
@@ -38,7 +39,7 @@ struct findStatementsInFunctionOverlappingSelectionTest : testing::Test
     void stmtSelection(std::map<clang::Stmt *, bool> rs)
     {
         for (auto r : rs)
-            EXPECT_CALL(*this, isSelected(Ref(*r.first))).WillRepeatedly(Return(r.second));
+            EXPECT_FCALL(isSelected(Ref(*r.first))).WillRepeatedly(Return(r.second));
     }
 
     void expectRangeIs(clang::StmtRange range, std::vector<clang::Stmt *> stmts)
@@ -76,7 +77,7 @@ TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_the_selec
 TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_an_empty_range_when_no_statement_are_selected)
 {
     parseFunctionWithStmts("\n  int a;\nint b;");
-    EXPECT_CALL(*this, isSelected(_)).WillRepeatedly(Return(false));
+    EXPECT_FCALL(isSelected(_)).WillRepeatedly(Return(false));
 
     auto stmts = findSelectedStatementsInFunction(*parsedFunctionDecl, [&](clang::Stmt& s) { return isSelected(s); });
 

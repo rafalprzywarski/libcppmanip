@@ -2,6 +2,7 @@
 #include "../ParsedFunction.hpp"
 #include <clang/AST/Stmt.h>
 #include <gmock/gmock.h>
+#include "../gtestdef.hpp"
 
 using namespace testing;
 
@@ -32,8 +33,8 @@ TEST_F(getFunctionStatementsTest, should_return_the_ranges_of_each_statements)
 {
     parse("void f() {\n int x = 1; if (x == 1)\n; }");
     ast::SourceLocationRange LOC1{ { 1, 2 }, { 3, 4 } }, LOC2{ { 5, 6 }, { 7, 8 } };
-    EXPECT_CALL(*this, getStmtRangeMocked(_, Ref(**func->getDecl()->getBody()->child_begin()))).WillOnce(Return(LOC1));
-    EXPECT_CALL(*this, getStmtRangeMocked(_, Ref(**++func->getDecl()->getBody()->child_begin()))).WillOnce(Return(LOC2));
+    EXPECT_FCALL(getStmtRangeMocked(_, Ref(**func->getDecl()->getBody()->child_begin()))).WillOnce(Return(LOC1));
+    EXPECT_FCALL(getStmtRangeMocked(_, Ref(**++func->getDecl()->getBody()->child_begin()))).WillOnce(Return(LOC2));
     auto stmts = getFunctionStatements(*func->getDecl(), getStmtRange);
 
     ASSERT_EQ(2u, stmts.size());
