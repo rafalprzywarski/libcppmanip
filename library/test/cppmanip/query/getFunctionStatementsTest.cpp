@@ -48,5 +48,19 @@ TEST_F(getFunctionStatementsTest, should_return_no_statements_when_the_given_fun
     ASSERT_TRUE(getFunctionStatements(*func->getDecl(), getStmtRange).empty());
 }
 
+TEST_F(getFunctionStatementsTest, should_return_local_variables_declared_by_a_statement)
+{
+    parse("void f() {\n int x = 1, y = 2, z = 1; }");
+    ALLOWING_FCALL(getStmtRangeMocked(_, _)).WillRepeatedly(Return(ast::SourceLocationRange(ast::rowCol(0, 0), ast::rowCol(0, 0))));
+    auto vars = getFunctionStatements(*func->getDecl(), getStmtRange)[0]->getDeclaredVariables();
+    ASSERT_EQ(3u, vars.size());
+    EXPECT_EQ("x", vars[0]->getName());
+    EXPECT_EQ("int x", vars[0]->getNameWithType());
+    EXPECT_EQ("y", vars[1]->getName());
+    EXPECT_EQ("int y", vars[1]->getNameWithType());
+    EXPECT_EQ("z", vars[2]->getName());
+    EXPECT_EQ("int z", vars[2]->getNameWithType());
+}
+
 }
 }
