@@ -79,7 +79,11 @@ ast::LocalVariables getUsedLocalVars(clang::Stmt& stmt, const LocalSymbols& loca
 {
     ast::LocalVariables used;
     for (auto var : getUsedVarDecls(stmt))
-        used.push_back(locals.find(var)->second);
+    {
+        auto found = locals.find(var);
+        if (found != locals.end())
+            used.push_back(found->second);
+    }
     return used;
 }
 

@@ -96,5 +96,12 @@ TEST_F(getFunctionStatementsTest, should_not_report_global_variables_as_used)
     ASSERT_TRUE(stmts[0]->getUsedLocalVariables().empty());
 }
 
+TEST_F(getFunctionStatementsTest, should_not_report_variables_not_visible_outside_of_statements)
+{
+    parse("int global; void f() {\n for(int x = 1; x < 2; ++x) { } }");
+    auto stmts = getFunctionStatements(*func->getDecl(), getStmtRange);
+    ASSERT_TRUE(stmts[0]->getUsedLocalVariables().empty());
+}
+
 }
 }
