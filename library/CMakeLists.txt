@@ -24,6 +24,7 @@ add_library(cppmanip SHARED
     src/cppmanip/legacy/DelayedFunctionExtractor.cpp
     src/cppmanip/text/TextReplacementRecorder.cpp
     src/cppmanip/text/OffsetConverter.cpp
+    src/cppmanip/SourceLocationConverter.cpp
     src/cppmanip/ClangFunctionExtractor.cpp
     src/cppmanip/ClangFunctionExtractorFactory.cpp
     src/cppmanip/query/getFunctionFromAstInSelection.cpp
@@ -67,6 +68,7 @@ add_executable(cppmaniptest
     test/cppmanip/text/TextReplacementRecorderTest.cpp
     test/cppmanip/text/OffsetConverterTest.cpp
     test/cppmanip/query/getFunctionFromAstInSelectionTest.cpp
+    test/cppmanip/SourceLocationConverterTest.cpp
     test/cppmanip/SourceLocationOperatorsTest.cpp
     test/cppmanip/query/findSelectedStatementsInFunctionTest.cpp
     test/cppmanip/query/getStmtLocationRangeTest.cpp
