@@ -99,6 +99,12 @@ LocationRange getStmtLocationRange(clang::SourceManager& sourceManager, clang::S
     return toLocationRange(sourceManager, getStmtRange(sourceManager, stmt));
 }
 
+ast::SourceOffsetRange getStmtOffsetRange(clang::SourceManager& sourceManager, clang::Stmt& stmt)
+{
+    auto r = getStmtRange(sourceManager, stmt);
+    return { sourceManager.getFileOffset(r.getBegin()), sourceManager.getFileOffset(r.getEnd()) };
+}
+
 clang::SourceRange getStmtsRange(clang::SourceManager& sourceManager, clang::StmtRange stmts)
 {
     return { getStmtRange(sourceManager, **stmts).getBegin(), getStmtRange(sourceManager, **last(stmts)).getEnd() };

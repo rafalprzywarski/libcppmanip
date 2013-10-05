@@ -1,4 +1,5 @@
 #include "getFunctionFromAstInSelection.hpp"
+#include <cppmanip/math/PositionRange.hpp>
 #include <cppmanip/boundary/ExtractMethodError.hpp>
 #include <clang/AST/RecursiveASTVisitor.h>
 #include <clang/AST/ASTContext.h>
@@ -14,7 +15,7 @@ namespace
 class Visitor : public clang::RecursiveASTVisitor<Visitor>
 {
 public:
-    Visitor(LocationRange selection) : selection(selection), foundDecl() { }
+    Visitor(math::PositionRange<ast::SourceOffset> selection) : selection(selection), foundDecl() { }
     bool VisitFunctionDecl(clang::FunctionDecl* decl)
     {
         if (!decl->hasBody() || !getBodyRange(decl).overlapsWith(selection))
@@ -24,17 +25,15 @@ public:
     }
     clang::FunctionDecl *getFoundDecl() const { return foundDecl; }
 private:
-    LocationRange selection;
+    math::PositionRange<ast::SourceOffset> selection;
     clang::FunctionDecl* foundDecl;
-    LocationRange getBodyRange(clang::FunctionDecl* decl)
+    math::PositionRange<ast::SourceOffset> getBodyRange(clang::FunctionDecl* decl)
     {
         auto& sourceManager = decl->getASTContext().getSourceManager();
         const auto CLOSING_BRACE = 1;
         auto s = decl->getBody()->getLocStart();
         auto e = decl->getBody()->getLocEnd().getLocWithOffset(CLOSING_BRACE);
-        return LocationRange(
-            ast::rowCol(sourceManager.getSpellingLineNumber(s) - 1, sourceManager.getSpellingColumnNumber(s) - 1),
-            ast::rowCol(sourceManager.getSpellingLineNumber(e) - 1, sourceManager.getSpellingColumnNumber(e) - 1));
+        return { sourceManager.getFileOffset(s), sourceManager.getFileOffset(e) };
     }
 };
 
@@ -45,9 +44,9 @@ ast::SourceOffset getFunctionOffset(clang::ASTContext& context, clang::FunctionD
 
 }
 
-ast::FunctionPtr getFunctionFromAstInSelection(clang::ASTContext& context, LocationRange selection, GetFunctionStatements getFunctionStatements)
+ast::FunctionPtr getFunctionFromAstInSelection(clang::ASTContext& context, ast::SourceOffsetRange selection, GetFunctionStatements getFunctionStatements)
 {
-    Visitor v(selection);
+    Visitor v({ selection.getFrom(), selection.getTo() });
     v.TraverseDecl(context.getTranslationUnitDecl());
     if (!v.getFoundDecl())
         throw boundary::ExtractMethodError("Selection not found");

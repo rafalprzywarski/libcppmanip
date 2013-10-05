@@ -13,19 +13,21 @@ namespace cppmanip
 {
 
 clangutil::HandleTranslationUnit TranslationUnitFunctionExtractorFactory::createFunctionExtractor(
-    const std::string& extractedMethodName, LocationRange selection, text::OffsetBasedTextModifier& sourceOperations)
+    const std::string& extractedMethodName, ast::SourceOffsetRange selection, text::OffsetBasedTextModifier& sourceOperations)
 {
     using std::bind;
     using namespace std::placeholders;
     struct WithDeps
     {
         TranslationUnitFunctionExtractor functionExtractor;
-        WithDeps(const std::string& extractedMethodName, LocationRange selection, text::OffsetBasedTextModifier& sourceOperations)
+        WithDeps(const std::string& extractedMethodName, ast::SourceOffsetRange selection, text::OffsetBasedTextModifier& sourceOperations)
             : functionExtractor(
                 bind(query::getFunctionFromAstInSelection, _1, selection, [](clang::FunctionDecl& ) { return ast::Statements(); }),
                 [=](ast::FunctionPtr decl) {
                     return query::findSelectedStatementsInFunction(decl->getDecl(), [=](clang::Stmt& s) {
-                        return query::getStmtLocationRange(decl->getDecl().getASTContext().getSourceManager(), s).overlapsWith(selection);
+                        auto r = query::getStmtOffsetRange(decl->getDecl().getASTContext().getSourceManager(), s);
+                        math::PositionRange<ast::SourceOffset> r1{r.getFrom(), r.getTo()}, r2{selection.getFrom(), selection.getTo()};
+                        return r1.overlapsWith(r2);
                     });
                 },
                 [&](clang::ASTContext& ctx) {

@@ -28,14 +28,14 @@ struct getFunctionFromAstInSelectionTest : testing::Test
     {
         func.reset(new test::ParsedFunction(source));
     }
-    void assertFunctionContainsSelection(const std::string& name, ast::SourceLocation from, ast::SourceLocation to)
+    void assertFunctionContainsSelection(const std::string& name, ast::SourceOffset from, ast::SourceOffset to)
     {
-        ASSERT_EQ(name, getFunctionFromAstInSelection(func->getASTContext(), LocationRange(from, to), getFunctionStatements)->getDecl().getNameAsString())
+        ASSERT_EQ(name, getFunctionFromAstInSelection(func->getASTContext(), {from, to}, getFunctionStatements)->getDecl().getNameAsString())
             << "[" << from << "; " << to << ")";
     }
-    void assertFailsForSelection(ast::SourceLocation from, ast::SourceLocation to)
+    void assertFailsForSelection(ast::SourceOffset from, ast::SourceOffset to)
     {
-        ASSERT_THROW(getFunctionFromAstInSelection(func->getASTContext(), LocationRange(from, to), getFunctionStatements), boundary::ExtractMethodError)
+        ASSERT_THROW(getFunctionFromAstInSelection(func->getASTContext(), {from, to}, getFunctionStatements), boundary::ExtractMethodError)
             << "[" << from << "; " << to << ")";
     }
 
@@ -44,51 +44,45 @@ struct getFunctionFromAstInSelectionTest : testing::Test
 
 TEST_F(getFunctionFromAstInSelectionTest, should_get_the_function_containing_given_selection)
 {
-    using cppmanip::ast::rowCol;
     parse("void f()\n{\n  /*here*/\n}\n");
-    ASSERT_NO_THROW(assertFunctionContainsSelection("f", rowCol(2, 0), rowCol(2, 8)));
-    ASSERT_NO_THROW(assertFunctionContainsSelection("f", rowCol(2, 2), rowCol(2, 2)));
-    ASSERT_NO_THROW(assertFunctionContainsSelection("f", rowCol(1, 0), rowCol(1, 1)));
-    ASSERT_NO_THROW(assertFunctionContainsSelection("f", rowCol(3, 0), rowCol(3, 1)));
+    ASSERT_NO_THROW(assertFunctionContainsSelection("f", 11, 19));
+    ASSERT_NO_THROW(assertFunctionContainsSelection("f", 13, 13));
+    ASSERT_NO_THROW(assertFunctionContainsSelection("f", 9, 10));
+    ASSERT_NO_THROW(assertFunctionContainsSelection("f", 22, 23));
 }
 
 TEST_F(getFunctionFromAstInSelectionTest, should_fail_when_the_selection_is_not_overlapping_the_body)
 {
-    using cppmanip::ast::rowCol;
     parse("void f()\n{\n /*...*/\n}\n");
-    assertFailsForSelection(rowCol(0, 1), rowCol(0, 9));
-    assertFailsForSelection(rowCol(3, 1), rowCol(4, 0));
+    assertFailsForSelection(1, 9);
+    assertFailsForSelection(21, 22);
 }
 
 TEST_F(getFunctionFromAstInSelectionTest, should_search_through_all_the_functions)
 {
-    using cppmanip::ast::rowCol;
     parse("void f()\n{\n \n}\nvoid g()\n{\n /*here*/ \n}\nvoid h()\n{\n \n}\n");
-    ASSERT_NO_THROW(assertFunctionContainsSelection("g", rowCol(6, 1), rowCol(6, 14)));
+    ASSERT_NO_THROW(assertFunctionContainsSelection("g", 27, 35));
 }
 
 TEST_F(getFunctionFromAstInSelectionTest, should_ignore_functions_without_bodies)
 {
-    using cppmanip::ast::rowCol;
     parse("void f(); void g(); void h() { \n }"); // \n is needed because of clang bug
-    ASSERT_NO_THROW(assertFunctionContainsSelection("h", rowCol(0, 30), rowCol(0, 30)));
+    ASSERT_NO_THROW(assertFunctionContainsSelection("h", 30, 30));
 }
 
 TEST_F(getFunctionFromAstInSelectionTest, should_return_the_offset_of_the_function)
 {
-    using cppmanip::ast::rowCol;
     parse("void f() { \n }\nvoid g() { \n }"); // \n is needed because of clang bug
-    ASSERT_EQ(0, getFunctionFromAstInSelection(func->getASTContext(), { rowCol(0, 10), rowCol(0, 10) }, getFunctionStatements)->getDefinitionOffset());
-    ASSERT_EQ(15, getFunctionFromAstInSelection(func->getASTContext(), { rowCol(2, 10), rowCol(2, 10) }, getFunctionStatements)->getDefinitionOffset());
+    ASSERT_EQ(0, getFunctionFromAstInSelection(func->getASTContext(), { 10, 10 }, getFunctionStatements)->getDefinitionOffset());
+    ASSERT_EQ(15, getFunctionFromAstInSelection(func->getASTContext(), { 25, 25 }, getFunctionStatements)->getDefinitionOffset());
 }
 
 TEST_F(getFunctionFromAstInSelectionTest, should_return_all_statements_of_the_function)
 {
-    using cppmanip::ast::rowCol;
     parse("void f() {\nint x; int y = x + 2; }");
     ast::Statements stmts(7);
     EXPECT_FCALL(getFunctionStatementsMocked(Ref(*func->getDecl()))).WillRepeatedly(Return(stmts));
-    ASSERT_TRUE(stmts == getFunctionFromAstInSelection(func->getASTContext(), { rowCol(1, 0), rowCol(1, 0) }, getFunctionStatements)->getStatements());
+    ASSERT_TRUE(stmts == getFunctionFromAstInSelection(func->getASTContext(), { 11, 11 }, getFunctionStatements)->getStatements());
 }
 
 }

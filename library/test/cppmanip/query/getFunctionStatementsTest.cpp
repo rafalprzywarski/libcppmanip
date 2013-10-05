@@ -20,7 +20,7 @@ struct getFunctionStatementsTest : testing::Test
     getFunctionStatementsTest()
     {
         getStmtRange = [this](clang::SourceManager& sm, clang::Stmt& s) { return getStmtRangeMocked(sm, s); };
-        ALLOWING_FCALL(getStmtRangeMocked(_, _)).WillRepeatedly(Return(ast::SourceLocationRange(ast::rowCol(0, 0), ast::rowCol(0, 0))));
+        ALLOWING_FCALL(getStmtRangeMocked(_, _)).WillRepeatedly(Return(ast::SourceOffsetRange(0, 0)));
     }
 
     void parse(std::string source)
@@ -33,13 +33,13 @@ struct getFunctionStatementsTest : testing::Test
         return **boost::next(func->getDecl()->getBody()->child_begin(), index);
     }
 
-    MOCK_METHOD2(getStmtRangeMocked, ast::SourceLocationRange(clang::SourceManager&, clang::Stmt& ));
+    MOCK_METHOD2(getStmtRangeMocked, ast::SourceOffsetRange(clang::SourceManager&, clang::Stmt& ));
 };
 
 TEST_F(getFunctionStatementsTest, should_return_the_ranges_of_each_statements)
 {
     parse("void f() {\n int x = 1; if (x == 1)\n; }");
-    ast::SourceLocationRange LOC1{ { 1, 2 }, { 3, 4 } }, LOC2{ { 5, 6 }, { 7, 8 } };
+    ast::SourceOffsetRange LOC1{1, 2}, LOC2{3, 4};
     EXPECT_FCALL(getStmtRangeMocked(_, Ref(stmtNo(0)))).WillOnce(Return(LOC1));
     EXPECT_FCALL(getStmtRangeMocked(_, Ref(stmtNo(1)))).WillOnce(Return(LOC2));
     auto stmts = getFunctionStatements(*func->getDecl(), getStmtRange);
