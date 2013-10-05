@@ -1,6 +1,6 @@
 #ifndef CPPMANIP_257EF455F9F84388866F82E1F5D31143_HPP
 #define CPPMANIP_257EF455F9F84388866F82E1F5D31143_HPP
-#include "SourcePosition.hpp"
+#include "SourceOffset.hpp"
 #include "Statement.hpp"
 #include <memory>
 
