@@ -82,5 +82,12 @@ TEST_F(getFunctionStatementsTest, should_return_local_variables_used_by_a_statem
     ASSERT_EQ(2u, stmts[3]->getUsedLocalVariables().size());
 }
 
+TEST_F(getFunctionStatementsTest, should_not_return_the_same_used_variable_more_than_once)
+{
+    parse("void f() {\n int x = 2; int z = x + x * x; }");
+    auto stmts = getFunctionStatements(*func->getDecl(), getStmtRange);
+    ASSERT_EQ(1u, stmts[1]->getUsedLocalVariables().size());
+}
+
 }
 }
