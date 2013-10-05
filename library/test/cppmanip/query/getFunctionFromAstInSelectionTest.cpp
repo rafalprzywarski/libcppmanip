@@ -73,8 +73,8 @@ TEST_F(getFunctionFromAstInSelectionTest, should_ignore_functions_without_bodies
 TEST_F(getFunctionFromAstInSelectionTest, should_return_the_offset_of_the_function)
 {
     parse("void f() { \n }\nvoid g() { \n }"); // \n is needed because of clang bug
-    ASSERT_EQ(0, getFunctionFromAstInSelection(func->getASTContext(), { 10, 10 }, getFunctionStatements)->getDefinitionOffset());
-    ASSERT_EQ(15, getFunctionFromAstInSelection(func->getASTContext(), { 25, 25 }, getFunctionStatements)->getDefinitionOffset());
+    ASSERT_EQ(0u, getFunctionFromAstInSelection(func->getASTContext(), { 10, 10 }, getFunctionStatements)->getDefinitionOffset());
+    ASSERT_EQ(15u, getFunctionFromAstInSelection(func->getASTContext(), { 25, 25 }, getFunctionStatements)->getDefinitionOffset());
 }
 
 TEST_F(getFunctionFromAstInSelectionTest, should_return_all_statements_of_the_function)

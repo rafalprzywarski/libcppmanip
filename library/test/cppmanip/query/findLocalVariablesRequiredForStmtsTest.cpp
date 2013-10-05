@@ -55,7 +55,6 @@ TEST_F(findLocalVariablesRequiredForStmtsTest, should_return_variables_in_given_
 {
     declareGlobal("void f(int); void g(int);");
     auto stmts = parseStmts("int x = 1; int y = 2; f(x); g(y);");
-    const auto INT_X = 0, INT_Y = 1;
     auto checked = skip(2, stmts);
 
     auto found = findLocalVariablesRequiredForStmts(checked);
@@ -76,7 +75,6 @@ TEST_F(findLocalVariablesRequiredForStmtsTest, should_not_return_variables_decla
 {
     declareGlobal("void f(int, int);");
     auto stmts = parseStmts("int x = 1; int y = 2; f(x, y); int z = 4; f(y, z);");
-    const auto INT_X = 0;
     auto checked = skip(1, stmts);
     auto found = findLocalVariablesRequiredForStmts(checked);
     expectEqUnordered(found, { { "x", "int x" } });
@@ -93,7 +91,6 @@ TEST_F(findLocalVariablesRequiredForStmtsTest, should_return_variables_in_order_
 {
     declareGlobal("void f(int, int, int);");
     auto stmts = parseStmts("int c(0); int a(0); int b(0); f(b, c, a);");
-    const auto INT_C = 0, INT_A = 1, INT_B = 2;
     auto found = findLocalVariablesRequiredForStmts(skip(3, stmts));
     expectEqOrdered(found, { { "c", "int c" }, { "a", "int a" }, { "b", "int b" } });
 }

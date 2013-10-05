@@ -11,9 +11,9 @@ TEST(OffsetConverterTest, should_return_offset_in_the_first_line)
 {
     OffsetConverter coverter("xxxxx\nx\nxxxxxxxxx");
     boundary::SourceLocation loc = coverter.getLocationFromOffset(5);
-    ASSERT_EQ(5, loc.col);
-    ASSERT_EQ(0, loc.row);
-    ASSERT_EQ(4, coverter.getLocationFromOffset(4).col);
+    ASSERT_EQ(5u, loc.col);
+    ASSERT_EQ(0u, loc.row);
+    ASSERT_EQ(4u, coverter.getLocationFromOffset(4).col);
 }
 
 TEST(OffsetConverterTest, should_return_offset_from_the_last_eol_as_col)

@@ -12,7 +12,7 @@ struct ClangToolArgsBuilderTest : testing::Test
 
     void expectArgs(std::vector<std::string> args)
     {
-        ASSERT_EQ(args.size(), builder.getArgc());
+        ASSERT_EQ(int(args.size()), builder.getArgc());
         for (unsigned i = 0; i < args.size(); ++i)
             ASSERT_STREQ(args[i].c_str(), builder.getArgv()[i]) << "mismatched arg " << i;
     }
