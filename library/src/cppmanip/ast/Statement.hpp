@@ -5,6 +5,8 @@
 #include <memory>
 #include <boost/range/iterator_range.hpp>
 
+namespace clang { class Stmt; }
+
 namespace cppmanip
 {
 namespace ast
@@ -14,12 +16,14 @@ class Statement
 {
 public:
     Statement(const Statement& ) = delete;
-    Statement(const SourceOffsetRange& range, const LocalVariables& declaredVariables, const LocalVariables& usedLocalVariables)
-        : range(range), declaredVariables(declaredVariables), usedLocalVariables(usedLocalVariables) { }
+    Statement(clang::Stmt *stmt, const SourceOffsetRange& range, const LocalVariables& declaredVariables, const LocalVariables& usedLocalVariables)
+        : stmt(stmt), range(range), declaredVariables(declaredVariables), usedLocalVariables(usedLocalVariables) { }
     SourceOffsetRange getRange() const { return range; }
     const LocalVariables& getDeclaredVariables() const { return declaredVariables; }
     const LocalVariables& getUsedLocalVariables() const { return usedLocalVariables; }
+    clang::Stmt *getStmt() const { return stmt; }
 private:
+    clang::Stmt *const stmt; // TODO: temporarily
     const SourceOffsetRange range;
     const LocalVariables declaredVariables;
     const LocalVariables usedLocalVariables;

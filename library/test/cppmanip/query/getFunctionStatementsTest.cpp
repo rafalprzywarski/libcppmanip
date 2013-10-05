@@ -103,5 +103,12 @@ TEST_F(getFunctionStatementsTest, should_not_report_variables_not_visible_outsid
     ASSERT_TRUE(stmts[0]->getUsedLocalVariables().empty());
 }
 
+TEST_F(getFunctionStatementsTest, should_temporarily_store_clang_statements)
+{
+    parse("void f() {\n int x; }");
+    auto stmts = getFunctionStatements(*func->getDecl(), getStmtRange);
+    ASSERT_TRUE(stmts[0]->getStmt() == &stmtNo(0));
+}
+
 }
 }
