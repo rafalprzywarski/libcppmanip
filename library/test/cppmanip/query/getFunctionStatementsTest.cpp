@@ -89,5 +89,12 @@ TEST_F(getFunctionStatementsTest, should_not_return_the_same_used_variable_more_
     ASSERT_EQ(1u, stmts[1]->getUsedLocalVariables().size());
 }
 
+TEST_F(getFunctionStatementsTest, should_not_report_global_variables_as_used)
+{
+    parse("int global; void f() {\n int x = global; }");
+    auto stmts = getFunctionStatements(*func->getDecl(), getStmtRange);
+    ASSERT_TRUE(stmts[0]->getUsedLocalVariables().empty());
+}
+
 }
 }

@@ -23,13 +23,19 @@ public:
     bool VisitDeclRefExpr(clang::DeclRefExpr *d)
     {
         auto var = clang::dyn_cast<clang::VarDecl>(d->getDecl());
-        if (var)
+        if (var && !isGlobal(var))
             used.insert(var);
         return true;
     }
     std::vector<clang::VarDecl *> get() const { return {used.begin(), used.end()}; }
 private:
     std::unordered_set<clang::VarDecl *> used;
+
+    bool isGlobal(clang::VarDecl *d) const
+    {
+        return d->getParentFunctionOrMethod() == nullptr;
+    }
+
 };
 
 typedef std::unordered_map<clang::VarDecl *, ast::LocalVariablePtr> LocalSymbols;
