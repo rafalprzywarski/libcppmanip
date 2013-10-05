@@ -51,7 +51,7 @@ ast::FunctionPtr getFunctionFromAstInSelection(clang::ASTContext& context, ast::
     if (!v.getFoundDecl())
         throw boundary::ExtractMethodError("Selection not found");
     auto func = v.getFoundDecl();
-    return std::make_shared<ast::Function>(*func, getFunctionOffset(context, func), getFunctionStatements(*func));
+    return std::make_shared<ast::Function>(func, getFunctionOffset(context, func), getFunctionStatements(*func));
 }
 
 }

@@ -27,9 +27,9 @@ std::vector<std::string> getArgumentDeclarations(const ast::LocalVariables& vari
 
 }
 
-void DelayedFunctionExtractor::extractStatmentsFromFunction(clang::StmtRange stmts, ast::FunctionPtr originalFunction)
+void DelayedFunctionExtractor::extractStatmentsFromFunction(ast::StatementRange stmts, ast::FunctionPtr originalFunction)
 {
-    failIfVariablesAreDeclaredByAndUsedAfterStmts(stmts, *originalFunction->getDecl().getBody());
+    failIfVariablesAreDeclaredByAndUsedAfterStmts(stmts, originalFunction);
     auto requiredVars = findLocalVariablesRequiredForStmts(stmts);
 
     insertFunctionWithArgsAndBody(originalFunction->getDefinitionOffset(), getArgumentDeclarations(requiredVars), getStmtsSource(getSourceFromRange(stmts)));
@@ -79,9 +79,9 @@ std::string printOrderedVariableNameList(const ast::LocalVariables& variables)
 
 }
 
-void DelayedFunctionExtractor::failIfVariablesAreDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, clang::Stmt& parent)
+void DelayedFunctionExtractor::failIfVariablesAreDeclaredByAndUsedAfterStmts(ast::StatementRange stmts, ast::FunctionPtr originalFunction)
 {
-    auto usedVars = findVariablesDeclaredByAndUsedAfterStmts(stmts, parent);
+    auto usedVars = findVariablesDeclaredByAndUsedAfterStmts(stmts, originalFunction->getStatements());
     if (!usedVars.empty())
         throw boundary::ExtractMethodError("Cannot extract \'" + extractedFunctionName +
             "\'. Following variables are in use after the selected statements: " + printOrderedVariableNameList(usedVars));

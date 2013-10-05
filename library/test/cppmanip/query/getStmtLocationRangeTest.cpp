@@ -112,13 +112,6 @@ INSTANTIATE_TEST_CASE_P(
         Stmt(";")
 ));
 
-TEST_F(getStmtLocationRangeTest, getStmtsLocationRange_should_return_the_range_of_all_statements)
-{
-    parse("void f() {\n  int x;\n  f();\n}");
-    auto range = getStmtsLocationRange(func->getDecl()->getASTContext().getSourceManager(), func->stmts());
-    ASSERT_EQ(LocationRange(ast::rowCol(1, 2), ast::rowCol(2, 6)), range);
-}
-
 }
 }
 }

@@ -15,71 +15,57 @@ namespace query
 
 struct findStatementsInFunctionOverlappingSelectionTest : testing::Test
 {
-    MOCK_METHOD1(isSelected, bool(clang::Stmt& ));
+    MOCK_METHOD1(isSelected, bool(ast::StatementPtr));
 
-    std::unique_ptr<test::ParsedFunction> parsedFunction;
-    clang::FunctionDecl *parsedFunctionDecl = nullptr;
-
-    void parseFunctionWithStmts(const std::string& stmts)
-    {
-        auto source = "void func__() {" + stmts + "}\n";
-        parsedFunction.reset(new test::ParsedFunction(source));
-        parsedFunctionDecl = parsedFunction->getDecl();
-    }
-
-    clang::Stmt *stmtNo(int index)
-    {
-        return *boost::next(parsedFunctionDecl->getBody()->child_begin(), index);
-    }
-
-    void expectGetRangeForStmtNoAndReturn(int index, bool selected)
-    {
-    }
-
-    void stmtSelection(std::map<clang::Stmt *, bool> rs)
+    void stmtSelection(std::map<ast::StatementPtr, bool> rs)
     {
         for (auto r : rs)
-            EXPECT_FCALL(isSelected(Ref(*r.first))).WillRepeatedly(Return(r.second));
+            EXPECT_FCALL(isSelected(r.first)).WillRepeatedly(Return(r.second));
     }
 
-    void expectRangeIs(clang::StmtRange range, std::vector<clang::Stmt *> stmts)
+    void expectRangeIs(ast::StatementRange range, ast::Statements stmts)
     {
-        ASSERT_EQ(stmts.size(), std::distance(begin(range), end(range)));
-        for (decltype(stmts.size()) i = 0; i != stmts.size(); ++i, ++range)
-            ASSERT_TRUE(stmts[i] == *range) << "stmts[" << i << "]";
+        ASSERT_EQ(int(stmts.size()), boost::size(range));
+        for (decltype(stmts.size()) i = 0; i != stmts.size(); ++i, range.pop_front())
+            ASSERT_TRUE(stmts[i] == range.front()) << "stmts[" << i << "]";
+    }
+
+    ast::StatementPtr stmt()
+    {
+        return std::make_shared<ast::Statement>(nullptr, ast::SourceOffsetRange(0, 0), ast::LocalVariables(), ast::LocalVariables());
     }
 
 };
 
 TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_an_empty_range_for_an_empty_function)
 {
-    parseFunctionWithStmts(" ");
+    ast::Function f{nullptr, 0, {}};
 
-    auto stmts = findSelectedStatementsInFunction(*parsedFunctionDecl, [&](clang::Stmt& s) { return isSelected(s); });
+    auto stmts = findSelectedStatementsInFunction(f, [&](ast::StatementPtr s) { return isSelected(s); });
     ASSERT_TRUE(stmts.empty());
 }
 
 TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_the_selected_range_of_statements)
 {
-    parseFunctionWithStmts("\n  int x;\n  int y;\n  int z;\n  int w;\n");
-    const auto INT_X = 0, INT_Y = 1, INT_Z = 2, INT_W = 3;
+    ast::Statements stmts = {stmt(), stmt(), stmt(), stmt()};
+    ast::Function f{nullptr, 0, stmts};
     stmtSelection({
-        { stmtNo(INT_X), false },
-        { stmtNo(INT_Y), true },
-        { stmtNo(INT_Z), true },
-        { stmtNo(INT_W), false } });
+        { stmts[0], false },
+        { stmts[1], true },
+        { stmts[2], true },
+        { stmts[3], false } });
 
-    auto stmts = findSelectedStatementsInFunction(*parsedFunctionDecl, [&](clang::Stmt& s) { return isSelected(s); });
+    auto found = findSelectedStatementsInFunction(f, [&](ast::StatementPtr s) { return isSelected(s); });
 
-    expectRangeIs(stmts, { stmtNo(INT_Y), stmtNo(INT_Z) });
+    expectRangeIs(found, { stmts[1], stmts[2] });
 }
 
 TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_an_empty_range_when_no_statement_are_selected)
 {
-    parseFunctionWithStmts("\n  int a;\nint b;");
+    ast::Function f{nullptr, 0, {stmt(), stmt()}};
     EXPECT_FCALL(isSelected(_)).WillRepeatedly(Return(false));
 
-    auto stmts = findSelectedStatementsInFunction(*parsedFunctionDecl, [&](clang::Stmt& s) { return isSelected(s); });
+    auto stmts = findSelectedStatementsInFunction(f, [&](ast::StatementPtr s) { return isSelected(s); });
 
     ASSERT_TRUE(stmts.empty());
 }

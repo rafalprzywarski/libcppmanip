@@ -1,15 +1,15 @@
 #ifndef FINDVARIABLESDECLAREDBYANDUSEDAFTERSTMTS_HPP
 #define FINDVARIABLESDECLAREDBYANDUSEDAFTERSTMTS_HPP
-#include <vector>
-#include <clang/AST/StmtIterator.h>
 #include <cppmanip/ast/LocalVariable.hpp>
+#include <cppmanip/ast/Statement.hpp>
+#include <cppmanip/ast/Function.hpp>
 
 namespace cppmanip
 {
 namespace query
 {
 
-ast::LocalVariables findVariablesDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, clang::Stmt& parent);
+ast::LocalVariables findVariablesDeclaredByAndUsedAfterStmts(ast::StatementRange stmts, const ast::Statements& scope);
 
 }
 }

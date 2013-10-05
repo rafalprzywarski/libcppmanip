@@ -3,6 +3,8 @@
 #include <cppmanip/StatementExtractor.hpp>
 #include <cppmanip/text/TextModifier.hpp>
 #include <cppmanip/ast/LocalVariable.hpp>
+#include <clang/Basic/SourceLocation.h>
+#include <clang/AST/StmtIterator.h>
 
 namespace cppmanip
 {
@@ -12,12 +14,12 @@ namespace legacy
 class DelayedFunctionExtractor : public StatementExtractor
 {
 public:
-    typedef std::function<ast::LocalVariables(clang::StmtRange stmts)> FindLocalVariablesRequiredForStmts;
-    typedef std::function<ast::LocalVariables(clang::StmtRange stmts, clang::Stmt& parent)> FindVariablesDeclaredByAndUsedAfterStmts;
+    typedef std::function<ast::LocalVariables(ast::StatementRange stmts)> FindLocalVariablesRequiredForStmts;
+    typedef std::function<ast::LocalVariables(ast::StatementRange stmts, const ast::Statements& scope)> FindVariablesDeclaredByAndUsedAfterStmts;
     typedef std::function<std::string(const std::string&, const std::vector<std::string>&)> PrintFunctionCall;
     typedef std::function<std::string(const std::string&, const std::string&, const std::vector<std::string>&, const std::string&)> PrintFunctionDefinition;
     typedef std::function<unsigned(clang::SourceLocation)> GetLocationOffset;
-    typedef std::function<clang::SourceRange(clang::StmtRange stmts)> GetStmtsRange;
+    typedef std::function<clang::SourceRange(ast::StatementRange stmts)> GetStmtsRange;
     typedef std::function<std::string(clang::SourceRange stmts)> GetSourceFromRange;
     DelayedFunctionExtractor(
         text::OffsetBasedTextModifier& sourceOperations, PrintFunctionCall printFunctionCall, PrintFunctionDefinition printFunctionDefinition,
@@ -33,7 +35,7 @@ public:
     {
     }
 
-    void extractStatmentsFromFunction(clang::StmtRange stmts, ast::FunctionPtr originalFunction);
+    void extractStatmentsFromFunction(ast::StatementRange stmts, ast::FunctionPtr originalFunction);
 
 private:
 
@@ -51,7 +53,7 @@ private:
     void replaceStatementsWithFunctionCall(clang::SourceRange stmts, const ast::LocalVariables& variables);
     void replaceRangeWith(unsigned int from, unsigned int to, std::string replacement);
     std::string printVariableNames(const ast::LocalVariables& variables);
-    void failIfVariablesAreDeclaredByAndUsedAfterStmts(clang::StmtRange stmts, clang::Stmt& parent);
+    void failIfVariablesAreDeclaredByAndUsedAfterStmts(ast::StatementRange stmts, ast::FunctionPtr originalFunction);
     std::string printFunctionCallStmt(const std::string& name, const ast::LocalVariables& args);
 };
 

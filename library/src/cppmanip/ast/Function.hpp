@@ -15,11 +15,11 @@ class Function
 {
 public:
     Function(const Function& ) = delete;
-    Function(clang::FunctionDecl& decl, SourceOffset definitionOffset, const Statements& statements)
-        : decl(&decl), definitionOffset(definitionOffset), statements(statements) { }
+    Function(clang::FunctionDecl *decl, SourceOffset definitionOffset, const Statements& statements)
+        : decl(decl), definitionOffset(definitionOffset), statements(statements) { }
     clang::FunctionDecl& getDecl() const { return *decl; }
     SourceOffset getDefinitionOffset() const { return definitionOffset; }
-    Statements getStatements() const { return statements; }
+    const Statements& getStatements() const { return statements; }
 private:
     clang::FunctionDecl *const decl; // TODO: temporarily
     const SourceOffset definitionOffset;

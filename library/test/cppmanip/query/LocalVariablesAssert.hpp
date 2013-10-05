@@ -9,8 +9,8 @@ namespace query
 namespace test
 {
 
-void expectEqUnordered(ast::LocalVariables found, std::vector<ast::LocalVariable> expected);
-void expectEqOrdered(ast::LocalVariables found, std::vector<ast::LocalVariable> expected);
+void expectEqUnordered(ast::LocalVariables found, ast::LocalVariables expected);
+void expectEqOrdered(ast::LocalVariables found, ast::LocalVariables expected);
 
 }
 }

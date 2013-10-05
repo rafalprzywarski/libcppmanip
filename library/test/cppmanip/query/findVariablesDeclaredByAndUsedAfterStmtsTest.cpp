@@ -45,33 +45,53 @@ struct findVariablesDeclaredByAndUsedAfterStmtsTest : testing::Test
     {
         return { boost::next(begin(r), n), end(r) };
     }
+
+    ast::LocalVariablePtr var()
+    {
+        return std::make_shared<ast::LocalVariable>("", "");
+    }
+
+    ast::StatementPtr stmtWithUsedVars(ast::LocalVariables vars)
+    {
+        return std::make_shared<ast::Statement>(nullptr, ast::SourceOffsetRange(0, 0), ast::LocalVariables(), vars);
+    }
+
+    ast::StatementPtr stmtWithDeclaredVars(ast::LocalVariables declared)
+    {
+        return std::make_shared<ast::Statement>(nullptr, ast::SourceOffsetRange(0, 0), declared, ast::LocalVariables());
+    }
+
+    ast::StatementPtr stmt()
+    {
+        return stmtWithDeclaredVars({});
+    }
 };
 
 TEST_F(findVariablesDeclaredByAndUsedAfterStmtsTest, should_return_no_variables_if_none_are_declared)
 {
-    declareGlobal("void f(); void g();");
-    auto stmts = parseStmts("f(); g();");
+    ast::Statements stmts{ stmt(), stmt() };
 
-    ASSERT_TRUE(findVariablesDeclaredByAndUsedAfterStmts(stmts.range, stmts.scope).empty());
+    ASSERT_TRUE(findVariablesDeclaredByAndUsedAfterStmts(stmts, stmts).empty());
 }
 
 TEST_F(findVariablesDeclaredByAndUsedAfterStmtsTest, should_return_variables_used_after_given_statements)
 {
-    declareGlobal("void f(int); void g(int);");
-    auto stmts = parseStmts("int i = 1; int j = 2; int x = 3; f(j); g(i + j);");
+    auto var1 = var(), var2 = var(), var3 = var();
+    ast::Statements stmts{ stmtWithDeclaredVars({var1}), stmtWithDeclaredVars({var2, var3}), stmtWithUsedVars({var2}), stmtWithUsedVars({var1, var2}) };
 
-    auto found = findVariablesDeclaredByAndUsedAfterStmts(first(3, stmts.range), stmts.scope);
-    expectEqUnordered(found, { { "i", "int i" }, { "j", "int j" } });
+    auto found = findVariablesDeclaredByAndUsedAfterStmts({stmts.begin(), stmts.begin() + 2}, stmts);
+    expectEqUnordered(found, { var1, var2 });
 }
 
 TEST_F(findVariablesDeclaredByAndUsedAfterStmtsTest, should_only_return_variables_declared_by_given_statements)
 {
-    declareGlobal("void f(int); void g(int);");
-    auto stmts = parseStmts("int x = 1; int y = 2; int z = 3; int w = 4; f(x + y); g(z + w);");
+    auto var1 = var(), var2 = var(), var3 = var(), var4 = var();
+    ast::Statements stmts{
+        stmtWithDeclaredVars({var1, var2}), stmtWithDeclaredVars({var3}), stmtWithDeclaredVars({var4}),
+        stmtWithUsedVars({var1, var2}), stmtWithUsedVars({var3, var4}) };
 
-    auto checked = first(2, skip(2, stmts.range));
-    auto found = findVariablesDeclaredByAndUsedAfterStmts(checked, stmts.scope);
-    expectEqUnordered(found, { { "z", "int z" }, { "w", "int w" } });
+    auto found = findVariablesDeclaredByAndUsedAfterStmts({stmts.begin() + 1, stmts.begin() + 3}, stmts);
+    expectEqUnordered(found, { var3, var4 });
 }
 
 }

@@ -7,6 +7,7 @@
 #include "query/findLocalVariablesRequiredForStmts.hpp"
 #include "query/findVariablesDeclaredByAndUsedAfterStmts.hpp"
 #include "query/getSourceFromRange.hpp"
+#include "query/getFunctionStatements.hpp"
 #include "format/printFunction.hpp"
 
 namespace cppmanip
@@ -22,10 +23,10 @@ clangutil::HandleTranslationUnit TranslationUnitFunctionExtractorFactory::create
         TranslationUnitFunctionExtractor functionExtractor;
         WithDeps(const std::string& extractedMethodName, ast::SourceOffsetRange selection, text::OffsetBasedTextModifier& sourceOperations)
             : functionExtractor(
-                bind(query::getFunctionFromAstInSelection, _1, selection, [](clang::FunctionDecl& ) { return ast::Statements(); }),
+                bind(query::getFunctionFromAstInSelection, _1, selection, [](clang::FunctionDecl& f) { return query::getFunctionStatements(f, query::getStmtOffsetRange); }),
                 [=](ast::FunctionPtr decl) {
-                    return query::findSelectedStatementsInFunction(decl->getDecl(), [=](clang::Stmt& s) {
-                        auto r = query::getStmtOffsetRange(decl->getDecl().getASTContext().getSourceManager(), s);
+                    return query::findSelectedStatementsInFunction(*decl, [=](ast::StatementPtr s) {
+                        auto r = s->getRange();
                         math::PositionRange<ast::SourceOffset> r1{r.getFrom(), r.getTo()}, r2{selection.getFrom(), selection.getTo()};
                         return r1.overlapsWith(r2);
                     });

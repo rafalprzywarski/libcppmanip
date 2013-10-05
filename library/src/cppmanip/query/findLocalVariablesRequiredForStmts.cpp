@@ -10,60 +10,15 @@ namespace cppmanip
 namespace query
 {
 
-namespace
+ast::LocalVariables findLocalVariablesRequiredForStmts(ast::StatementRange stmts)
 {
-
-class RequiredVariablesVisitor : public clang::RecursiveASTVisitor<RequiredVariablesVisitor>
-{
-public:
-    bool VisitDeclRefExpr(clang::DeclRefExpr *d)
-    {
-        auto var = clang::dyn_cast<clang::VarDecl>(d->getDecl());
-        if (var && !isGlobal(var))
-            used.insert(var);
-        return true;
-    }
-
-    bool VisitVarDecl(clang::VarDecl *d)
-    {
-        declared.insert(d);
-        return true;
-    }
-
-    ast::LocalVariables getRequired() const
-    {
-        using namespace boost::adaptors;
-        ast::LocalVariables required;
-        auto notDeclared = [&](clang::VarDecl *d) { return declared.count(d) == 0; };
-        std::vector<clang::VarDecl *> usedOrdered(used.begin(), used.end());
-        boost::sort(usedOrdered, [](clang::VarDecl *left, clang::VarDecl *right) { return left->getLocation() < right->getLocation(); });
-        boost::push_back(required, usedOrdered | filtered(notDeclared) | transformed(std::ptr_fun(&asLocalVariable)));
-        return required;
-    }
-private:
-    std::unordered_set<clang::VarDecl *> used;
-    std::unordered_set<clang::VarDecl *> declared;
-
-    bool isGlobal(clang::VarDecl *d) const
-    {
-        return d->getParentFunctionOrMethod() == nullptr;
-    }
-
-    static ast::LocalVariablePtr asLocalVariable(clang::VarDecl *d)
-    {
-        return std::make_shared<ast::LocalVariable>(d->getNameAsString(), d->getType().getAsString() + " " + d->getNameAsString());
-    }
-};
-
-}
-
-ast::LocalVariables findLocalVariablesRequiredForStmts(
-    clang::StmtRange stmts)
-{
-    RequiredVariablesVisitor v;
+    std::unordered_set<ast::LocalVariablePtr> required;
     for (auto s : stmts)
-        v.TraverseStmt(s);
-    return v.getRequired();
+        required.insert(s->getUsedLocalVariables().begin(), s->getUsedLocalVariables().end());
+    for (auto s : stmts)
+        for (auto v : s->getDeclaredVariables())
+            required.erase(v);
+    return {required.begin(), required.end()};
 }
 
 }

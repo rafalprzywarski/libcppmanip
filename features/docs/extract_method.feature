@@ -79,7 +79,7 @@ Feature: As a developer I want to extract code into methods to make my code more
         }
 
         """
-    @done
+    @wip
     Scenario: Referenced local variables should be passed to the extracted function in order of their declarations
         Given source code:
         """
@@ -164,7 +164,7 @@ Feature: As a developer I want to extract code into methods to make my code more
 
         """
         And there should be a replacement for "int b = 7;" with "extracted();"
-    @wip
+
     Scenario: Extraction of statement in try block is supported
         Given source code:
         """

@@ -75,12 +75,9 @@ LocationRange toLocationRange(clang::SourceManager& sm, clang::SourceRange r)
     return LocationRange(toRowCol(sm, r.getBegin()), toRowCol(sm, r.getEnd()));
 }
 
-clang::StmtRange last(clang::StmtRange r)
+ast::StatementPtr last(ast::StatementRange r)
 {
-    clang::StmtRange last;
-    do last = r++;
-    while (!r.empty());
-    return last;
+    return *--end(r);
 }
 
 }
@@ -105,14 +102,9 @@ ast::SourceOffsetRange getStmtOffsetRange(clang::SourceManager& sourceManager, c
     return { sourceManager.getFileOffset(r.getBegin()), sourceManager.getFileOffset(r.getEnd()) };
 }
 
-clang::SourceRange getStmtsRange(clang::SourceManager& sourceManager, clang::StmtRange stmts)
+clang::SourceRange getStmtsRange(clang::SourceManager& sourceManager, ast::StatementRange stmts)
 {
-    return { getStmtRange(sourceManager, **stmts).getBegin(), getStmtRange(sourceManager, **last(stmts)).getEnd() };
-}
-
-LocationRange getStmtsLocationRange(clang::SourceManager& sourceManager, clang::StmtRange stmts)
-{
-    return toLocationRange(sourceManager, getStmtsRange(sourceManager, stmts));
+    return { getStmtRange(sourceManager, *(*begin(stmts))->getStmt()).getBegin(), getStmtRange(sourceManager, *last(stmts)->getStmt()).getEnd() };
 }
 
 }
