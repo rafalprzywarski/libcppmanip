@@ -8,7 +8,7 @@ namespace cppmanip
 class DefaultFunctionExtractorFactory
 {
 public:
-    DefaultFunctionExtractorPtr create(const std::string& filename);
+    DefaultFunctionExtractorPtr createForFile(const std::string& filename);
 };
 
 }

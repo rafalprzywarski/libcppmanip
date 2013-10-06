@@ -10,7 +10,7 @@
 namespace cppmanip
 {
 
-DefaultFunctionExtractorPtr DefaultFunctionExtractorFactory::create(const std::string& filename)
+DefaultFunctionExtractorPtr DefaultFunctionExtractorFactory::createForFile(const std::string& filename)
 {
     auto sourceLocationConverter = std::make_shared<text::SourceLocationConverter>(io::loadTextFromFile(filename));
     auto getOffsetFromLocation = [=](const boundary::SourceLocation& loc) { return sourceLocationConverter->getOffsetFromLocation(loc); };
