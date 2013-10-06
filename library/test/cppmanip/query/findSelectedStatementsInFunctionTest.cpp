@@ -32,7 +32,7 @@ struct findStatementsInFunctionOverlappingSelectionTest : testing::Test
 
     ast::StatementPtr stmt()
     {
-        return std::make_shared<ast::Statement>(nullptr, ast::SourceOffsetRange(0, 0), ast::LocalVariables(), ast::LocalVariables());
+        return std::make_shared<ast::Statement>(nullptr, ast::SourceOffsetRange(0, 0), ast::LocalVariables(), ast::LocalVariables(), "", "");
     }
 
 };

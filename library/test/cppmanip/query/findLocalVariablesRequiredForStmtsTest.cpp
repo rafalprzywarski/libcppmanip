@@ -24,18 +24,18 @@ struct findLocalVariablesRequiredForStmtsTest : testing::Test
 
     ast::StatementPtr stmtWithUsedVars(ast::LocalVariables vars)
     {
-        return std::make_shared<ast::Statement>(nullptr, ast::SourceOffsetRange(0, 0), ast::LocalVariables(), vars);
+        return std::make_shared<ast::Statement>(nullptr, ast::SourceOffsetRange(0, 0), ast::LocalVariables(), vars, "", "");
     }
 
     ast::StatementPtr stmtWithDeclaredVars(ast::LocalVariables declared)
     {
-        return std::make_shared<ast::Statement>(nullptr, ast::SourceOffsetRange(0, 0), declared, ast::LocalVariables());
+        return std::make_shared<ast::Statement>(nullptr, ast::SourceOffsetRange(0, 0), declared, ast::LocalVariables(), "", "");
     }
 };
 
 TEST_F(findLocalVariablesRequiredForStmtsTest, should_return_no_variables_if_none_are_used)
 {
-    ast::Statements stmts{ std::make_shared<ast::Statement>(nullptr, ast::SourceOffsetRange(0, 0), ast::LocalVariables(), ast::LocalVariables()) };
+    ast::Statements stmts{ stmtWithUsedVars({}) };
     ASSERT_TRUE(findLocalVariablesRequiredForStmts(stmts).empty());
 }
 

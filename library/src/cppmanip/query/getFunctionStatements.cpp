@@ -93,7 +93,7 @@ ast::StatementPtr translateStmt(clang::Stmt& stmt, LocalSymbols& locals, GetStmt
     auto declared = getDeclaredVars(stmt, locals);
     auto used = getUsedLocalVars(stmt, locals);
     auto range = getStmtRange(stmt);
-    return std::make_shared<ast::Statement>(&stmt, range, declared, used);
+    return std::make_shared<ast::Statement>(&stmt, range, declared, used, "", "");
 }
 
 }

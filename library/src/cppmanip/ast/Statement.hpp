@@ -17,17 +17,20 @@ class Statement
 {
 public:
     Statement(const Statement& ) = delete;
-    Statement(clang::Stmt *stmt, const SourceOffsetRange& range, const LocalVariables& declaredVariables, const LocalVariables& usedLocalVariables)
+    Statement(clang::Stmt *stmt, const SourceOffsetRange& range, const LocalVariables& declaredVariables, const LocalVariables& usedLocalVariables, const std::string& sourceCode, const std::string& sourceCodeAfter)
         : stmt(stmt), range(range), declaredVariables(declaredVariables), usedLocalVariables(usedLocalVariables) { }
     SourceOffsetRange getRange() const { return range; }
     const LocalVariables& getDeclaredVariables() const { return declaredVariables; }
     const LocalVariables& getUsedLocalVariables() const { return usedLocalVariables; }
+    std::string getSourceCode() const { return sourceCode; }
+    std::string getSourceCodeAfter() const { return sourceCodeAfter; }
     clang::Stmt *getStmt() const { return stmt; }
 private:
     clang::Stmt *const stmt; // TODO: temporarily
     const SourceOffsetRange range;
     const LocalVariables declaredVariables;
     const LocalVariables usedLocalVariables;
+    const std::string sourceCode, sourceCodeAfter;
 };
 
 typedef std::shared_ptr<const Statement> StatementPtr;

@@ -51,14 +51,14 @@ struct findVariablesDeclaredByAndUsedAfterStmtsTest : testing::Test
         return std::make_shared<ast::LocalVariable>("", "");
     }
 
-    ast::StatementPtr stmtWithUsedVars(ast::LocalVariables vars)
+    ast::StatementPtr stmtWithUsedVars(ast::LocalVariables vars) // TODO: move to a factory
     {
-        return std::make_shared<ast::Statement>(nullptr, ast::SourceOffsetRange(0, 0), ast::LocalVariables(), vars);
+        return std::make_shared<ast::Statement>(nullptr, ast::SourceOffsetRange(0, 0), ast::LocalVariables(), vars, "", "");
     }
 
     ast::StatementPtr stmtWithDeclaredVars(ast::LocalVariables declared)
     {
-        return std::make_shared<ast::Statement>(nullptr, ast::SourceOffsetRange(0, 0), declared, ast::LocalVariables());
+        return std::make_shared<ast::Statement>(nullptr, ast::SourceOffsetRange(0, 0), declared, ast::LocalVariables(), "", "");
     }
 
     ast::StatementPtr stmt()
