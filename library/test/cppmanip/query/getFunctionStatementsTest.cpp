@@ -110,5 +110,16 @@ TEST_F(getFunctionStatementsTest, should_temporarily_store_clang_statements)
     ASSERT_TRUE(stmts[0]->getStmt() == &stmtNo(0));
 }
 
+TEST_F(getFunctionStatementsTest, should_store_statments_source_code)
+{
+    parse("void f(int) {\n f(1 + 3); int a =\n 9; }");
+    ast::SourceOffsetRange f{15, 24}, a{25, 36};
+    EXPECT_FCALL(getStmtRangeMocked(_, Ref(stmtNo(0)))).WillOnce(Return(f));
+    EXPECT_FCALL(getStmtRangeMocked(_, Ref(stmtNo(1)))).WillOnce(Return(a));
+    auto stmts = getFunctionStatements(*func->getDecl(), getStmtRange);
+    EXPECT_EQ("f(1 + 3);", stmts[0]->getSourceCode());
+    ASSERT_EQ("int a =\n 9;", stmts[1]->getSourceCode());
+}
+
 }
 }

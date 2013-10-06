@@ -87,13 +87,19 @@ ast::LocalVariables getUsedLocalVars(clang::Stmt& stmt, const LocalSymbols& loca
     return used;
 }
 
-template <typename GetStmtRange>
-ast::StatementPtr translateStmt(clang::Stmt& stmt, LocalSymbols& locals, GetStmtRange getStmtRange)
+std::string getSourceCode(clang::SourceManager& sourceManager, ast::SourceOffsetRange range)
+{
+    auto loc = sourceManager.getLocForStartOfFile(sourceManager.getMainFileID()).getLocWithOffset(range.getFrom()); // TODO: this is ugly!
+    return std::string(sourceManager.getCharacterData(loc), range.getTo() - range.getFrom());
+}
+
+ast::StatementPtr translateStmt(clang::Stmt& stmt, LocalSymbols& locals, GetStatementRange getStmtRange, clang::SourceManager& sourceManager)
 {
     auto declared = getDeclaredVars(stmt, locals);
     auto used = getUsedLocalVars(stmt, locals);
-    auto range = getStmtRange(stmt);
-    return std::make_shared<ast::Statement>(&stmt, range, declared, used, "", "");
+    auto range = getStmtRange(sourceManager, stmt);
+    auto sourceCode = getSourceCode(sourceManager, range);
+    return std::make_shared<ast::Statement>(&stmt, range, declared, used, sourceCode, "");
 }
 
 }
@@ -103,9 +109,7 @@ ast::Statements getFunctionStatements(clang::FunctionDecl& f, GetStatementRange 
     ast::Statements stmts;
     LocalSymbols locals;
     for (auto stmt : f.getBody()->children())
-        stmts.push_back(
-            translateStmt(
-                *stmt, locals, [&](clang::Stmt& s) { return getStmtRange(f.getASTContext().getSourceManager(), s); }));
+        stmts.push_back(translateStmt(*stmt, locals, getStmtRange, f.getASTContext().getSourceManager()));
     return stmts;
 }
 

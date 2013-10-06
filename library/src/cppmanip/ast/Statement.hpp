@@ -18,7 +18,7 @@ class Statement
 public:
     Statement(const Statement& ) = delete;
     Statement(clang::Stmt *stmt, const SourceOffsetRange& range, const LocalVariables& declaredVariables, const LocalVariables& usedLocalVariables, const std::string& sourceCode, const std::string& sourceCodeAfter)
-        : stmt(stmt), range(range), declaredVariables(declaredVariables), usedLocalVariables(usedLocalVariables) { }
+        : stmt(stmt), range(range), declaredVariables(declaredVariables), usedLocalVariables(usedLocalVariables), sourceCode(sourceCode) { }
     SourceOffsetRange getRange() const { return range; }
     const LocalVariables& getDeclaredVariables() const { return declaredVariables; }
     const LocalVariables& getUsedLocalVariables() const { return usedLocalVariables; }
