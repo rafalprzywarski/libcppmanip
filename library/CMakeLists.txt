@@ -20,15 +20,10 @@ add_library(cppmanip SHARED
     src/cppmanip/io/TextFileOps.cpp
     src/cppmanip/clangutil/ClangToolArgsBuilder.cpp
     src/cppmanip/extractFunctionInFile.cpp
-    src/cppmanip/legacy/DelayedFunctionExtractor.cpp
     src/cppmanip/text/TextReplacementRecorder.cpp
     src/cppmanip/text/OffsetConverter.cpp
     src/cppmanip/text/SourceLocationConverter.cpp
-    src/cppmanip/ClangFunctionExtractor.cpp
-    src/cppmanip/ClangFunctionExtractorFactory.cpp
     src/cppmanip/clangutil/getFunctionFromAstInSelection.cpp
-    src/cppmanip/TranslationUnitFunctionExtractor.cpp
-    src/cppmanip/TranslationUnitFunctionExtractorFactory.cpp
     src/cppmanip/clangutil/runTranslationUnitHandlerOnFile.cpp
     src/cppmanip/query/findSelectedStatementsInFunction.cpp
     src/cppmanip/clangutil/getStmtOffsetRange.cpp
@@ -36,6 +31,11 @@ add_library(cppmanip SHARED
     src/cppmanip/query/findVariablesDeclaredByAndUsedAfterStmts.cpp
     src/cppmanip/format/printFunction.cpp
     src/cppmanip/clangutil/getFunctionStatements.cpp
+    src/cppmanip/clangutil/AstGateway.cpp
+    src/cppmanip/DefaultFunctionExtractor.cpp
+    src/cppmanip/DefaultFunctionExtractorFactory.cpp
+    src/cppmanip/FileBasedStatementLocator.cpp
+    src/cppmanip/NoReturnFunctionExtractionValidator.cpp
 )
 
 target_link_libraries(cppmanip LINK_PRIVATE

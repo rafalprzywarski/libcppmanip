@@ -1,6 +1,7 @@
 #ifndef CPPMANIP_DC40597E542F4CDB995BD64C51CDB200_HPP
 #define CPPMANIP_DC40597E542F4CDB995BD64C51CDB200_HPP
 #include "TextReplacementListener.hpp"
+#include <memory>
 
 namespace cppmanip
 {
@@ -18,6 +19,7 @@ public:
 };
 
 typedef TextModifier<unsigned> OffsetBasedTextModifier;
+typedef std::shared_ptr<OffsetBasedTextModifier> OffsetBasedTextModifierPtr;
 
 }
 }

@@ -1,5 +1,6 @@
 #include <cppmanip/boundary/extractFunctionInFile.hpp>
-#include "ClangFunctionExtractorFactory.hpp"
+#include "DefaultFunctionExtractor.hpp"
+#include "DefaultFunctionExtractorFactory.hpp"
 
 namespace cppmanip
 {
@@ -8,8 +9,8 @@ namespace boundary
 
 SourceReplacements extractFunctionInFile(const std::string& functionName, SourceSelection selection, const std::string& filename)
 {
-    auto extractor = ClangFunctionExtractorFactory().createFunctionExtractor(functionName, selection, filename);
-    return extractor->extractFunctionInFile();
+    auto extractor = DefaultFunctionExtractorFactory().create(filename);
+    return extractor->extractFunctionFromSelectionInFile(functionName, selection, filename);
 }
 
 }
