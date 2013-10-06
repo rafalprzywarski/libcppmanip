@@ -1,5 +1,5 @@
-#include <cppmanip/query/getFunctionFromAstInSelection.hpp>
-#include "../ParsedFunction.hpp"
+#include <cppmanip/clangutil/getFunctionFromAstInSelection.hpp>
+#include "ParsedFunction.hpp"
 #include <cppmanip/boundary/ExtractMethodError.hpp>
 #include <gmock/gmock.h>
 #include "../gtestdef.hpp"
@@ -10,7 +10,7 @@ using namespace testing;
 
 namespace cppmanip
 {
-namespace query
+namespace clangutil
 {
 
 struct getFunctionFromAstInSelectionTest : testing::Test

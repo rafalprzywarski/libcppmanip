@@ -4,6 +4,8 @@
 
 namespace cppmanip
 {
+namespace clangutil
+{
 namespace test
 {
 
@@ -45,5 +47,6 @@ clang::StmtRange ParsedFunction::stmts()
     return getDecl()->getBody()->children();
 }
 
+}
 }
 }

@@ -7,7 +7,7 @@
 
 namespace cppmanip
 {
-namespace query
+namespace clangutil
 {
 
 clang::SourceRange getStmtRange(clang::SourceManager& sourceManager, clang::Stmt& stmt);

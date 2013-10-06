@@ -5,6 +5,8 @@
 
 namespace cppmanip
 {
+namespace clangutil
+{
 namespace test
 {
 
@@ -20,6 +22,7 @@ private:
     std::shared_ptr<clang::ASTContext> astContext;
 };
 
+}
 }
 }
 #endif // CPPMANIP_9DCB109EF1064760828DE63EE74C3314_HPP

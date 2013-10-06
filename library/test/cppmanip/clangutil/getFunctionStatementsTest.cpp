@@ -1,5 +1,5 @@
-#include <cppmanip/query/getFunctionStatements.hpp>
-#include "../ParsedFunction.hpp"
+#include <cppmanip/clangutil/getFunctionStatements.hpp>
+#include "ParsedFunction.hpp"
 #include <clang/AST/Stmt.h>
 #include <gmock/gmock.h>
 #include "../gtestdef.hpp"
@@ -9,7 +9,7 @@ using namespace testing;
 
 namespace cppmanip
 {
-namespace query
+namespace clangutil
 {
 
 struct getFunctionStatementsTest : testing::Test

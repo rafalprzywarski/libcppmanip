@@ -6,7 +6,7 @@
 
 namespace cppmanip
 {
-namespace query
+namespace clangutil
 {
 
 namespace

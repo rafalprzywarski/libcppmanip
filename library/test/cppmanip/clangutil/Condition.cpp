@@ -2,6 +2,8 @@
 
 namespace cppmanip
 {
+namespace clangutil
+{
 namespace test
 {
 
@@ -24,5 +26,6 @@ void Condition::wait()
         cond.wait(lock);
 }
 
+}
 }
 }

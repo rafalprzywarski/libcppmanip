@@ -1,5 +1,5 @@
-#include <cppmanip/query/getStmtOffsetRange.hpp>
-#include "../ParsedFunction.hpp"
+#include <cppmanip/clangutil/getStmtOffsetRange.hpp>
+#include "ParsedFunction.hpp"
 #include <cppmanip/boundary/ExtractMethodError.hpp>
 #include <gtest/gtest.h>
 #include <clang/AST/Stmt.h>
@@ -8,7 +8,7 @@ using namespace testing;
 
 namespace cppmanip
 {
-namespace query
+namespace clangutil
 {
 namespace test
 {
@@ -35,13 +35,13 @@ std::ostream& operator<<(std::ostream& os, const Stmt& s)
 
 struct getStmtOffsetRangeTest : testing::TestWithParam<Stmt>
 {
-    std::unique_ptr<cppmanip::test::ParsedFunction> func;
+    std::unique_ptr<ParsedFunction> func;
     std::string extraDeclarations;
     std::string parsedSource;
 
     void parse(const std::string& source)
     {
-        func.reset(new cppmanip::test::ParsedFunction(source));
+        func.reset(new ParsedFunction(source));
         parsedSource = source;
     }
 

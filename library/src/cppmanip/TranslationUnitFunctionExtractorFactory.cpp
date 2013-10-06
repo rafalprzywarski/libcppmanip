@@ -1,12 +1,12 @@
 #include "TranslationUnitFunctionExtractorFactory.hpp"
 #include "legacy/DelayedFunctionExtractor.hpp"
 #include "TranslationUnitFunctionExtractor.hpp"
-#include "query/getFunctionFromAstInSelection.hpp"
+#include "clangutil/getFunctionFromAstInSelection.hpp"
 #include "query/findSelectedStatementsInFunction.hpp"
-#include "query/getStmtOffsetRange.hpp"
+#include "clangutil/getStmtOffsetRange.hpp"
 #include "query/findLocalVariablesRequiredForStmts.hpp"
 #include "query/findVariablesDeclaredByAndUsedAfterStmts.hpp"
-#include "query/getFunctionStatements.hpp"
+#include "clangutil/getFunctionStatements.hpp"
 #include "format/printFunction.hpp"
 #include "math/PositionRange.hpp"
 
@@ -23,7 +23,7 @@ clangutil::HandleTranslationUnit TranslationUnitFunctionExtractorFactory::create
         TranslationUnitFunctionExtractor functionExtractor;
         WithDeps(const std::string& extractedMethodName, ast::SourceOffsetRange selection, text::OffsetBasedTextModifier& sourceOperations)
             : functionExtractor(
-                bind(query::getFunctionFromAstInSelection, _1, selection, [](clang::FunctionDecl& f) { return query::getFunctionStatements(f, query::getStmtOffsetRange); }),
+                bind(clangutil::getFunctionFromAstInSelection, _1, selection, [](clang::FunctionDecl& f) { return clangutil::getFunctionStatements(f, clangutil::getStmtOffsetRange); }),
                 [=](ast::FunctionPtr decl) {
                     return query::findSelectedStatementsInFunction(*decl, [=](ast::StatementPtr s) {
                         auto r = s->getRange();

@@ -5,6 +5,8 @@
 
 namespace cppmanip
 {
+namespace clangutil
+{
 namespace test
 {
 
@@ -34,6 +36,7 @@ private:
     bool ready;
 };
 
+}
 }
 }
 #endif // CPPMANIP_4C010B1504FA456091DA9EC210C6128D_HPP

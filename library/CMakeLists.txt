@@ -8,7 +8,7 @@ set(LLVM_CONFIG "llvm-config-3.2")
 
 execute_process(COMMAND ${LLVM_CONFIG} --cxxflags OUTPUT_VARIABLE LLVM_CXX_FLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
 execute_process(COMMAND ${LLVM_CONFIG} --ldflags OUTPUT_VARIABLE LLVM_LINKER_FLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
-add_definitions("${LLVM_CXX_FLAGS} -fexceptions -Wall")
+add_definitions("${LLVM_CXX_FLAGS} -fexceptions -Wall -Werror=return-type")
 set(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${LLVM_LINKER_FLAGS}")
 set(CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS "${CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS} ${LLVM_LINKER_FLAGS}")
 
@@ -26,16 +26,16 @@ add_library(cppmanip SHARED
     src/cppmanip/text/SourceLocationConverter.cpp
     src/cppmanip/ClangFunctionExtractor.cpp
     src/cppmanip/ClangFunctionExtractorFactory.cpp
-    src/cppmanip/query/getFunctionFromAstInSelection.cpp
+    src/cppmanip/clangutil/getFunctionFromAstInSelection.cpp
     src/cppmanip/TranslationUnitFunctionExtractor.cpp
     src/cppmanip/TranslationUnitFunctionExtractorFactory.cpp
     src/cppmanip/clangutil/runTranslationUnitHandlerOnFile.cpp
     src/cppmanip/query/findSelectedStatementsInFunction.cpp
-    src/cppmanip/query/getStmtOffsetRange.cpp
+    src/cppmanip/clangutil/getStmtOffsetRange.cpp
     src/cppmanip/query/findLocalVariablesRequiredForStmts.cpp
     src/cppmanip/query/findVariablesDeclaredByAndUsedAfterStmts.cpp
     src/cppmanip/format/printFunction.cpp
-    src/cppmanip/query/getFunctionStatements.cpp
+    src/cppmanip/clangutil/getFunctionStatements.cpp
 )
 
 target_link_libraries(cppmanip LINK_PRIVATE
@@ -58,24 +58,24 @@ install(FILES
         DESTINATION include/cppmanip/boundary)
 
 add_executable(cppmaniptest
-    test/cppmanip/ParsedFunction.cpp
-    test/cppmanip/Condition.cpp
+    test/cppmanip/clangutil/ParsedFunction.cpp
+    test/cppmanip/clangutil/Condition.cpp
     test/main.cpp
     test/cppmanip/text/TextOperationApplierTest.cpp
     test/cppmanip/math/PositionRangeTest.cpp
     test/cppmanip/clangutil/ClangToolArgsBuilderTest.cpp
     test/cppmanip/text/TextReplacementRecorderTest.cpp
     test/cppmanip/text/OffsetConverterTest.cpp
-    test/cppmanip/query/getFunctionFromAstInSelectionTest.cpp
+    test/cppmanip/clangutil/getFunctionFromAstInSelectionTest.cpp
     test/cppmanip/text/SourceLocationConverterTest.cpp
     test/cppmanip/query/findSelectedStatementsInFunctionTest.cpp
-    test/cppmanip/query/getStmtOffsetRangeTest.cpp
+    test/cppmanip/clangutil/getStmtOffsetRangeTest.cpp
     test/cppmanip/query/findLocalVariablesRequiredForStmtsTest.cpp
-    test/cppmanip/getASTContextForSource.cpp
+    test/cppmanip/clangutil/getASTContextForSource.cpp
     test/cppmanip/query/findVariablesDeclaredByAndUsedAfterStmtsTest.cpp
     test/cppmanip/format/printFunctionTest.cpp
     test/cppmanip/query/LocalVariablesAssert.cpp
-    test/cppmanip/query/getFunctionStatementsTest.cpp
+    test/cppmanip/clangutil/getFunctionStatementsTest.cpp
     test/cppmanip/query/AstFactories.cpp
 ) 
 

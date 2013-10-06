@@ -10,7 +10,7 @@ class Stmt;
 
 namespace cppmanip
 {
-namespace query
+namespace clangutil
 {
 
 ast::SourceOffsetRange getStmtOffsetRange(clang::SourceManager& sourceManager, clang::Stmt& stmt);

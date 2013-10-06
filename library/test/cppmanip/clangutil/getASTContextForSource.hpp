@@ -5,11 +5,14 @@
 
 namespace cppmanip
 {
+namespace clangutil
+{
 namespace test
 {
 
 std::shared_ptr<clang::ASTContext> getASTContextForSource(const std::string& source);
 
+}
 }
 }
 #endif // CPPMANIP_33B1095BD3F84848840FB242A7701A23_HPP

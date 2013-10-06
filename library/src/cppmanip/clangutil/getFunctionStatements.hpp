@@ -7,7 +7,7 @@ namespace clang { class FunctionDecl; class SourceManager; class Stmt; }
 
 namespace cppmanip
 {
-namespace query
+namespace clangutil
 {
 
 typedef std::function<ast::SourceOffsetRange(clang::SourceManager&, clang::Stmt&)> GetStatementRange;

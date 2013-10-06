@@ -5,7 +5,7 @@
 
 namespace cppmanip
 {
-namespace query
+namespace clangutil
 {
 
 typedef std::function<ast::Statements(clang::FunctionDecl& )> GetFunctionStatements;

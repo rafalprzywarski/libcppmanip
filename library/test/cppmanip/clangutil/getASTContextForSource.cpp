@@ -6,6 +6,8 @@
 
 namespace cppmanip
 {
+namespace clangutil
+{
 namespace test
 {
 
@@ -76,5 +78,6 @@ std::shared_ptr<clang::ASTContext> getASTContextForSource(const std::string& sou
     return std::shared_ptr<clang::ASTContext>(stillContext, stillContext->getASTContext());
 }
 
+}
 }
 }
