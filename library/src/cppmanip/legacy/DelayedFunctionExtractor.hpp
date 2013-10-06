@@ -2,9 +2,6 @@
 #define CPPMANIP_799523E01B0442A6ABBA2BFB7EF4F97A_HPP
 #include <cppmanip/StatementExtractor.hpp>
 #include <cppmanip/text/TextModifier.hpp>
-#include <cppmanip/ast/LocalVariable.hpp>
-#include <clang/Basic/SourceLocation.h>
-#include <clang/AST/StmtIterator.h>
 
 namespace cppmanip
 {

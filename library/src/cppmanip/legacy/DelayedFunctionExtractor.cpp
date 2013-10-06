@@ -1,8 +1,5 @@
 #include "DelayedFunctionExtractor.hpp"
 #include <cppmanip/boundary/ExtractMethodError.hpp>
-#include <clang/AST/Expr.h>
-#include <clang/AST/RecursiveASTVisitor.h>
-#include <clang/AST/ASTContext.h>
 #include <unordered_set>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/range/adaptor/transformed.hpp>
