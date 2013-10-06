@@ -1,11 +1,8 @@
 #include <cppmanip/query/findVariablesDeclaredByAndUsedAfterStmts.hpp>
-#include "../ParsedFunction.hpp"
 #include "LocalVariablesAssert.hpp"
 #include "AstFactories.hpp"
 #include <gtest/gtest.h>
 #include <memory>
-#include <boost/algorithm/string/join.hpp>
-#include <clang/AST/Stmt.h>
 
 namespace cppmanip
 {
@@ -13,39 +10,9 @@ namespace query
 {
 namespace test
 {
-using namespace cppmanip::test;
 
 struct findVariablesDeclaredByAndUsedAfterStmtsTest : testing::Test
 {
-    std::unique_ptr<ParsedFunction> func; // TODO: remove
-    std::string extraDeclarations;
-
-    void declareGlobal(const std::string& functions)
-    {
-        extraDeclarations = functions;
-    }
-
-    struct StmtsWithScope
-    {
-        clang::StmtRange range;
-        clang::Stmt& scope;
-    };
-    StmtsWithScope parseStmts(const std::string& stmts)
-    {
-        auto source = extraDeclarations + "void func__() {" + stmts + "}";
-        func.reset(new test::ParsedFunction(source));
-        return { func->stmts(), *func->getDecl()->getBody() };
-    }
-
-    clang::StmtRange first(unsigned n, clang::StmtRange r)
-    {
-        return { begin(r), boost::next(begin(r), n) };
-    }
-
-    clang::StmtRange skip(unsigned n, clang::StmtRange r)
-    {
-        return { boost::next(begin(r), n), end(r) };
-    }
 };
 
 TEST_F(findVariablesDeclaredByAndUsedAfterStmtsTest, should_return_no_variables_if_none_are_declared)

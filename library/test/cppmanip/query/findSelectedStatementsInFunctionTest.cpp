@@ -1,11 +1,7 @@
 #include <cppmanip/query/findSelectedStatementsInFunction.hpp>
-#include "../ParsedFunction.hpp"
-#include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "../gtestdef.hpp"
 #include "AstFactories.hpp"
-#include <clang/AST/Stmt.h>
-#include <boost/next_prior.hpp>
 
 using namespace testing;
 

@@ -1,12 +1,7 @@
 #include <cppmanip/query/findLocalVariablesRequiredForStmts.hpp>
-#include <cppmanip/ast/LocalVariable.hpp>
-#include "../ParsedFunction.hpp"
 #include "LocalVariablesAssert.hpp"
 #include "AstFactories.hpp"
 #include <gtest/gtest.h>
-#include <memory>
-#include <boost/algorithm/string/join.hpp>
-#include <clang/AST/Stmt.h>
 
 namespace cppmanip
 {
@@ -14,7 +9,6 @@ namespace query
 {
 namespace test
 {
-using namespace cppmanip::test;
 
 struct findLocalVariablesRequiredForStmtsTest : testing::Test
 {
