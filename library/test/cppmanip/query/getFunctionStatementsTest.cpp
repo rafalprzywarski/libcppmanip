@@ -28,9 +28,15 @@ struct getFunctionStatementsTest : testing::Test
         func.reset(new test::ParsedFunction(source));
     }
 
-    clang::Stmt& stmtNo(int index)
+    clang::Stmt *stmtNo(int index)
     {
-        return **boost::next(func->getDecl()->getBody()->child_begin(), index);
+        return *boost::next(func->getDecl()->getBody()->child_begin(), index);
+    }
+
+    void setRanges(std::vector<std::pair<clang::Stmt *, ast::SourceOffsetRange>> ranges)
+    {
+        for (auto r : ranges)
+            EXPECT_FCALL(getStmtRangeMocked(_, Ref(*r.first))).WillRepeatedly(Return(r.second));
     }
 
     MOCK_METHOD2(getStmtRangeMocked, ast::SourceOffsetRange(clang::SourceManager&, clang::Stmt& ));
@@ -39,14 +45,13 @@ struct getFunctionStatementsTest : testing::Test
 TEST_F(getFunctionStatementsTest, should_return_the_ranges_of_each_statements)
 {
     parse("void f() {\n int x = 1; if (x == 1)\n; }");
-    ast::SourceOffsetRange LOC1{1, 2}, LOC2{3, 4};
-    EXPECT_FCALL(getStmtRangeMocked(_, Ref(stmtNo(0)))).WillOnce(Return(LOC1));
-    EXPECT_FCALL(getStmtRangeMocked(_, Ref(stmtNo(1)))).WillOnce(Return(LOC2));
-    auto stmts = getFunctionStatements(*func->getDecl(), getStmtRange);
+    ast::SourceOffsetRange range0{1, 2}, range1{3, 4};
+    setRanges({{ stmtNo(0), range0 }, { stmtNo(1), range1 }});
 
+    auto stmts = getFunctionStatements(*func->getDecl(), getStmtRange);
     ASSERT_EQ(2u, stmts.size());
-    ASSERT_EQ(LOC1, stmts[0]->getRange());
-    ASSERT_EQ(LOC2, stmts[1]->getRange());
+    ASSERT_EQ(range0, stmts[0]->getRange());
+    ASSERT_EQ(range1, stmts[1]->getRange());
 }
 
 TEST_F(getFunctionStatementsTest, should_return_no_statements_when_the_given_function_has_none)
@@ -107,18 +112,28 @@ TEST_F(getFunctionStatementsTest, should_temporarily_store_clang_statements)
 {
     parse("void f() {\n int x; }");
     auto stmts = getFunctionStatements(*func->getDecl(), getStmtRange);
-    ASSERT_TRUE(stmts[0]->getStmt() == &stmtNo(0));
+    ASSERT_TRUE(stmts[0]->getStmt() == stmtNo(0));
 }
 
 TEST_F(getFunctionStatementsTest, should_store_statments_source_code)
 {
     parse("void f(int) {\n f(1 + 3); int a =\n 9; }");
-    ast::SourceOffsetRange f{15, 24}, a{25, 36};
-    EXPECT_FCALL(getStmtRangeMocked(_, Ref(stmtNo(0)))).WillOnce(Return(f));
-    EXPECT_FCALL(getStmtRangeMocked(_, Ref(stmtNo(1)))).WillOnce(Return(a));
+    setRanges({ { stmtNo(0), {15, 24} }, { stmtNo(1), {25, 36} } });
+
     auto stmts = getFunctionStatements(*func->getDecl(), getStmtRange);
     EXPECT_EQ("f(1 + 3);", stmts[0]->getSourceCode());
     ASSERT_EQ("int a =\n 9;", stmts[1]->getSourceCode());
+}
+
+TEST_F(getFunctionStatementsTest, should_store_source_code_between_statements)
+{
+    parse("void f() {\n f();/* text */f();  /* whitespace */  f( );// not stored\n }");
+    setRanges({ { stmtNo(0), {12, 16} }, { stmtNo(1), {26, 30} }, { stmtNo(2), {50, 55} } });
+
+    auto stmts = getFunctionStatements(*func->getDecl(), getStmtRange);
+    EXPECT_EQ("/* text */", stmts[0]->getSourceCodeAfter());
+    EXPECT_EQ("  /* whitespace */  ", stmts[1]->getSourceCodeAfter());
+    EXPECT_EQ("", stmts[2]->getSourceCodeAfter());
 }
 
 }
