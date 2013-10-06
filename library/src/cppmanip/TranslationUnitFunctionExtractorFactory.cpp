@@ -30,12 +30,11 @@ clangutil::HandleTranslationUnit TranslationUnitFunctionExtractorFactory::create
                         return r1.overlapsWith(r2);
                     });
                 },
-                [&]() {
-                    return std::make_shared<legacy::DelayedFunctionExtractor>(
-                        sourceOperations, format::printFunctionCall, format::printFunctionDefinition,
-                        query::findLocalVariablesRequiredForStmts,
-                        query::findVariablesDeclaredByAndUsedAfterStmts, extractedMethodName);
-                }) { }
+                std::make_shared<legacy::DelayedFunctionExtractor>(
+                    sourceOperations, format::printFunctionCall, format::printFunctionDefinition,
+                    query::findLocalVariablesRequiredForStmts,
+                    query::findVariablesDeclaredByAndUsedAfterStmts, extractedMethodName)
+                ) { }
     };
     auto withDeps = std::make_shared<WithDeps>(extractedMethodName, selection, sourceOperations);
     std::shared_ptr<TranslationUnitFunctionExtractor> handler{withDeps, &withDeps->functionExtractor};
