@@ -3,11 +3,12 @@
 #include "TranslationUnitFunctionExtractor.hpp"
 #include "query/getFunctionFromAstInSelection.hpp"
 #include "query/findSelectedStatementsInFunction.hpp"
-#include "query/getStmtLocationRange.hpp"
+#include "query/getStmtOffsetRange.hpp"
 #include "query/findLocalVariablesRequiredForStmts.hpp"
 #include "query/findVariablesDeclaredByAndUsedAfterStmts.hpp"
 #include "query/getFunctionStatements.hpp"
 #include "format/printFunction.hpp"
+#include "math/PositionRange.hpp"
 
 namespace cppmanip
 {

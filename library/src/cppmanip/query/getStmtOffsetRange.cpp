@@ -1,13 +1,17 @@
-#include "getStmtLocationRange.hpp"
+#include "getStmtOffsetRange.hpp"
 #include <boost/optional.hpp>
 #include <cppmanip/boundary/ExtractMethodError.hpp>
 #include <clang/AST/StmtVisitor.h>
 #include <clang/Lex/Lexer.h>
+#include <clang/Basic/SourceManager.h>
 
 namespace cppmanip
 {
 namespace query
 {
+
+clang::SourceRange getStmtRange(clang::SourceManager& sourceManager, clang::Stmt& stmt);
+
 namespace
 {
 
@@ -58,28 +62,6 @@ private:
     }
 };
 
-unsigned toZeroBased(unsigned n)
-{
-    return n - 1;
-}
-
-ast::SourceLocation toRowCol(clang::SourceManager& sm, clang::SourceLocation l)
-{
-    return ast::rowCol(
-        toZeroBased(sm.getSpellingLineNumber(l)),
-        toZeroBased(sm.getSpellingColumnNumber(l)));
-}
-
-LocationRange toLocationRange(clang::SourceManager& sm, clang::SourceRange r)
-{
-    return LocationRange(toRowCol(sm, r.getBegin()), toRowCol(sm, r.getEnd()));
-}
-
-ast::StatementPtr last(ast::StatementRange r)
-{
-    return *--end(r);
-}
-
 }
 
 clang::SourceRange getStmtRange(clang::SourceManager& sourceManager, clang::Stmt& stmt)
@@ -91,20 +73,10 @@ clang::SourceRange getStmtRange(clang::SourceManager& sourceManager, clang::Stmt
     return *range;
 }
 
-LocationRange getStmtLocationRange(clang::SourceManager& sourceManager, clang::Stmt& stmt)
-{
-    return toLocationRange(sourceManager, getStmtRange(sourceManager, stmt));
-}
-
 ast::SourceOffsetRange getStmtOffsetRange(clang::SourceManager& sourceManager, clang::Stmt& stmt)
 {
     auto r = getStmtRange(sourceManager, stmt);
     return { sourceManager.getFileOffset(r.getBegin()), sourceManager.getFileOffset(r.getEnd()) };
-}
-
-ast::SourceOffsetRange getStmtsRange(ast::StatementRange stmts)
-{
-    return { stmts.front()->getRange().getFrom(), stmts.back()->getRange().getTo() };
 }
 
 }

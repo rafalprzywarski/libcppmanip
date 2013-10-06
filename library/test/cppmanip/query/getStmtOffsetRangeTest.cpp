@@ -1,7 +1,8 @@
-#include <cppmanip/query/getStmtLocationRange.hpp>
+#include <cppmanip/query/getStmtOffsetRange.hpp>
 #include "../ParsedFunction.hpp"
 #include <cppmanip/boundary/ExtractMethodError.hpp>
 #include <gtest/gtest.h>
+#include <clang/AST/Stmt.h>
 
 using namespace testing;
 
@@ -32,7 +33,7 @@ std::ostream& operator<<(std::ostream& os, const Stmt& s)
     return os;
 }
 
-struct getStmtLocationRangeTest : testing::TestWithParam<Stmt>
+struct getStmtOffsetRangeTest : testing::TestWithParam<Stmt>
 {
     std::unique_ptr<cppmanip::test::ParsedFunction> func;
     std::string extraDeclarations;
@@ -49,38 +50,38 @@ struct getStmtLocationRangeTest : testing::TestWithParam<Stmt>
         extraDeclarations = decls;
     }
 
-    LocationRange getRangeFromSource(const std::string& source)
+    ast::SourceOffsetRange getRangeFromSource(const std::string& source)
     {
         parse(source);
-        return getStmtLocationRange(func->getDecl()->getASTContext().getSourceManager(), **func->stmts());
+        return getStmtOffsetRange(func->getDecl()->getASTContext().getSourceManager(), **func->stmts());
     }
 
-    LocationRange getRangeFromStmt(const std::string& stmt)
+    ast::SourceOffsetRange getRangeFromStmt(const std::string& stmt)
     {
         return getRangeFromSource(extraDeclarations + " void dummy_function__() { " + stmt + "\n }"); // \n is needed because of clang bug
     }
 
-    void expectStmtRangeIs(LocationRange range, const std::string& phrase)
+    void expectStmtRangeIs(ast::SourceOffsetRange range, const std::string& phrase)
     {
         auto phraseOffset = parsedSource.find(phrase);
-        ASSERT_EQ(LocationRange(ast::rowCol(0, phraseOffset), ast::rowCol(0, phraseOffset + phrase.length())), range)
+        ASSERT_EQ(ast::SourceOffsetRange(phraseOffset, phraseOffset + phrase.length()), range)
             << (*func->stmts())->getStmtClassName();
     }
 };
 
-TEST_F(getStmtLocationRangeTest, should_handle_multiline_statements)
+TEST_F(getStmtOffsetRangeTest, should_handle_multiline_statements)
 {
     auto range = getRangeFromSource("void dummy_function__() {\n  int\n x;\n}");
-    ASSERT_EQ(LocationRange(ast::rowCol(1, 2), ast::rowCol(2, 3)), range);
+    ASSERT_EQ(ast::SourceOffsetRange(28, 35), range);
 }
 
-TEST_F(getStmtLocationRangeTest, should_throw_an_exception_for_unknown_statement)
+TEST_F(getStmtOffsetRangeTest, should_throw_an_exception_for_unknown_statement)
 {
     auto source = "int dummy_function__() {\n  return 4 + 2;\n}";
     ASSERT_THROW(getRangeFromSource(source), boundary::ExtractMethodError);
 }
 
-TEST_P(getStmtLocationRangeTest, should_find_correct_source_range_for_a_statement)
+TEST_P(getStmtOffsetRangeTest, should_find_correct_source_range_for_a_statement)
 {
     setExtraDeclarations(GetParam().extraDecl);
     auto range = getRangeFromStmt(GetParam().stmt);
@@ -89,7 +90,7 @@ TEST_P(getStmtLocationRangeTest, should_find_correct_source_range_for_a_statemen
 
 INSTANTIATE_TEST_CASE_P(
     should_find_correct_source_range_for_all_statements,
-    getStmtLocationRangeTest,
+    getStmtOffsetRangeTest,
     Values(
         Stmt("int x;"),
         Stmt("int x  ;"),
