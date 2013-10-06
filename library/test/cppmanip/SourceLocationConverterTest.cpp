@@ -1,8 +1,10 @@
-#include <cppmanip/SourceLocationConverter.hpp>
+#include <cppmanip/text/SourceLocationConverter.hpp>
 #include <gtest/gtest.h>
 #include <stdexcept>
 
 namespace cppmanip
+{
+namespace text
 {
 
 TEST(SourceLocationConverterTest, should_return_column_at_row_0_as_offset)
@@ -25,4 +27,5 @@ TEST(SourceLocationConverterTest, should_fail_of_row_is_greater_than_the_number_
     ASSERT_THROW(converter.getOffsetFromLocation(boundary::rowCol(3, 0)), std::out_of_range);
 }
 
+}
 }

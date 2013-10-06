@@ -23,7 +23,7 @@ add_library(cppmanip SHARED
     src/cppmanip/legacy/DelayedFunctionExtractor.cpp
     src/cppmanip/text/TextReplacementRecorder.cpp
     src/cppmanip/text/OffsetConverter.cpp
-    src/cppmanip/SourceLocationConverter.cpp
+    src/cppmanip/text/SourceLocationConverter.cpp
     src/cppmanip/ClangFunctionExtractor.cpp
     src/cppmanip/ClangFunctionExtractorFactory.cpp
     src/cppmanip/query/getFunctionFromAstInSelection.cpp

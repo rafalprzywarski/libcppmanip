@@ -3,6 +3,8 @@
 
 namespace cppmanip
 {
+namespace text
+{
 
 unsigned int SourceLocationConverter::getOffsetFromLocation(boundary::SourceLocation loc) const
 {
@@ -23,4 +25,5 @@ unsigned int SourceLocationConverter::calcRowOffset(unsigned int row) const
     return (it - source.begin());
 }
 
+}
 }

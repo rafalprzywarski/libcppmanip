@@ -5,6 +5,8 @@
 
 namespace cppmanip
 {
+namespace text
+{
 
 class SourceLocationConverter
 {
@@ -16,5 +18,6 @@ private:
     unsigned int calcRowOffset(unsigned int row) const;
 };
 
+}
 }
 #endif // CPPMANIP_1C57B55DCAEB439E9409ED2823E4F3B2_HPP

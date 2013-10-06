@@ -3,11 +3,11 @@
 #include "text/TextOperationApplier.hpp"
 #include "text/OffsetConverter.hpp"
 #include "text/TextReplacementRecorder.hpp"
+#include "text/SourceLocationConverter.hpp"
 #include "makeWithDependencies.hpp"
 #include "TranslationUnitFunctionExtractorFactory.hpp"
 #include "io/TextFileOps.hpp"
 #include "clangutil/runTranslationUnitHandlerOnFile.hpp"
-#include "SourceLocationConverter.hpp"
 
 namespace cppmanip
 {
@@ -37,7 +37,7 @@ FunctionExtractorPtr ClangFunctionExtractorFactory::createFunctionExtractor(
                         functionName, selection, textModifier), filename); },
                 [&]{ return recordReplacements(textModifier, filename); }) { }
     };
-    SourceLocationConverter conv{io::loadTextFromFile(filename)};
+    text::SourceLocationConverter conv{io::loadTextFromFile(filename)};
     ast::SourceOffsetRange range{ conv.getOffsetFromLocation(selection.from), conv.getOffsetFromLocation(selection.to) };
     auto withDeps = std::make_shared<WithDeps>(functionName, range, filename);
     return std::shared_ptr<FunctionExtractor>(withDeps, &withDeps->extractor);
