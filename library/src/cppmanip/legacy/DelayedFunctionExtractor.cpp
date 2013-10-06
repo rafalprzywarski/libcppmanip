@@ -25,6 +25,23 @@ std::vector<std::string> getArgumentDeclarations(const ast::LocalVariables& vari
     return args;
 }
 
+ast::SourceOffsetRange getRange(ast::StatementRange stmts)
+{
+    return { stmts.front()->getRange().getFrom(), stmts.back()->getRange().getTo() };
+}
+
+std::string getSource(ast::StatementRange stmts)
+{
+    std::string source;
+    for (auto stmt : stmts)
+    {
+        source += stmt->getSourceCode();
+        if (stmt != stmts.back())
+            source += stmt->getSourceCodeAfter();
+    }
+    return source;
+}
+
 }
 
 void DelayedFunctionExtractor::extractStatmentsFromFunction(ast::StatementRange stmts, ast::FunctionPtr originalFunction)
@@ -32,8 +49,8 @@ void DelayedFunctionExtractor::extractStatmentsFromFunction(ast::StatementRange 
     failIfVariablesAreDeclaredByAndUsedAfterStmts(stmts, originalFunction);
     auto requiredVars = findLocalVariablesRequiredForStmts(stmts);
 
-    insertFunctionWithArgsAndBody(originalFunction->getDefinitionOffset(), getArgumentDeclarations(requiredVars), getStmtsSource(getSourceFromRange(stmts)));
-    replaceStatementsWithFunctionCall(getSourceFromRange(stmts), requiredVars);
+    insertFunctionWithArgsAndBody(originalFunction->getDefinitionOffset(), getArgumentDeclarations(requiredVars), getSource(stmts));
+    replaceStatementsWithFunctionCall(getRange(stmts), requiredVars);
 }
 
 void DelayedFunctionExtractor::insertFunctionWithArgsAndBody(
@@ -44,11 +61,9 @@ void DelayedFunctionExtractor::insertFunctionWithArgsAndBody(
 }
 
 void DelayedFunctionExtractor::replaceStatementsWithFunctionCall(
-    clang::SourceRange stmts, const ast::LocalVariables& variables)
+    ast::SourceOffsetRange stmts, const ast::LocalVariables& variables)
 {
-    auto begin = getLocationOffset(stmts.getBegin());
-    auto end = getLocationOffset(stmts.getEnd());
-    replaceRangeWith(begin, end, printFunctionCallStmt(extractedFunctionName, variables));
+    replaceRangeWith(stmts.getFrom(), stmts.getTo(), printFunctionCallStmt(extractedFunctionName, variables));
 }
 
 void DelayedFunctionExtractor::replaceRangeWith(unsigned from, unsigned to, std::string replacement)

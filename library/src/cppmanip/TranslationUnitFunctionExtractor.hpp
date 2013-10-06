@@ -12,7 +12,7 @@ class TranslationUnitFunctionExtractor
 public:
     typedef std::function<ast::FunctionPtr(clang::ASTContext&)> LocateFunction;
     typedef std::function<ast::StatementRange(ast::FunctionPtr)> LocateStatements;
-    typedef std::function<StatementExtractorPtr(clang::ASTContext& ctx)> CreateStatementExtractor;
+    typedef std::function<StatementExtractorPtr()> CreateStatementExtractor;
     TranslationUnitFunctionExtractor(LocateFunction locateFunction, LocateStatements locateStatements, CreateStatementExtractor createStmtExtractor)
         : locateFunction(locateFunction), locateStatements(locateStatements), createStmtExtractor(createStmtExtractor) { }
     virtual void handleTranslationUnit(clang::ASTContext& ctx);

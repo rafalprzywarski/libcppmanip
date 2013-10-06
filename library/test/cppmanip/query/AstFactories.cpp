@@ -19,12 +19,12 @@ ast::StatementPtr stmt()
 
 ast::StatementPtr stmtWithUsedVars(ast::LocalVariables vars)
 {
-    return std::make_shared<ast::Statement>(nullptr, ast::SourceOffsetRange(0, 0), ast::LocalVariables(), vars, "", "");
+    return std::make_shared<ast::Statement>(ast::SourceOffsetRange(0, 0), ast::LocalVariables(), vars, "", "");
 }
 
 ast::StatementPtr stmtWithDeclaredVars(ast::LocalVariables declared)
 {
-    return std::make_shared<ast::Statement>(nullptr, ast::SourceOffsetRange(0, 0), declared, ast::LocalVariables(), "", "");
+    return std::make_shared<ast::Statement>(ast::SourceOffsetRange(0, 0), declared, ast::LocalVariables(), "", "");
 }
 
 }

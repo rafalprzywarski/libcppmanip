@@ -6,7 +6,6 @@
 #include "query/getStmtLocationRange.hpp"
 #include "query/findLocalVariablesRequiredForStmts.hpp"
 #include "query/findVariablesDeclaredByAndUsedAfterStmts.hpp"
-#include "query/getSourceFromRange.hpp"
 #include "query/getFunctionStatements.hpp"
 #include "format/printFunction.hpp"
 
@@ -31,15 +30,11 @@ clangutil::HandleTranslationUnit TranslationUnitFunctionExtractorFactory::create
                         return r1.overlapsWith(r2);
                     });
                 },
-                [&](clang::ASTContext& ctx) {
-                    auto& sourceManager = ctx.getSourceManager();
+                [&]() {
                     return std::make_shared<legacy::DelayedFunctionExtractor>(
                         sourceOperations, format::printFunctionCall, format::printFunctionDefinition,
-                        bind(&clang::SourceManager::getFileOffset, &sourceManager, _1),
-                        bind(query::getStmtsRange, std::ref(sourceManager), _1),
                         query::findLocalVariablesRequiredForStmts,
-                        query::findVariablesDeclaredByAndUsedAfterStmts, extractedMethodName,
-                        bind(query::getSourceFromRange, std::ref(sourceManager), _1));
+                        query::findVariablesDeclaredByAndUsedAfterStmts, extractedMethodName);
                 }) { }
     };
     auto withDeps = std::make_shared<WithDeps>(extractedMethodName, selection, sourceOperations);

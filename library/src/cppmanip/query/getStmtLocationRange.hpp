@@ -15,7 +15,7 @@ clang::SourceRange getStmtRange(clang::SourceManager& sourceManager, clang::Stmt
 LocationRange getStmtLocationRange(clang::SourceManager& sourceManager, clang::Stmt& stmt);
 ast::SourceOffsetRange getStmtOffsetRange(clang::SourceManager& sourceManager, clang::Stmt& stmt);
 
-clang::SourceRange getStmtsRange(clang::SourceManager& sourceManager, ast::StatementRange stmts);
+ast::SourceOffsetRange getStmtsRange(ast::StatementRange stmts);
 
 }
 }

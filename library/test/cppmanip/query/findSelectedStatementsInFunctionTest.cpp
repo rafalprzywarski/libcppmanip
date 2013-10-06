@@ -32,7 +32,7 @@ struct findStatementsInFunctionOverlappingSelectionTest : testing::Test
 
 TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_an_empty_range_for_an_empty_function)
 {
-    ast::Function f{nullptr, 0, {}};
+    ast::Function f{0, {}};
 
     auto stmts = findSelectedStatementsInFunction(f, [&](ast::StatementPtr s) { return isSelected(s); });
     ASSERT_TRUE(stmts.empty());
@@ -41,7 +41,7 @@ TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_an_empty_
 TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_the_selected_range_of_statements)
 {
     ast::Statements stmts = {stmt(), stmt(), stmt(), stmt()};
-    ast::Function f{nullptr, 0, stmts};
+    ast::Function f{0, stmts}; // TODO: move to factory
     stmtSelection({
         { stmts[0], false },
         { stmts[1], true },
@@ -55,7 +55,7 @@ TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_the_selec
 
 TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_an_empty_range_when_no_statement_are_selected)
 {
-    ast::Function f{nullptr, 0, {stmt(), stmt()}};
+    ast::Function f{0, {stmt(), stmt()}};
     EXPECT_FCALL(isSelected(_)).WillRepeatedly(Return(false));
 
     auto stmts = findSelectedStatementsInFunction(f, [&](ast::StatementPtr s) { return isSelected(s); });

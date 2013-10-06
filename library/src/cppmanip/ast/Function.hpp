@@ -4,8 +4,6 @@
 #include "Statement.hpp"
 #include <memory>
 
-namespace clang { class FunctionDecl; }
-
 namespace cppmanip
 {
 namespace ast
@@ -15,13 +13,11 @@ class Function
 {
 public:
     Function(const Function& ) = delete;
-    Function(clang::FunctionDecl *decl, SourceOffset definitionOffset, const Statements& statements)
-        : decl(decl), definitionOffset(definitionOffset), statements(statements) { }
-    clang::FunctionDecl& getDecl() const { return *decl; }
+    Function(SourceOffset definitionOffset, const Statements& statements)
+        : definitionOffset(definitionOffset), statements(statements) { }
     SourceOffset getDefinitionOffset() const { return definitionOffset; }
     const Statements& getStatements() const { return statements; }
 private:
-    clang::FunctionDecl *const decl; // TODO: temporarily
     const SourceOffset definitionOffset;
     const Statements statements;
 };

@@ -102,9 +102,9 @@ ast::SourceOffsetRange getStmtOffsetRange(clang::SourceManager& sourceManager, c
     return { sourceManager.getFileOffset(r.getBegin()), sourceManager.getFileOffset(r.getEnd()) };
 }
 
-clang::SourceRange getStmtsRange(clang::SourceManager& sourceManager, ast::StatementRange stmts)
+ast::SourceOffsetRange getStmtsRange(ast::StatementRange stmts)
 {
-    return { getStmtRange(sourceManager, *(*begin(stmts))->getStmt()).getBegin(), getStmtRange(sourceManager, *last(stmts)->getStmt()).getEnd() };
+    return { stmts.front()->getRange().getFrom(), stmts.back()->getRange().getTo() };
 }
 
 }
