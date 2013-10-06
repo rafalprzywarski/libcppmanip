@@ -2,6 +2,7 @@
 #include <cppmanip/ast/LocalVariable.hpp>
 #include "../ParsedFunction.hpp"
 #include "LocalVariablesAssert.hpp"
+#include "AstFactories.hpp"
 #include <gtest/gtest.h>
 #include <memory>
 #include <boost/algorithm/string/join.hpp>
@@ -17,20 +18,6 @@ using namespace cppmanip::test;
 
 struct findLocalVariablesRequiredForStmtsTest : testing::Test
 {
-    ast::LocalVariablePtr var()
-    {
-        return std::make_shared<ast::LocalVariable>("", "");
-    }
-
-    ast::StatementPtr stmtWithUsedVars(ast::LocalVariables vars)
-    {
-        return std::make_shared<ast::Statement>(nullptr, ast::SourceOffsetRange(0, 0), ast::LocalVariables(), vars, "", "");
-    }
-
-    ast::StatementPtr stmtWithDeclaredVars(ast::LocalVariables declared)
-    {
-        return std::make_shared<ast::Statement>(nullptr, ast::SourceOffsetRange(0, 0), declared, ast::LocalVariables(), "", "");
-    }
 };
 
 TEST_F(findLocalVariablesRequiredForStmtsTest, should_return_no_variables_if_none_are_used)

@@ -1,6 +1,7 @@
 #include <cppmanip/query/findVariablesDeclaredByAndUsedAfterStmts.hpp>
 #include "../ParsedFunction.hpp"
 #include "LocalVariablesAssert.hpp"
+#include "AstFactories.hpp"
 #include <gtest/gtest.h>
 #include <memory>
 #include <boost/algorithm/string/join.hpp>
@@ -16,7 +17,7 @@ using namespace cppmanip::test;
 
 struct findVariablesDeclaredByAndUsedAfterStmtsTest : testing::Test
 {
-    std::unique_ptr<ParsedFunction> func;
+    std::unique_ptr<ParsedFunction> func; // TODO: remove
     std::string extraDeclarations;
 
     void declareGlobal(const std::string& functions)
@@ -44,26 +45,6 @@ struct findVariablesDeclaredByAndUsedAfterStmtsTest : testing::Test
     clang::StmtRange skip(unsigned n, clang::StmtRange r)
     {
         return { boost::next(begin(r), n), end(r) };
-    }
-
-    ast::LocalVariablePtr var()
-    {
-        return std::make_shared<ast::LocalVariable>("", "");
-    }
-
-    ast::StatementPtr stmtWithUsedVars(ast::LocalVariables vars) // TODO: move to a factory
-    {
-        return std::make_shared<ast::Statement>(nullptr, ast::SourceOffsetRange(0, 0), ast::LocalVariables(), vars, "", "");
-    }
-
-    ast::StatementPtr stmtWithDeclaredVars(ast::LocalVariables declared)
-    {
-        return std::make_shared<ast::Statement>(nullptr, ast::SourceOffsetRange(0, 0), declared, ast::LocalVariables(), "", "");
-    }
-
-    ast::StatementPtr stmt()
-    {
-        return stmtWithDeclaredVars({});
     }
 };
 

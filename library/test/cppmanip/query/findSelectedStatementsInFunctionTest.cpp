@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "../gtestdef.hpp"
+#include "AstFactories.hpp"
 #include <clang/AST/Stmt.h>
 #include <boost/next_prior.hpp>
 
@@ -11,6 +12,8 @@ using namespace testing;
 namespace cppmanip
 {
 namespace query
+{
+namespace test
 {
 
 struct findStatementsInFunctionOverlappingSelectionTest : testing::Test
@@ -29,12 +32,6 @@ struct findStatementsInFunctionOverlappingSelectionTest : testing::Test
         for (decltype(stmts.size()) i = 0; i != stmts.size(); ++i, range.pop_front())
             ASSERT_TRUE(stmts[i] == range.front()) << "stmts[" << i << "]";
     }
-
-    ast::StatementPtr stmt()
-    {
-        return std::make_shared<ast::Statement>(nullptr, ast::SourceOffsetRange(0, 0), ast::LocalVariables(), ast::LocalVariables(), "", "");
-    }
-
 };
 
 TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_an_empty_range_for_an_empty_function)
@@ -70,5 +67,6 @@ TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_an_empty_
     ASSERT_TRUE(stmts.empty());
 }
 
+}
 }
 }
