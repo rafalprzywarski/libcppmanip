@@ -27,29 +27,6 @@ std::vector<std::string> getVariableNames(const ast::LocalVariables& variables)
     return names;
 }
 
-class ReplacementRecorder
-{
-public:
-    ReplacementRecorder(const std::string& filename) : filename(filename) { }
-    virtual void insertTextAt(const std::string& text, ast::SourceOffset pos)
-    {
-        recorder.insertTextAt(text, pos);
-    }
-    virtual void replaceTextInRange(const std::string& text, ast::SourceOffsetRange range)
-    {
-        recorder.removeTextInRange(range.getFrom(), range.getTo());
-        recorder.insertTextAt(text, range.getFrom());
-    }
-    boundary::SourceReplacements getReplacements() const
-    {
-        text::OffsetConverter offsetCoverter(io::loadTextFromFile(filename));
-        return text::convertReplacements(recorder.getReplacements(), [&](unsigned offset) { return offsetCoverter.getLocationFromOffset(offset); });
-    }
-private:
-    text::OffsetBasedStrictOperationRecorder recorder;
-    std::string filename;
-};
-
 std::vector<std::string> getArgumentDeclarations(const ast::LocalVariables& variables)
 {
     std::vector<std::string> args;
@@ -84,7 +61,7 @@ ReplacementFunction printReplacementFunctionFromStmts(const std::string& functio
         format::printFunctionCall(functionName, getVariableNames(required)) };
 }
 
-void defineFunction(const std::string& definition, ast::FunctionPtr originalFunction, ReplacementRecorder& recorder)
+void defineFunction(const std::string& definition, ast::FunctionPtr originalFunction, text::OffsetBasedOperationRecorder& recorder)
 {
     recorder.insertTextAt(definition, originalFunction->getDefinitionOffset());
 }
@@ -94,9 +71,20 @@ ast::SourceOffsetRange getRange(ast::StatementRange stmts)
     return { stmts.front()->getRange().getFrom(), stmts.back()->getRange().getTo() };
 }
 
-void replaceStmtsWithCall(ast::StatementRange stmts, const std::string& call, ReplacementRecorder& recorder)
+void replaceStmtsWithCall(ast::StatementRange stmts, const std::string& call, text::OffsetBasedOperationRecorder& recorder)
 {
-    recorder.replaceTextInRange(call, getRange(stmts));
+    auto range = getRange(stmts);
+    recorder.removeTextInRange(range.getFrom(), range.getTo());
+    recorder.insertTextAt(call, range.getFrom());
+}
+
+boundary::SourceReplacements generateReplacements(ReplacementFunction replacementFunction, StatementLocator::FunctionAndStmts selected, const std::string& filename)
+{
+    text::OffsetBasedStrictOperationRecorder recorder;
+    defineFunction(replacementFunction.definition, selected.function, recorder);
+    replaceStmtsWithCall(selected.stmts, replacementFunction.call, recorder);
+    text::OffsetConverter offsetCoverter(io::loadTextFromFile(filename));
+    return text::convertReplacements(recorder.getReplacements(), [&](unsigned offset) { return offsetCoverter.getLocationFromOffset(offset); });
 }
 
 boundary::SourceReplacements DefaultFunctionExtractor::extractFunctionFromSelectionInFile(
@@ -105,10 +93,7 @@ boundary::SourceReplacements DefaultFunctionExtractor::extractFunctionFromSelect
     auto selected = stmtLocator->getSelectedFunctionAndStmts(selection);
     validator->validateStatements(functionName, selected.stmts, selected.function);
     auto replacementFunction = printReplacementFunctionFromStmts(functionName, selected.stmts);
-    ReplacementRecorder recorder(filename);
-    defineFunction(replacementFunction.definition, selected.function, recorder);
-    replaceStmtsWithCall(selected.stmts, replacementFunction.call, recorder);
-    return recorder.getReplacements();
+    return generateReplacements(replacementFunction, selected, filename);
 }
 
 }
