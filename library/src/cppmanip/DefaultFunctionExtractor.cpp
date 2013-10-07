@@ -19,48 +19,6 @@
 namespace cppmanip
 {
 
-std::vector<std::string> getVariableNames(const ast::LocalVariables& variables)
-{
-    using boost::adaptors::transformed;
-    std::vector<std::string> names;
-    boost::push_back(names, variables | transformed(std::bind(&ast::LocalVariable::getName, std::placeholders::_1)));
-    return names;
-}
-
-std::vector<std::string> getArgumentDeclarations(const ast::LocalVariables& variables)
-{
-    std::vector<std::string> args;
-    for (auto d : variables)
-        args.push_back(d->getNameWithType());
-    return args;
-}
-
-
-std::string getSource(ast::StatementRange stmts)
-{
-    std::string source;
-    for (auto stmt : stmts)
-    {
-        source += stmt->getSourceCode();
-        if (stmt != stmts.back())
-            source += stmt->getSourceCodeAfter();
-    }
-    return source;
-}
-
-struct ReplacementFunction
-{
-    std::string definition, call;
-};
-
-ReplacementFunction printReplacementFunctionFromStmts(const std::string& functionName, ast::StatementRange selected)
-{
-    auto required = query::findLocalVariablesRequiredForStmts(selected);
-    return {
-        format::printFunctionDefinition("void", functionName, getArgumentDeclarations(required), getSource(selected)),
-        format::printFunctionCall(functionName, getVariableNames(required)) };
-}
-
 void defineFunction(const std::string& definition, ast::FunctionPtr originalFunction, text::OffsetBasedOperationRecorder& recorder)
 {
     recorder.insertTextAt(definition, originalFunction->getDefinitionOffset());
@@ -78,7 +36,7 @@ void replaceStmtsWithCall(ast::StatementRange stmts, const std::string& call, te
     recorder.insertTextAt(call, range.getFrom());
 }
 
-boundary::SourceReplacements generateReplacements(ReplacementFunction replacementFunction, StatementLocator::FunctionAndStmts selected, const std::string& filename)
+boundary::SourceReplacements generateReplacements(format::ReplacementFunction replacementFunction, StatementLocator::FunctionAndStmts selected, const std::string& filename)
 {
     text::OffsetBasedStrictOperationRecorder recorder;
     defineFunction(replacementFunction.definition, selected.function, recorder);
@@ -92,7 +50,7 @@ boundary::SourceReplacements DefaultFunctionExtractor::extractFunctionFromSelect
 {
     auto selected = stmtLocator->getSelectedFunctionAndStmts(selection);
     validator->validateStatements(functionName, selected.stmts, selected.function);
-    auto replacementFunction = printReplacementFunctionFromStmts(functionName, selected.stmts);
+    auto replacementFunction = functionPrinter->printFunctionFromStmts(functionName, selected.stmts);
     return generateReplacements(replacementFunction, selected, filename);
 }
 
