@@ -61,7 +61,7 @@ add_executable(cppmaniptest
     test/cppmanip/clangutil/ParsedFunction.cpp
     test/cppmanip/clangutil/Condition.cpp
     test/main.cpp
-    test/cppmanip/text/TextOperationApplierTest.cpp
+    test/cppmanip/text/StrictOperationRecorderTest.cpp
     test/cppmanip/math/PositionRangeTest.cpp
     test/cppmanip/clangutil/ClangToolArgsBuilderTest.cpp
     test/cppmanip/text/TextReplacementRecorderTest.cpp

@@ -3,7 +3,7 @@
 #include "query/findSelectedStatementsInFunction.hpp"
 #include "query/findVariablesDeclaredByAndUsedAfterStmts.hpp"
 #include "format/printFunction.hpp"
-#include "text/TextOperationApplier.hpp"
+#include "text/StrictOperationRecorder.hpp"
 #include "text/TextReplacementRecorder.hpp"
 #include "text/OffsetConverter.hpp"
 #include "text/SourceLocationConverter.hpp"
@@ -48,7 +48,7 @@ public:
         return recorder.getReplacements();
     }
 private:
-    text::OffsetBasedTextOperationApplier applier;
+    text::OffsetBasedStrictOperationRecorder applier;
     std::string filename;
 };
 

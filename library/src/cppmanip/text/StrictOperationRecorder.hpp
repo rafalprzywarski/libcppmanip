@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include <boost/optional.hpp>
 #include "TextReplacementListener.hpp"
-#include "TextModifier.hpp"
+#include "OperationRecorder.hpp"
 #include <cppmanip/math/PositionRange.hpp>
 
 namespace cppmanip
@@ -14,7 +14,7 @@ namespace text
 {
 
 template <typename Position>
-class TextOperationApplier : public TextModifier<Position>
+class StrictOperationRecorder : public OperationRecorder<Position>
 {
 public:
     void apply(TextReplacementListener<Position>& replacer) const
@@ -89,7 +89,7 @@ private:
     }
 };
 
-typedef TextOperationApplier<unsigned> OffsetBasedTextOperationApplier;
+typedef StrictOperationRecorder<unsigned> OffsetBasedStrictOperationRecorder;
 
 }
 }
