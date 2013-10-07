@@ -4,7 +4,6 @@
 #include <map>
 #include <stdexcept>
 #include <boost/optional.hpp>
-#include "TextReplacementListener.hpp"
 #include "OperationRecorder.hpp"
 #include <cppmanip/math/PositionRange.hpp>
 
@@ -17,11 +16,6 @@ template <typename Position>
 class StrictOperationRecorder : public OperationRecorder<Position>
 {
 public:
-    void apply(TextReplacementListener<Position>& replacer) const
-    {
-        for (auto const& it : replacements)
-            it.second.applyAt(it.first, replacer);
-    }
     void insertTextAt(const std::string& text, Position pos)
     {
         verifyNoOverlappingRangesExist(PositionRange(pos, pos));
@@ -58,10 +52,6 @@ private:
         bool overlapsWithRangeAt(const PositionRange& r, Position pos) const
         {
             return PositionRange(pos, getRemovalEnd(pos)).overlapsWith(r);
-        }
-        void applyAt(Position pos, TextReplacementListener<Position>& listner) const
-        {
-            listner.replaceWithTextInRange(insertionText, pos, getRemovalEnd(pos));
         }
         text::Replacement<Position> getReplacement(Position from) const
         {

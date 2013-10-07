@@ -20,7 +20,6 @@ add_library(cppmanip SHARED
     src/cppmanip/io/TextFileOps.cpp
     src/cppmanip/clangutil/ClangToolArgsBuilder.cpp
     src/cppmanip/extractFunctionInFile.cpp
-    src/cppmanip/text/TextReplacementRecorder.cpp
     src/cppmanip/text/OffsetConverter.cpp
     src/cppmanip/text/SourceLocationConverter.cpp
     src/cppmanip/clangutil/getFunctionFromAstInSelection.cpp
@@ -65,7 +64,6 @@ add_executable(cppmaniptest
     test/cppmanip/text/StrictOperationRecorderTest.cpp
     test/cppmanip/math/PositionRangeTest.cpp
     test/cppmanip/clangutil/ClangToolArgsBuilderTest.cpp
-    test/cppmanip/text/TextReplacementRecorderTest.cpp
     test/cppmanip/text/OffsetConverterTest.cpp
     test/cppmanip/clangutil/getFunctionFromAstInSelectionTest.cpp
     test/cppmanip/text/SourceLocationConverterTest.cpp

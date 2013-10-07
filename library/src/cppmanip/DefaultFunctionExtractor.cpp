@@ -4,7 +4,6 @@
 #include "query/findVariablesDeclaredByAndUsedAfterStmts.hpp"
 #include "format/printFunction.hpp"
 #include "text/StrictOperationRecorder.hpp"
-#include "text/TextReplacementRecorder.hpp"
 #include "text/OffsetConverter.hpp"
 #include "text/SourceLocationConverter.hpp"
 #include "text/convertReplacements.hpp"

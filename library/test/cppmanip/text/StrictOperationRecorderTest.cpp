@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include <cppmanip/text/StrictOperationRecorder.hpp>
-#include <cppmanip/text/TextReplacer.hpp>
 #include <stdexcept>
 
 namespace cppmanip
@@ -20,13 +19,15 @@ struct StrictOperationRecorderTest : testing::Test
     
     void expectTextFrom(const std::string& expected, const std::string& original)
     {
-        TextReplacer<unsigned> replacer(original);
-        applier.apply(replacer);
-        ASSERT_EQ(expected, replacer.getText());
-        auto modified = original;
-        for (auto r : applier.getReplacements())
-            modified = modified.substr(0, r.from) + r.text + modified.substr(r.to);
+        auto modified = applyReplacements(applier.getReplacements(), original);
         ASSERT_EQ(expected, modified);
+    }
+
+    std::string applyReplacements(Replacements<unsigned> replacements, std::string text)
+    {
+        for (auto r : applier.getReplacements())
+            text = text.substr(0, r.from) + r.text + text.substr(r.to);
+        return text;
     }
 };
 
