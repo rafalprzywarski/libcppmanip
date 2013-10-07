@@ -55,11 +55,7 @@ private:
         }
         text::Replacement<Position> getReplacement(Position from) const
         {
-            text::Replacement<Position> r;
-            r.from = from;
-            r.to = getRemovalEnd(from);
-            r.text = insertionText;
-            return r;
+            return { from, getRemovalEnd(from), insertionText };
         }
     private:
         boost::optional<Position> removalEnd;
