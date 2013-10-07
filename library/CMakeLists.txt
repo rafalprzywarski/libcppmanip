@@ -36,6 +36,7 @@ add_library(cppmanip SHARED
     src/cppmanip/DefaultFunctionExtractorFactory.cpp
     src/cppmanip/FileBasedStatementLocator.cpp
     src/cppmanip/NoReturnFunctionExtractionValidator.cpp
+    src/cppmanip/text/convertReplacements.cpp
 )
 
 target_link_libraries(cppmanip LINK_PRIVATE
@@ -77,6 +78,7 @@ add_executable(cppmaniptest
     test/cppmanip/query/LocalVariablesAssert.cpp
     test/cppmanip/clangutil/getFunctionStatementsTest.cpp
     test/cppmanip/query/AstFactories.cpp
+    test/cppmanip/text/convertReplacementsTest.cpp
 ) 
 
 target_link_libraries(cppmaniptest cppmanip gtest gmock boost_thread boost_system pthread)

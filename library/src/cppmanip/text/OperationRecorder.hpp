@@ -14,6 +14,8 @@ struct Replacement
     Position from, to;
     std::string text;
     Replacement() : from(), to() { }
+    Replacement(Position from, Position to, const std::string& text)
+        : from(from), to(to), text(text) { }
 };
 
 template <typename Position>
