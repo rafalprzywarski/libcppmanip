@@ -35,6 +35,13 @@ public:
             return;
         replacements[from].setRemovalEnd(to);
     }
+    Replacements<Position> getReplacements() const
+    {
+        Replacements<Position> result;
+        for (auto const& rep : replacements)
+            result.push_back(rep.second.getReplacement(rep.first));
+        return result;
+    }
 private:
     typedef math::PositionRange<Position> PositionRange;
     class Replacement
@@ -55,6 +62,14 @@ private:
         void applyAt(Position pos, TextReplacementListener<Position>& listner) const
         {
             listner.replaceWithTextInRange(insertionText, pos, getRemovalEnd(pos));
+        }
+        text::Replacement<Position> getReplacement(Position from) const
+        {
+            text::Replacement<Position> r;
+            r.from = from;
+            r.to = getRemovalEnd(from);
+            r.text = insertionText;
+            return r;
         }
     private:
         boost::optional<Position> removalEnd;

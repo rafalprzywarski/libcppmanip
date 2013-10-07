@@ -23,6 +23,10 @@ struct TextOperationApplierTest : testing::Test
         TextReplacer<unsigned> replacer(original);
         applier.apply(replacer);
         ASSERT_EQ(expected, replacer.getText());
+        auto modified = original;
+        for (auto r : applier.getReplacements())
+            modified = modified.substr(0, r.from) + r.text + modified.substr(r.to);
+        ASSERT_EQ(expected, modified);
     }
 };
 
