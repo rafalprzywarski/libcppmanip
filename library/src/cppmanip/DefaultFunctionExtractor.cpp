@@ -7,6 +7,7 @@
 #include "text/TextReplacementRecorder.hpp"
 #include "text/OffsetConverter.hpp"
 #include "text/SourceLocationConverter.hpp"
+#include "text/convertReplacements.hpp"
 #include "io/TextFileOps.hpp"
 #include "clangutil/AstGateway.hpp"
 #include "FileBasedStatementLocator.hpp"
@@ -33,22 +34,20 @@ public:
     ReplacementRecorder(const std::string& filename) : filename(filename) { }
     virtual void insertTextAt(const std::string& text, ast::SourceOffset pos)
     {
-        applier.insertTextAt(text, pos);
+        recorder.insertTextAt(text, pos);
     }
     virtual void replaceTextInRange(const std::string& text, ast::SourceOffsetRange range)
     {
-        applier.removeTextInRange(range.getFrom(), range.getTo());
-        applier.insertTextAt(text, range.getFrom());
+        recorder.removeTextInRange(range.getFrom(), range.getTo());
+        recorder.insertTextAt(text, range.getFrom());
     }
     boundary::SourceReplacements getReplacements() const
     {
         text::OffsetConverter offsetCoverter(io::loadTextFromFile(filename));
-        text::TextReplacementRecorder recorder([&](unsigned offset) { return offsetCoverter.getLocationFromOffset(offset); });
-        applier.apply(recorder);
-        return recorder.getReplacements();
+        return text::convertReplacements(recorder.getReplacements(), [&](unsigned offset) { return offsetCoverter.getLocationFromOffset(offset); });
     }
 private:
-    text::OffsetBasedStrictOperationRecorder applier;
+    text::OffsetBasedStrictOperationRecorder recorder;
     std::string filename;
 };
 
