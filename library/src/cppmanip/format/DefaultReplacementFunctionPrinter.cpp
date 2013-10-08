@@ -1,6 +1,4 @@
 #include "DefaultReplacementFunctionPrinter.hpp"
-#include "printFunction.hpp"
-#include <cppmanip/query/findLocalVariablesRequiredForStmts.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/range/algorithm_ext/push_back.hpp>
 
@@ -44,10 +42,10 @@ std::string getSource(ast::StatementRange stmts)
 
 ReplacementFunction DefaultReplacementFunctionPrinter::printFunctionFromStmts(const std::string& name, ast::StatementRange stmts)
 {
-    auto required = query::findLocalVariablesRequiredForStmts(stmts);
+    auto required = findLocalVariablesRequiredForStmts(stmts);
     return {
-        format::printFunctionDefinition("void", name, getArgumentDeclarations(required), getSource(stmts)),
-        format::printFunctionCall(name, getVariableNames(required)) };
+        printFunctionDefinition("void", name, getArgumentDeclarations(required), getSource(stmts)),
+        printFunctionCall(name, getVariableNames(required)) };
 }
 
 }
