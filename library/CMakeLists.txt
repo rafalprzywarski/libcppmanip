@@ -37,6 +37,7 @@ add_library(cppmanip SHARED
     src/cppmanip/NoReturnFunctionExtractionValidator.cpp
     src/cppmanip/text/convertReplacements.cpp
     src/cppmanip/format/DefaultReplacementFunctionPrinter.cpp
+    src/cppmanip/DefaultFunctionReplacer.cpp
 )
 
 target_link_libraries(cppmanip LINK_PRIVATE

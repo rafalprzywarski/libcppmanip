@@ -5,6 +5,7 @@
 #include "StatementLocator.hpp"
 #include "FunctionExtractionValidator.hpp"
 #include "format/ReplacementFunctionPrinter.hpp"
+#include "FunctionReplacer.hpp"
 #include <memory>
 
 namespace cppmanip
@@ -14,14 +15,16 @@ class DefaultFunctionExtractor
 {
 public:
     DefaultFunctionExtractor(
-        StatementLocatorPtr stmtLocator, FunctionExtractionValidatorPtr validator, format::ReplacementFunctionPrinterPtr functionPrinter)
-        : stmtLocator(stmtLocator), validator(validator), functionPrinter(functionPrinter) { }
+        StatementLocatorPtr stmtLocator, FunctionExtractionValidatorPtr validator,
+        format::ReplacementFunctionPrinterPtr printer, FunctionReplacerPtr replacer)
+        : stmtLocator(stmtLocator), validator(validator), printer(printer), replacer(replacer) { }
     virtual boundary::SourceReplacements extractFunctionFromSelectionInFile(
         const std::string& functionName, boundary::SourceSelection selection, const std::string& filename);
 private:
     StatementLocatorPtr stmtLocator;
     FunctionExtractionValidatorPtr validator;
-    format::ReplacementFunctionPrinterPtr functionPrinter;
+    format::ReplacementFunctionPrinterPtr printer;
+    FunctionReplacerPtr replacer;
 };
 
 

@@ -19,30 +19,14 @@
 namespace cppmanip
 {
 
-void defineFunction(const std::string& definition, ast::FunctionPtr originalFunction, text::OffsetBasedOperationRecorder& recorder)
+namespace
 {
-    recorder.insertTextAt(definition, originalFunction->getDefinitionOffset());
-}
 
 ast::SourceOffsetRange getRange(ast::StatementRange stmts)
 {
     return { stmts.front()->getRange().getFrom(), stmts.back()->getRange().getTo() };
 }
 
-void replaceStmtsWithCall(ast::StatementRange stmts, const std::string& call, text::OffsetBasedOperationRecorder& recorder)
-{
-    auto range = getRange(stmts);
-    recorder.removeTextInRange(range.getFrom(), range.getTo());
-    recorder.insertTextAt(call, range.getFrom());
-}
-
-boundary::SourceReplacements generateReplacements(format::ReplacementFunction replacementFunction, StatementLocator::FunctionAndStmts selected, const std::string& filename)
-{
-    text::OffsetBasedStrictOperationRecorder recorder;
-    defineFunction(replacementFunction.definition, selected.function, recorder);
-    replaceStmtsWithCall(selected.stmts, replacementFunction.call, recorder);
-    text::OffsetConverter offsetCoverter(io::loadTextFromFile(filename));
-    return text::convertReplacements(recorder.getReplacements(), [&](unsigned offset) { return offsetCoverter.getLocationFromOffset(offset); });
 }
 
 boundary::SourceReplacements DefaultFunctionExtractor::extractFunctionFromSelectionInFile(
@@ -50,8 +34,8 @@ boundary::SourceReplacements DefaultFunctionExtractor::extractFunctionFromSelect
 {
     auto selected = stmtLocator->getSelectedFunctionAndStmts(selection);
     validator->validateStatements(functionName, selected.stmts, selected.function);
-    auto replacementFunction = functionPrinter->printFunctionFromStmts(functionName, selected.stmts);
-    return generateReplacements(replacementFunction, selected, filename);
+    auto replacementFunction = printer->printFunctionFromStmts(functionName, selected.stmts);
+    return replacer->generateReplacements(replacementFunction, selected.function->getDefinitionOffset(), getRange(selected.stmts));
 }
 
 }
