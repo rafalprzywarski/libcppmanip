@@ -50,7 +50,7 @@ TEST_F(findLocalVariablesRequiredForStmtsTest, should_not_return_variables_decla
 TEST_F(findLocalVariablesRequiredForStmtsTest, DISABLED_should_return_variables_in_order_of_their_declaration)
 {
     auto var1 = var(), var2 = var(), var3 = var();
-    ast::Statements stmts{ stmtWithDeclaredVars({var1, var2}), stmtWithDeclaredVars({var3}) };
+    ast::Statements stmts{ stmtWithUsedVars({var1, var2}), stmtWithUsedVars({var3}) };
 
     auto found = findLocalVariablesRequiredForStmts(stmts);
     expectEqOrdered(found, { var1, var2, var3 });
