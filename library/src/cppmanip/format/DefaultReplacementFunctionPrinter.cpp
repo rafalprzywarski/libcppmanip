@@ -42,7 +42,7 @@ std::string getSource(ast::StatementRange stmts)
 
 ReplacementFunction DefaultReplacementFunctionPrinter::printFunctionFromStmts(const std::string& name, ast::StatementRange stmts)
 {
-    auto required = findLocalVariablesRequiredForStmts(stmts);
+    auto required = findLocalVariablesRequiredForStmts(stmts); // TODO: this printer does two steps: generation and printing. Will be split when more features come.
     return {
         printFunctionDefinition("void", name, getArgumentDeclarations(required), getSource(stmts)),
         printFunctionCall(name, getVariableNames(required)) };
