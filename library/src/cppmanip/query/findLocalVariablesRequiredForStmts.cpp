@@ -10,15 +10,42 @@ namespace cppmanip
 namespace query
 {
 
-ast::LocalVariables findLocalVariablesRequiredForStmts(ast::StatementRange stmts)
+namespace
 {
-    std::unordered_set<ast::LocalVariablePtr> required;
+
+std::unordered_set<ast::LocalVariablePtr> getUsedVariables(ast::StatementRange stmts)
+{
+    std::unordered_set<ast::LocalVariablePtr> used;
     for (auto s : stmts)
-        required.insert(s->getUsedLocalVariables().begin(), s->getUsedLocalVariables().end());
+        used.insert(s->getUsedLocalVariables().begin(), s->getUsedLocalVariables().end());
+    return used;
+}
+
+std::unordered_set<ast::LocalVariablePtr> removeDeclaredVariables(std::unordered_set<ast::LocalVariablePtr>&& used, ast::StatementRange stmts)
+{
     for (auto s : stmts)
         for (auto v : s->getDeclaredVariables())
-            required.erase(v);
-    return {required.begin(), required.end()};
+            used.erase(v);
+    return used;
+}
+
+ast::LocalVariables asList(std::unordered_set<ast::LocalVariablePtr>&& vars)
+{
+    return {vars.begin(), vars.end()};
+}
+
+bool byOffset(ast::LocalVariablePtr left, ast::LocalVariablePtr right)
+{
+    return left->getDeclarationOffset() < right->getDeclarationOffset();
+}
+
+}
+
+ast::LocalVariables findLocalVariablesRequiredForStmts(ast::StatementRange stmts)
+{
+    ast::LocalVariables required = asList(removeDeclaredVariables(getUsedVariables(stmts), stmts));
+    boost::sort(required, byOffset);
+    return required;
 }
 
 }

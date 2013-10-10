@@ -9,7 +9,12 @@ namespace test
 
 ast::LocalVariablePtr var()
 {
-    return std::make_shared<ast::LocalVariable>("", "", 0);
+    return varDeclaredAtOffset(0);
+}
+
+ast::LocalVariablePtr varDeclaredAtOffset(ast::SourceOffset offset)
+{
+    return std::make_shared<ast::LocalVariable>("", "", offset);
 }
 
 ast::StatementPtr stmt()

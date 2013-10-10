@@ -10,6 +10,7 @@ namespace test
 {
 
 ast::LocalVariablePtr var();
+ast::LocalVariablePtr varDeclaredAtOffset(ast::SourceOffset offset);
 ast::StatementPtr stmt();
 ast::StatementPtr stmtWithUsedVars(ast::LocalVariables vars);
 ast::StatementPtr stmtWithDeclaredVars(ast::LocalVariables declared);
