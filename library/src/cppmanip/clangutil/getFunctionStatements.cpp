@@ -58,17 +58,19 @@ std::vector<clang::VarDecl *> getDeclaredVarDecls(clang::Stmt& stmt)
     return vars;
 }
 
-ast::LocalVariablePtr asLocalVariable(clang::VarDecl *v)
+ast::LocalVariablePtr asLocalVariable(clang::SourceManager& sourceManager, clang::VarDecl *v)
 {
-    return std::make_shared<ast::LocalVariable>(v->getNameAsString(), v->getType().getAsString() + " " + v->getNameAsString());
+    return std::make_shared<ast::LocalVariable>(
+        v->getNameAsString(), v->getType().getAsString() + " " + v->getNameAsString(),
+        sourceManager.getFileOffset(v->getLocation()));
 }
 
-ast::LocalVariables getDeclaredVars(clang::Stmt& stmt, LocalSymbols& locals)
+ast::LocalVariables getDeclaredVars(clang::SourceManager& sourceManager, clang::Stmt& stmt, LocalSymbols& locals)
 {
     ast::LocalVariables declared;
     for (auto var : getDeclaredVarDecls(stmt))
     {
-        auto local = asLocalVariable(var);
+        auto local = asLocalVariable(sourceManager, var);
         locals.insert({var, local});
         declared.push_back(local);
     }
@@ -95,7 +97,7 @@ std::string getSourceCode(clang::SourceManager& sourceManager, ast::SourceOffset
 
 ast::StatementPtr translateStmt(clang::Stmt& stmt, clang::Stmt *nextStmt, LocalSymbols& locals, GetStatementRange getStmtRange, clang::SourceManager& sourceManager)
 {
-    auto declared = getDeclaredVars(stmt, locals);
+    auto declared = getDeclaredVars(sourceManager, stmt, locals);
     auto used = getUsedLocalVars(stmt, locals);
     auto range = getStmtRange(sourceManager, stmt);
     auto sourceCode = getSourceCode(sourceManager, range);

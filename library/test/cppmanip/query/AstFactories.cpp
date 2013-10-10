@@ -9,7 +9,7 @@ namespace test
 
 ast::LocalVariablePtr var()
 {
-    return std::make_shared<ast::LocalVariable>("", "");
+    return std::make_shared<ast::LocalVariable>("", "", 0);
 }
 
 ast::StatementPtr stmt()

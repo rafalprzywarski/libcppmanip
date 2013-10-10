@@ -39,6 +39,13 @@ struct getFunctionStatementsTest : testing::Test
             EXPECT_FCALL(getStmtRangeMocked(_, Ref(*r.first))).WillRepeatedly(Return(r.second));
     }
 
+    void expectVariableAtOffset(ast::LocalVariablePtr var, std::string name, std::string nameWithType, ast::SourceOffset offset)
+    {
+        EXPECT_EQ(name, var->getName());
+        EXPECT_EQ(nameWithType, var->getNameWithType());
+        EXPECT_EQ(offset, var->getDeclarationOffset());
+    }
+
     MOCK_METHOD2(getStmtRangeMocked, ast::SourceOffsetRange(clang::SourceManager&, clang::Stmt& ));
 };
 
@@ -60,17 +67,14 @@ TEST_F(getFunctionStatementsTest, should_return_no_statements_when_the_given_fun
     ASSERT_TRUE(getFunctionStatements(*func->getDecl(), getStmtRange).empty());
 }
 
-TEST_F(getFunctionStatementsTest, should_return_local_variables_declared_by_a_statement)
+TEST_F(getFunctionStatementsTest, should_return_local_variables_declared_by_a_statement_with_offsets)
 {
     parse("void f() {\n int x = 1, y = 2, z = 1; }");
     auto vars = getFunctionStatements(*func->getDecl(), getStmtRange)[0]->getDeclaredVariables();
     ASSERT_EQ(3u, vars.size());
-    EXPECT_EQ("x", vars[0]->getName());
-    EXPECT_EQ("int x", vars[0]->getNameWithType());
-    EXPECT_EQ("y", vars[1]->getName());
-    EXPECT_EQ("int y", vars[1]->getNameWithType());
-    EXPECT_EQ("z", vars[2]->getName());
-    EXPECT_EQ("int z", vars[2]->getNameWithType());
+    expectVariableAtOffset(vars[0], "x", "int x", 16);
+    expectVariableAtOffset(vars[1], "y", "int y", 23);
+    expectVariableAtOffset(vars[2], "z", "int z", 30);
 }
 
 TEST_F(getFunctionStatementsTest, should_return_no_declared_local_variables_when_a_statement_declares_none)
