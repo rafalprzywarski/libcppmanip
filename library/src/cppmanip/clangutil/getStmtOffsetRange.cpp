@@ -46,6 +46,10 @@ public:
     {
         return getRange(s);
     }
+    clang::SourceRange VisitCXXTryStmt(clang::CXXTryStmt *s)
+    {
+        return getRange(s);
+    }
 private:
     clang::SourceManager& sourceManager;
     clang::SourceRange getRange(clang::Stmt *s)

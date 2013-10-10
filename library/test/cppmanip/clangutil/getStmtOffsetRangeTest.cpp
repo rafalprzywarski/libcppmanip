@@ -110,7 +110,8 @@ INSTANTIATE_TEST_CASE_P(
         Stmt("i += 4;").withExtraDecl("int i;"),
         Stmt("if (true) f(7);").withExtraDecl("void f(int);"),
         Stmt("{}"),
-        Stmt(";")
+        Stmt(";"),
+        Stmt("try { } catch(...) { }")
 ));
 
 }
