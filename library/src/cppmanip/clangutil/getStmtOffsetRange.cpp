@@ -69,7 +69,7 @@ clang::SourceRange getStmtRange(clang::SourceManager& sourceManager, clang::Stmt
     StmtVisitor v(sourceManager);
     auto range = v.Visit(&stmt);
     if (!range)
-        throw boundary::ExtractMethodError(std::string("Unhandled statement"));
+        throw boundary::ExtractMethodError(std::string("Unhandled statement ") + stmt.getStmtClassName());
     return *range;
 }
 
