@@ -79,7 +79,7 @@ Feature: As a developer I want to extract code into methods to make my code more
         }
 
         """
-    @wip
+    @done
     Scenario: Referenced local variables should be passed to the extracted function in order of their declarations
         Given source code:
         """
