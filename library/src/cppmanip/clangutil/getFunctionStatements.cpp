@@ -103,7 +103,7 @@ ast::StatementPtr translateStmt(clang::Stmt& stmt, clang::Stmt *nextStmt, LocalS
     auto sourceCode = getSourceCode(sourceManager, range);
     auto nextFrom = nextStmt ? getStmtRange(sourceManager, *nextStmt).getFrom() : range.getTo();
     auto sourceCodeAfter = getSourceCode(sourceManager, { range.getTo(), nextFrom });
-    return std::make_shared<ast::Statement>(range, declared, used, sourceCode, sourceCodeAfter);
+    return std::make_shared<ast::Statement>(range, declared, used, sourceCode, sourceCodeAfter, ast::Statements());
 }
 
 }

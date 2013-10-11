@@ -17,19 +17,19 @@ ast::LocalVariablePtr varDeclaredAtOffset(ast::SourceOffset offset)
     return std::make_shared<ast::LocalVariable>("", "", offset);
 }
 
-ast::StatementPtr stmt()
+ast::StatementPtr stmt(ast::Statements children)
 {
-    return stmtWithUsedVars({});
+    return std::make_shared<ast::Statement>(ast::SourceOffsetRange(0, 0), ast::LocalVariables(), ast::LocalVariables(), "", "", children);
 }
 
 ast::StatementPtr stmtWithUsedVars(ast::LocalVariables vars)
 {
-    return std::make_shared<ast::Statement>(ast::SourceOffsetRange(0, 0), ast::LocalVariables(), vars, "", "");
+    return std::make_shared<ast::Statement>(ast::SourceOffsetRange(0, 0), ast::LocalVariables(), vars, "", "", ast::Statements());
 }
 
 ast::StatementPtr stmtWithDeclaredVars(ast::LocalVariables declared)
 {
-    return std::make_shared<ast::Statement>(ast::SourceOffsetRange(0, 0), declared, ast::LocalVariables(), "", "");
+    return std::make_shared<ast::Statement>(ast::SourceOffsetRange(0, 0), declared, ast::LocalVariables(), "", "", ast::Statements());
 }
 
 }

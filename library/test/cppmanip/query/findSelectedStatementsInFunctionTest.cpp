@@ -16,10 +16,15 @@ struct findStatementsInFunctionOverlappingSelectionTest : testing::Test
 {
     MOCK_METHOD1(isSelected, bool(ast::StatementPtr));
 
-    void stmtSelection(std::map<ast::StatementPtr, bool> rs)
+    findStatementsInFunctionOverlappingSelectionTest()
+    {
+        EXPECT_FCALL(isSelected(_)).WillRepeatedly(Return(false));
+    }
+
+    void selectedStatements(std::vector<ast::StatementPtr> rs)
     {
         for (auto r : rs)
-            EXPECT_FCALL(isSelected(r.first)).WillRepeatedly(Return(r.second));
+            EXPECT_FCALL(isSelected(r)).WillRepeatedly(Return(true));
     }
 
     void expectRangeIs(ast::StatementRange range, ast::Statements stmts)
@@ -42,11 +47,7 @@ TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_the_selec
 {
     ast::Statements stmts = {stmt(), stmt(), stmt(), stmt()};
     ast::Function f{0, stmts}; // TODO: move to factory
-    stmtSelection({
-        { stmts[0], false },
-        { stmts[1], true },
-        { stmts[2], true },
-        { stmts[3], false } });
+    selectedStatements({ stmts[1], stmts[2] });
 
     auto found = findSelectedStatementsInFunction(f, [&](ast::StatementPtr s) { return isSelected(s); });
 
@@ -61,6 +62,29 @@ TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_an_empty_
     auto stmts = findSelectedStatementsInFunction(f, [&](ast::StatementPtr s) { return isSelected(s); });
 
     ASSERT_TRUE(stmts.empty());
+}
+
+TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_selected_children_if_the_only_selected_statement_has_children)
+{
+    ast::Statements children = { stmt(), stmt(), stmt(), stmt() };
+    ast::Statements stmts = { stmt(), stmt(children), stmt() };
+    ast::Function f{0, { stmts }};
+    selectedStatements({ stmts[1], children[1], children[2] });
+
+    auto found = findSelectedStatementsInFunction(f, [&](ast::StatementPtr s) { return isSelected(s); });
+
+    expectRangeIs(found, { children[1], children[2] });
+}
+
+TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_the_only_selected_statement_if_it_has_no_children)
+{
+    ast::Statements stmts = { stmt(), stmt(), stmt() };
+    ast::Function f{0, { stmts }};
+    selectedStatements({ stmts[1] });
+
+    auto found = findSelectedStatementsInFunction(f, [&](ast::StatementPtr s) { return isSelected(s); });
+
+    expectRangeIs(found, { stmts[1] });
 }
 
 }
