@@ -174,17 +174,19 @@ Feature: As a developer I want to extract code into methods to make my code more
             {
                 int a = 2;
                 int b = a;
+                int c = b;
             }
             catch (...)
             {}
         }
         """
-        When I run function extraction for "int b = a;" with name "extracted"
+        When I run function extraction from "int b = a;" to "c = b;" with name "extracted"
         Then there should be an insertion:
         """
         void extracted(int a)
         {
             int b = a;
+            int c = b;
         }
         """
         And there should be a replacement for "int b = a;" with "extracted(a);"
