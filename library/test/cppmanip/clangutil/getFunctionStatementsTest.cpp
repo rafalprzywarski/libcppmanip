@@ -33,6 +33,14 @@ struct getFunctionStatementsTest : testing::Test
         return *boost::next(func->getDecl()->getBody()->child_begin(), index);
     }
 
+    clang::Stmt *stmtAt(std::vector<int> indices)
+    {
+        auto stmt = func->getDecl()->getBody();
+        for (auto index : indices)
+            stmt = *boost::next(stmt->child_begin(), index);
+        return stmt;
+    }
+
     void setRanges(std::vector<std::pair<clang::Stmt *, ast::SourceOffsetRange>> ranges)
     {
         for (auto r : ranges)
@@ -131,6 +139,14 @@ TEST_F(getFunctionStatementsTest, should_store_source_code_between_statements)
     EXPECT_EQ("/* text */", stmts[0]->getSourceCodeAfter());
     EXPECT_EQ("  /* whitespace */  ", stmts[1]->getSourceCodeAfter());
     EXPECT_EQ("", stmts[2]->getSourceCodeAfter());
+}
+
+TEST_F(getFunctionStatementsTest, should_build_ast_for_try_statement_children)
+{
+    parse("void f() {\n try { int a; int b; int c; } catch (...) { } }");
+    setRanges({ { stmtNo(0), { 1, 10 } }, { stmtAt({0, 0}), { 3, 5 } }, { stmtAt({0, 1}), { 7, 9 } } });
+    auto stmts = getFunctionStatements(*func->getDecl(), getStmtRange);
+    ASSERT_EQ(3u, stmts[0]->getChildren().size());
 }
 
 }
