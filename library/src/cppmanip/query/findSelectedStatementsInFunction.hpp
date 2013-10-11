@@ -10,8 +10,9 @@ namespace cppmanip
 namespace query
 {
 
+typedef std::function<bool(ast::StatementPtr)> IsStatementSelected;
 ast::StatementRange findSelectedStatementsInFunction(
-    const ast::Function& decl, std::function<bool(ast::StatementPtr)> isSelected);
+    const ast::Function& decl, IsStatementSelected isSelected);
 
 }
 }

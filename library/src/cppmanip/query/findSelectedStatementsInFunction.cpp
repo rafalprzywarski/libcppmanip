@@ -9,7 +9,7 @@ namespace query
 namespace
 {
 
-ast::StatementRange findSelectedStatements(ast::StatementRange stmts, std::function<bool(ast::StatementPtr)> isSelected)
+ast::StatementRange findSelectedStatements(ast::StatementRange stmts, IsStatementSelected isSelected)
 {
     using namespace boost;
     return find_if<return_begin_found>(
@@ -19,7 +19,7 @@ ast::StatementRange findSelectedStatements(ast::StatementRange stmts, std::funct
 }
 
 ast::StatementRange findSelectedStatementsInFunction(
-    const ast::Function& decl, std::function<bool(ast::StatementPtr)> isSelected)
+    const ast::Function& decl, IsStatementSelected isSelected)
 {
     auto found = findSelectedStatements(decl.getStatements(), isSelected);
     if (found.size() != 1 || found.front()->getChildren().empty())
