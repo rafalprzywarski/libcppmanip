@@ -9,7 +9,7 @@ class FunctionExtractionValidator
 {
 public:
     virtual ~FunctionExtractionValidator() { }
-    virtual void validateStatements(const std::string& functionName, ast::StatementRange selected, ast::FunctionPtr originalFunction) = 0;
+    virtual void validateStatements(const std::string& functionName, ast::ScopedStatementRange selected) = 0;
 };
 
 typedef std::shared_ptr<FunctionExtractionValidator> FunctionExtractionValidatorPtr;

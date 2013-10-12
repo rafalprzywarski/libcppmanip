@@ -20,7 +20,7 @@ cppmanip::StatementLocator::FunctionAndStmts FileBasedStatementLocator::getSelec
     ast::SourceOffsetRange offsetSelection{ getOffsetFromLocation(selection.from), getOffsetFromLocation(selection.to) };
     auto originalFunction = astGateway->getFunctionInSelectionFromFile(offsetSelection, filename);
     auto selected = findSelectedStatementsInFunction(*originalFunction, [=](ast::StatementPtr stmt) { return overlaps(*stmt, offsetSelection); });
-    return { originalFunction, selected.getRange() };
+    return { originalFunction, selected };
 }
 
 }

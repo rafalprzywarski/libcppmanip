@@ -8,10 +8,10 @@ namespace cppmanip
 class NoReturnFunctionExtractionValidator : public FunctionExtractionValidator
 {
 public:
-    typedef std::function<ast::LocalVariables(ast::StatementRange stmts, const ast::Statements& scope)> FindVariablesDeclaredByAndUsedAfterStmts;
+    typedef std::function<ast::LocalVariables(ast::StatementRange stmts, ast::StatementRange scope)> FindVariablesDeclaredByAndUsedAfterStmts;
     NoReturnFunctionExtractionValidator(FindVariablesDeclaredByAndUsedAfterStmts findVariablesDeclaredByAndUsedAfterStmts)
         : findVariablesDeclaredByAndUsedAfterStmts(findVariablesDeclaredByAndUsedAfterStmts) { }
-    virtual void validateStatements(const std::string& functionName, ast::StatementRange selected, ast::FunctionPtr originalFunction);
+    virtual void validateStatements(const std::string& functionName, ast::ScopedStatementRange selected);
 private:
     FindVariablesDeclaredByAndUsedAfterStmts findVariablesDeclaredByAndUsedAfterStmts;
 };

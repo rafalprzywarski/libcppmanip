@@ -12,7 +12,7 @@ public:
     struct FunctionAndStmts
     {
         ast::FunctionPtr function;
-        ast::StatementRange stmts;
+        ast::ScopedStatementRange stmts;
     };
 
     virtual ~StatementLocator() { }

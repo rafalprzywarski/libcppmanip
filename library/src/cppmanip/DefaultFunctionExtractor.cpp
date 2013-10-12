@@ -33,9 +33,9 @@ boundary::SourceReplacements DefaultFunctionExtractor::extractFunctionFromSelect
     const std::string& functionName, boundary::SourceSelection selection, const std::string& filename)
 {
     auto selected = stmtLocator->getSelectedFunctionAndStmts(selection);
-    validator->validateStatements(functionName, selected.stmts, selected.function);
-    auto replacementFunction = printer->printFunctionFromStmts(functionName, selected.stmts);
-    return replacer->generateReplacements(replacementFunction, selected.function->getDefinitionOffset(), getRange(selected.stmts));
+    validator->validateStatements(functionName, selected.stmts);
+    auto replacementFunction = printer->printFunctionFromStmts(functionName, selected.stmts.getRange());
+    return replacer->generateReplacements(replacementFunction, selected.function->getDefinitionOffset(), getRange(selected.stmts.getRange()));
 }
 
 }
