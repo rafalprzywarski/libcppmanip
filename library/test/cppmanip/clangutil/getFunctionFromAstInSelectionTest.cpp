@@ -75,7 +75,7 @@ TEST_F(getFunctionFromAstInSelectionTest, should_return_all_statements_of_the_fu
     parse("void f() {\nint x; int y = x + 2; }");
     ast::Statements stmts(7);
     EXPECT_FCALL(getFunctionStatementsMocked(Ref(*func->getDecl()))).WillRepeatedly(Return(stmts));
-    ASSERT_TRUE(stmts == getFunctionFromAstInSelection(func->getASTContext(), { 11, 11 }, getFunctionStatements)->getStatements());
+    ASSERT_TRUE(stmts == *getFunctionFromAstInSelection(func->getASTContext(), { 11, 11 }, getFunctionStatements)->getStatements());
 }
 
 }

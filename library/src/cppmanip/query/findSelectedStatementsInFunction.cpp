@@ -21,10 +21,10 @@ ast::StatementRange findSelectedStatements(ast::StatementRange stmts, IsStatemen
 ast::StatementRange findSelectedStatementsInFunction(
     const ast::Function& decl, IsStatementSelected isSelected)
 {
-    auto found = findSelectedStatements(decl.getStatements(), isSelected);
-    if (found.size() != 1 || found.front()->getChildren().empty())
+    auto found = findSelectedStatements(*decl.getStatements(), isSelected);
+    if (found.size() != 1 || found.front()->getChildren()->empty())
         return found;
-    return findSelectedStatements(found.front()->getChildren(), isSelected);
+    return findSelectedStatements(*found.front()->getChildren(), isSelected);
 }
 
 }

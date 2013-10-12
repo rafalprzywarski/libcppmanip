@@ -24,7 +24,7 @@ std::string printOrderedVariableNameList(const ast::LocalVariables& variables)
 
 void NoReturnFunctionExtractionValidator::validateStatements(const std::string& functionName, ast::StatementRange selected, cppmanip::ast::FunctionPtr originalFunction)
 {
-    auto used = findVariablesDeclaredByAndUsedAfterStmts(selected, originalFunction->getStatements());
+    auto used = findVariablesDeclaredByAndUsedAfterStmts(selected, *originalFunction->getStatements());
     if (!used.empty())
         throw boundary::ExtractMethodError("Cannot extract \'" + functionName +
             "\'. Following variables are in use after the selected statements: " + printOrderedVariableNameList(used));

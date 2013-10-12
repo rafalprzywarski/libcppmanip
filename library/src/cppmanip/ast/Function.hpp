@@ -14,12 +14,12 @@ class Function
 public:
     Function(const Function& ) = delete;
     Function(SourceOffset definitionOffset, const Statements& statements)
-        : definitionOffset(definitionOffset), statements(statements) { }
+        : definitionOffset(definitionOffset), statements(std::make_shared<Statements>(statements)) { }
     SourceOffset getDefinitionOffset() const { return definitionOffset; }
-    const Statements& getStatements() const { return statements; }
+    StatementsPtr getStatements() const { return statements; }
 private:
     const SourceOffset definitionOffset;
-    const Statements statements;
+    const StatementsPtr statements;
 };
 
 typedef std::shared_ptr<const Function> FunctionPtr;
