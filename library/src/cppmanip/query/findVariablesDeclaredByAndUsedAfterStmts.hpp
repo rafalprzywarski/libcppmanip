@@ -9,7 +9,7 @@ namespace cppmanip
 namespace query
 {
 
-ast::LocalVariables findVariablesDeclaredByAndUsedAfterStmts(ast::StatementRange stmts, const ast::Statements& scope);
+ast::LocalVariables findVariablesDeclaredByAndUsedAfterStmts(ast::StatementRange stmts, ast::StatementRange scope);
 
 }
 }
