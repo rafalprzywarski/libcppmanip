@@ -9,7 +9,7 @@ class FileBasedStatementLocator : public StatementLocator
 {
 public:
     typedef std::function<ast::SourceOffset(boundary::SourceLocation)> GetOffsetFromLocation;
-    typedef std::function<ast::StatementRange(const ast::Function&, std::function<bool(ast::StatementPtr)>)> FindSelectedStatementsInFunction;
+    typedef std::function<ast::ScopedStatementRange(const ast::Function&, std::function<bool(ast::StatementPtr)>)> FindSelectedStatementsInFunction;
     FileBasedStatementLocator(
         const std::string& filename, ast::GatewayPtr astGateway, GetOffsetFromLocation getOffsetFromLocation,
         FindSelectedStatementsInFunction findSelectedStatementsInFunction)

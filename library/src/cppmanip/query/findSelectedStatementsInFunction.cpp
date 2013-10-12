@@ -9,22 +9,22 @@ namespace query
 namespace
 {
 
-ast::StatementRange findSelectedStatements(ast::StatementRange stmts, IsStatementSelected isSelected)
+ast::ScopedStatementRange findSelectedStatements(ast::StatementRange stmts, IsStatementSelected isSelected)
 {
     using namespace boost;
-    return find_if<return_begin_found>(
-        find_if<return_found_end>(stmts, isSelected), [&](const ast::StatementPtr& s) { return !isSelected(s); });
+    return { stmts, find_if<return_begin_found>(
+        find_if<return_found_end>(stmts, isSelected), [&](const ast::StatementPtr& s) { return !isSelected(s); }) };
 }
 
 }
 
-ast::StatementRange findSelectedStatementsInFunction(
+ast::ScopedStatementRange findSelectedStatementsInFunction(
     const ast::Function& decl, IsStatementSelected isSelected)
 {
     auto found = findSelectedStatements(*decl.getStatements(), isSelected);
-    if (found.size() != 1 || found.front()->getChildren()->empty())
+    if (found.getRange().size() != 1 || found.getRange().front()->getChildren()->empty())
         return found;
-    return findSelectedStatements(*found.front()->getChildren(), isSelected);
+    return findSelectedStatements(*found.getRange().front()->getChildren(), isSelected);
 }
 
 }

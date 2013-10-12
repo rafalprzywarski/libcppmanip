@@ -11,7 +11,7 @@ namespace query
 {
 
 typedef std::function<bool(ast::StatementPtr)> IsStatementSelected;
-ast::StatementRange findSelectedStatementsInFunction(
+ast::ScopedStatementRange findSelectedStatementsInFunction(
     const ast::Function& decl, IsStatementSelected isSelected);
 
 }

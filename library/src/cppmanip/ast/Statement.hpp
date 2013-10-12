@@ -17,6 +17,17 @@ typedef std::vector<StatementPtr> Statements;
 typedef std::shared_ptr<const Statements> StatementsPtr;
 typedef boost::iterator_range<Statements::const_iterator> StatementRange;
 
+class ScopedStatementRange
+{
+public:
+    ScopedStatementRange(StatementRange scope, StatementRange range)
+        : scope(scope), range(range) { }
+    StatementRange getScope() const { return scope; }
+    StatementRange getRange() const { return range; }
+private:
+    StatementRange scope, range;
+};
+
 class Statement
 {
 public:

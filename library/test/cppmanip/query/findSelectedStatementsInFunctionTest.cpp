@@ -33,9 +33,15 @@ struct findStatementsInFunctionOverlappingSelectionTest : testing::Test
 
     void verifyFindSelectedStmtsInFunctionWithStmtsReturns(IsStatementSelected isSelected, ast::Statements stmts, ast::Statements expected)
     {
+        verifyFindSelectedStmtsInFunctionWithStmtsReturnsStmtsInScope(isSelected, stmts, expected, stmts);
+    }
+
+    void verifyFindSelectedStmtsInFunctionWithStmtsReturnsStmtsInScope(IsStatementSelected isSelected, ast::Statements stmts, ast::Statements expected, ast::Statements scope)
+    {
         ast::Function f{0, { stmts }}; // TODO: move to factory
         auto found = findSelectedStatementsInFunction(f, isSelected);
-        expectRangeIs(found, expected);
+        expectRangeIs(found.getRange(), expected);
+        expectRangeIs(found.getScope(), scope);
     }
 };
 
@@ -59,7 +65,7 @@ TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_selected_
 {
     ast::Statements children = { stmt(), stmt(), stmt(), stmt() };
     ast::Statements stmts = { stmt(), stmt(children), stmt() };
-    verifyFindSelectedStmtsInFunctionWithStmtsReturns(selected({ stmts[1], children[1], children[2] }), stmts, { children[1], children[2] });
+    verifyFindSelectedStmtsInFunctionWithStmtsReturnsStmtsInScope(selected({ stmts[1], children[1], children[2] }), stmts, { children[1], children[2] }, children);
 }
 
 TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_the_only_selected_statement_if_it_has_no_children)
