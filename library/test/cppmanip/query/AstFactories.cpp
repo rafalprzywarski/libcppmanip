@@ -32,6 +32,11 @@ ast::StatementPtr stmtWithDeclaredVars(ast::LocalVariables declared)
     return std::make_shared<ast::Statement>(ast::SourceOffsetRange(0, 0), declared, ast::LocalVariables(), "", "", ast::Statements());
 }
 
+ast::StatementPtr stmtWithSourceCode(const std::string& sourceCode)
+{
+    return std::make_shared<ast::Statement>(ast::SourceOffsetRange(0, 0), ast::LocalVariables(), ast::LocalVariables(), sourceCode, "", ast::Statements());
+}
+
 }
 }
 }

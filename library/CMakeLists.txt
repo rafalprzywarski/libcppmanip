@@ -38,6 +38,7 @@ add_library(cppmanip SHARED
     src/cppmanip/text/convertReplacements.cpp
     src/cppmanip/format/DefaultReplacementFunctionPrinter.cpp
     src/cppmanip/DefaultFunctionReplacer.cpp
+    src/cppmanip/format/formatStatements.cpp
 )
 
 target_link_libraries(cppmanip LINK_PRIVATE
@@ -79,6 +80,7 @@ add_executable(cppmaniptest
     test/cppmanip/clangutil/getFunctionStatementsTest.cpp
     test/cppmanip/query/AstFactories.cpp
     test/cppmanip/text/convertReplacementsTest.cpp
+    test/cppmanip/format/formatStatementsTest.cpp
 ) 
 
 target_link_libraries(cppmaniptest cppmanip gtest gmock boost_thread boost_system pthread)

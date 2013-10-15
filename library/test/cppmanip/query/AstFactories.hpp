@@ -14,6 +14,7 @@ ast::LocalVariablePtr varDeclaredAtOffset(ast::SourceOffset offset);
 ast::StatementPtr stmt(ast::Statements children = {});
 ast::StatementPtr stmtWithUsedVars(ast::LocalVariables vars);
 ast::StatementPtr stmtWithDeclaredVars(ast::LocalVariables declared);
+ast::StatementPtr stmtWithSourceCode(const std::string& sourceCode);
 
 }
 }
