@@ -17,6 +17,11 @@ ast::LocalVariablePtr varDeclaredAtOffset(ast::SourceOffset offset)
     return std::make_shared<ast::LocalVariable>("", "", offset);
 }
 
+ast::LocalVariablePtr varWithNameAndNameWithType(const std::string& name, const std::string& nameWithType)
+{
+    return std::make_shared<ast::LocalVariable>(name, nameWithType, 0);
+}
+
 ast::StatementPtr stmt(ast::Statements children)
 {
     return std::make_shared<ast::Statement>(ast::SourceOffsetRange(0, 0), ast::LocalVariables(), ast::LocalVariables(), "", "", children);

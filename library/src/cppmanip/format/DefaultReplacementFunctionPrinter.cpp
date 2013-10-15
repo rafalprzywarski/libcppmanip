@@ -25,26 +25,13 @@ std::vector<std::string> getArgumentDeclarations(const ast::LocalVariables& vari
     return args;
 }
 
-
-std::string getSource(ast::StatementRange stmts)
-{
-    std::string source;
-    for (auto stmt : stmts)
-    {
-        source += stmt->getSourceCode();
-        if (stmt != stmts.back())
-            source += stmt->getSourceCodeAfter();
-    }
-    return source;
-}
-
 }
 
 ReplacementFunction DefaultReplacementFunctionPrinter::printFunctionFromStmts(const std::string& name, ast::StatementRange stmts)
 {
     auto required = findLocalVariablesRequiredForStmts(stmts); // TODO: this printer does two steps: generation and printing. Will be split when more features come.
     return {
-        printFunctionDefinition("void", name, getArgumentDeclarations(required), getSource(stmts)),
+        printFunctionDefinition("void", name, getArgumentDeclarations(required), formatStatements(stmts)),
         printFunctionCall(name, getVariableNames(required)) };
 }
 

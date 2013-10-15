@@ -81,6 +81,7 @@ add_executable(cppmaniptest
     test/cppmanip/query/AstFactories.cpp
     test/cppmanip/text/convertReplacementsTest.cpp
     test/cppmanip/format/formatStatementsTest.cpp
+    test/cppmanip/format/DefaultReplacementFunctionPrinterTest.cpp
 ) 
 
 target_link_libraries(cppmaniptest cppmanip gtest gmock boost_thread boost_system pthread)
