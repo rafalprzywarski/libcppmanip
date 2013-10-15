@@ -44,7 +44,7 @@ void extractFunctions(ExtractFunctionRequest req)
         }
         saveReplacements(allReplacements);
     }
-    catch (const cppmanip::boundary::ExtractMethodError& e)
+    catch (const cppmanip::ExtractMethodError& e)
     {
         saveError(e.what());
     }

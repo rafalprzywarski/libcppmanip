@@ -9,6 +9,7 @@ using boundary::SourceLocation;
 using boundary::SourceSelection;
 using boundary::SourceReplacement;
 using boundary::SourceReplacements;
+using boundary::ExtractMethodError;
 using boundary::extractFunctionInFile;
 
 }
