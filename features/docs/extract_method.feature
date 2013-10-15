@@ -188,8 +188,9 @@ Feature: As a developer I want to extract code into methods to make my code more
             int b = a;
             int c = b;
         }
+
         """
-        And there should be a replacement for "int b = a;" with "extracted(a);"
+        And there should be a replacement from "int b = a;" to "c = b;" with "extracted(a);"
     @done
     Scenario: should extract if statements
         Given source code:
