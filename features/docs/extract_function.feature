@@ -191,7 +191,69 @@ Feature: As a developer I want to extract code into functions to make my code mo
 
         """
         And there should be a replacement from "int b = a;" to "c = b;" with "extracted(a);"
+    @wip
+    Scenario: should extract statements from a catch block
+        Given source code:
+        """
+        void myFunction()
+        {
+            try
+            {
+            }
+            catch (...)
+            {
+                int x = 2;
+                int y = x;
+                int z = y;
+            }
+        }
+        """
+        When I run function extraction from "int y = x;" to "z = y;" with name "extracted"
+        Then there should be an insertion:
+        """
+        void extracted(int x)
+        {
+            int y = x;
+            int z = y;
+        }
 
+        """
+    @wip
+    Scenario: should extract whole try statement if statements from both try and catch blocks are selected
+        Given source code:
+        """
+        void myFunction()
+        {
+            try
+            {
+                int a = 2;
+                int b = 3;
+            }
+            catch (...)
+            {
+                int x = 4;
+                int y = 5;
+            }
+        }
+        """
+        When I run function extraction from "int b = 3;" to "y = 5;" with name "extracted"
+        Then there should be an insertion:
+        """
+        void extracted(int x)
+        {
+            try
+            {
+                int a = 2;
+                int b = 3;
+            }
+            catch (...)
+            {
+                int x = 4;
+                int y = 5
+            }
+        }
+
+        """
     Scenario: should extract try statements
         Given source code:
         """
