@@ -191,6 +191,32 @@ Feature: As a developer I want to extract code into functions to make my code mo
 
         """
         And there should be a replacement from "int b = a;" to "c = b;" with "extracted(a);"
+
+    Scenario: should extract try statements
+        Given source code:
+        """
+        void f()
+        {
+            try
+            {
+                int x = 7;
+            }
+            catch (...) { }
+        }
+        """
+        When I run function extraction from "try" to "{ }" with name "extracted"
+        Then there should be an insertion:
+        """
+        void extracted()
+        {
+            try
+            {
+                int x = 7;
+            }
+            catch (...) { }
+        }
+        
+        """
     @done
     Scenario: should extract if statements
         Given source code:
