@@ -144,9 +144,10 @@ TEST_F(getFunctionStatementsTest, should_store_source_code_between_statements)
 TEST_F(getFunctionStatementsTest, should_build_ast_for_try_statement_children)
 {
     parse("void f() {\n try { int a; int b; int c; } catch (...) { } }");
-    setRanges({ { stmtNo(0), { 1, 10 } }, { stmtAt({0, 0}), { 3, 5 } }, { stmtAt({0, 1}), { 7, 9 } } });
+
     auto stmts = getFunctionStatements(*func->getDecl(), getStmtRange);
     ASSERT_EQ(3u, stmts[0]->getChildren()->size());
+    ASSERT_EQ(1u, stmts[0]->getChildren()->at(1)->getDeclaredVariables().size());
 }
 
 }
