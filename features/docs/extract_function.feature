@@ -165,7 +165,7 @@ Feature: As a developer I want to extract code into functions to make my code mo
         """
         And there should be a replacement for "int b = 7;" with "extracted();"
     @done
-    Scenario: Extraction of statement in try block is supported
+    Scenario: should extract statements from a try block
         Given source code:
         """
         void myFunction()
