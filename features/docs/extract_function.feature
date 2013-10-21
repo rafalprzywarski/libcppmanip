@@ -1,4 +1,4 @@
-Feature: As a developer I want to extract code into methods to make my code more readable
+Feature: As a developer I want to extract code into functions to make my code more readable
     @done
     Scenario: Free function without arguments
         Given source code:
