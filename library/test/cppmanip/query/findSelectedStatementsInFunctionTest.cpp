@@ -81,6 +81,13 @@ TEST_F(findSelectedStatementsInFunctionTest, should_traverse_each_child_group)
     verifyFindSelectedStmtsInFunctionWithStmtsReturnsStmtsInScope(selected({ stmts[0], children[1][0] }), stmts, { children[1][0] }, children[1]);
 }
 
+TEST_F(findSelectedStatementsInFunctionTest, should_return_parent_statement_if_its_children_are_not_selected)
+{
+    std::vector<ast::Statements> children = { { stmt() }, { stmt() } };
+    ast::Statements stmts = { stmt(children) };
+    verifyFindSelectedStmtsInFunctionWithStmtsReturns(selected({ stmts[0] }), stmts, { stmts[0] });
+}
+
 }
 }
 }

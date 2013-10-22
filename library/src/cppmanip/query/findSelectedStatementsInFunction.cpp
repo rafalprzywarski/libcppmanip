@@ -1,6 +1,7 @@
 #include "findSelectedStatementsInFunction.hpp"
 #include <clang/AST/ASTContext.h>
 #include <boost/range/algorithm.hpp>
+#include <boost/optional.hpp>
 
 namespace cppmanip
 {
@@ -21,7 +22,7 @@ bool shouldVisitChildren(ast::ScopedStatementRange parent)
     return parent.getRange().size() == 1 && !parent.getRange().front()->getChildGroups().empty();
 }
 
-ast::ScopedStatementRange findSelectedChildren(ast::StatementGroups groups, IsStatementSelected isSelected)
+boost::optional<ast::ScopedStatementRange> findSelectedChildren(ast::StatementGroups groups, IsStatementSelected isSelected)
 {
     for (auto stmts : groups)
     {
@@ -29,7 +30,7 @@ ast::ScopedStatementRange findSelectedChildren(ast::StatementGroups groups, IsSt
         if (!found.getRange().empty())
             return found;
     }
-    throw std::logic_error("not implemented");
+    return boost::none;
 }
 
 }
@@ -40,7 +41,9 @@ ast::ScopedStatementRange findSelectedStatementsInFunction(
     auto parent = findSelectedStatements(*decl.getStatements(), isSelected);
     if (!shouldVisitChildren(parent))
         return parent;
-    return findSelectedChildren(parent.getRange().front()->getChildGroups(), isSelected);
+    if (auto children = findSelectedChildren(parent.getRange().front()->getChildGroups(), isSelected))
+        return *children;
+    return parent;
 }
 
 }
