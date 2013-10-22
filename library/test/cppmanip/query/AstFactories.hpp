@@ -12,7 +12,7 @@ namespace test
 ast::LocalVariablePtr var();
 ast::LocalVariablePtr varDeclaredAtOffset(ast::SourceOffset offset);
 ast::LocalVariablePtr varWithNameAndNameWithType(const std::string& name, const std::string& nameWithType);
-ast::StatementPtr stmt(ast::Statements children = {});
+ast::StatementPtr stmt(std::vector<ast::Statements> children = {});
 ast::StatementPtr stmtWithUsedVars(ast::LocalVariables vars);
 ast::StatementPtr stmtWithDeclaredVars(ast::LocalVariables declared);
 ast::StatementPtr stmtWithSourceCode(const std::string& sourceCode);

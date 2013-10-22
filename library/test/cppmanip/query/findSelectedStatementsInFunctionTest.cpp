@@ -64,7 +64,7 @@ TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_an_empty_
 TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_selected_children_if_the_only_selected_statement_has_children)
 {
     ast::Statements children = { stmt(), stmt(), stmt(), stmt() };
-    ast::Statements stmts = { stmt(), stmt(children), stmt() };
+    ast::Statements stmts = { stmt(), stmt({ children }), stmt() };
     verifyFindSelectedStmtsInFunctionWithStmtsReturnsStmtsInScope(selected({ stmts[1], children[1], children[2] }), stmts, { children[1], children[2] }, children);
 }
 
@@ -72,6 +72,13 @@ TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_the_only_
 {
     ast::Statements stmts = { stmt(), stmt(), stmt() };
     verifyFindSelectedStmtsInFunctionWithStmtsReturns(selected({ stmts[1] }), stmts, { stmts[1] });
+}
+
+TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_traverse_each_child_group)
+{
+    std::vector<ast::Statements> children = { { stmt() }, { stmt() } };
+    ast::Statements stmts = { stmt(children) };
+    verifyFindSelectedStmtsInFunctionWithStmtsReturnsStmtsInScope(selected({ stmts[0], children[1][0] }), stmts, { children[1][0] }, children[1]);
 }
 
 }

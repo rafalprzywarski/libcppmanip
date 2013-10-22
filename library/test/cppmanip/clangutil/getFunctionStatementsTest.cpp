@@ -146,8 +146,8 @@ TEST_F(getFunctionStatementsTest, should_build_ast_for_try_statement_children)
     parse("void f() {\n try { int a; int b; int c; } catch (...) { } }");
 
     auto stmts = getFunctionStatements(*func->getDecl(), getStmtRange);
-    ASSERT_EQ(3u, stmts[0]->getChildren()->size());
-    ASSERT_EQ(1u, stmts[0]->getChildren()->at(1)->getDeclaredVariables().size());
+    ASSERT_EQ(3u, stmts[0]->getChildGroups().at(0)->size());
+    ASSERT_EQ(1u, stmts[0]->getChildGroups().at(0)->at(1)->getDeclaredVariables().size());
 }
 
 }

@@ -16,15 +16,31 @@ ast::ScopedStatementRange findSelectedStatements(ast::StatementRange stmts, IsSt
         find_if<return_found_end>(stmts, isSelected), [&](const ast::StatementPtr& s) { return !isSelected(s); }) };
 }
 
+bool shouldVisitChildren(ast::ScopedStatementRange parent)
+{
+    return parent.getRange().size() == 1 && !parent.getRange().front()->getChildGroups().empty();
+}
+
+ast::ScopedStatementRange findSelectedChildren(ast::StatementGroups groups, IsStatementSelected isSelected)
+{
+    for (auto stmts : groups)
+    {
+        auto found = findSelectedStatements(*stmts, isSelected);
+        if (!found.getRange().empty())
+            return found;
+    }
+    throw std::logic_error("not implemented");
+}
+
 }
 
 ast::ScopedStatementRange findSelectedStatementsInFunction(
     const ast::Function& decl, IsStatementSelected isSelected)
 {
-    auto found = findSelectedStatements(*decl.getStatements(), isSelected);
-    if (found.getRange().size() != 1 || found.getRange().front()->getChildren()->empty())
-        return found;
-    return findSelectedStatements(*found.getRange().front()->getChildren(), isSelected);
+    auto parent = findSelectedStatements(*decl.getStatements(), isSelected);
+    if (!shouldVisitChildren(parent))
+        return parent;
+    return findSelectedChildren(parent.getRange().front()->getChildGroups(), isSelected);
 }
 
 }

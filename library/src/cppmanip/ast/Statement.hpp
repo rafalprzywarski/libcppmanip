@@ -16,6 +16,7 @@ typedef std::shared_ptr<const Statement> StatementPtr;
 typedef std::vector<StatementPtr> Statements;
 typedef std::shared_ptr<const Statements> StatementsPtr;
 typedef boost::iterator_range<Statements::const_iterator> StatementRange;
+typedef std::vector<StatementsPtr> StatementGroups;
 
 class ScopedStatementRange
 {
@@ -35,21 +36,21 @@ public:
     Statement(
         const SourceOffsetRange& range, const LocalVariables& declaredVariables,
         const LocalVariables& usedLocalVariables, const std::string& sourceCode, const std::string& sourceCodeAfter,
-        const Statements& children)
+        const StatementGroups& children)
         : range(range), declaredVariables(declaredVariables), usedLocalVariables(usedLocalVariables),
-        sourceCode(sourceCode), sourceCodeAfter(sourceCodeAfter), children(std::make_shared<Statements>(children)) { }
+        sourceCode(sourceCode), sourceCodeAfter(sourceCodeAfter), children(children) { }
     SourceOffsetRange getRange() const { return range; }
     const LocalVariables& getDeclaredVariables() const { return declaredVariables; }
     const LocalVariables& getUsedLocalVariables() const { return usedLocalVariables; }
     std::string getSourceCode() const { return sourceCode; }
     std::string getSourceCodeAfter() const { return sourceCodeAfter; }
-    const StatementsPtr getChildren() const { return children; }
+    const StatementGroups getChildGroups() const { return children; }
 private:
     const SourceOffsetRange range;
     const LocalVariables declaredVariables;
     const LocalVariables usedLocalVariables;
     const std::string sourceCode, sourceCodeAfter;
-    const StatementsPtr children;
+    const StatementGroups children;
 };
 
 }

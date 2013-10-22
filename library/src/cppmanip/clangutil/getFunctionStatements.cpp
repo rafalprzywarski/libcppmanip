@@ -74,12 +74,12 @@ private:
         return std::make_shared<ast::Statement>(range, declared, used, sourceCode, sourceCodeAfter, children);
     }
 
-    ast::Statements getChildren(clang::Stmt& stmt)
+    ast::StatementGroups getChildren(clang::Stmt& stmt)
     {
         auto tryStmt = clang::dyn_cast<clang::CXXTryStmt>(&stmt);
         if (!tryStmt)
             return {};
-        return translateStmts(tryStmt->getTryBlock()->children());
+        return { std::make_shared<ast::Statements>(translateStmts(tryStmt->getTryBlock()->children())) };
     }
 
     std::string getSourceCode(ast::SourceOffsetRange range)
