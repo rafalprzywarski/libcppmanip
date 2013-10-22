@@ -12,7 +12,7 @@ namespace query
 namespace test
 {
 
-struct findStatementsInFunctionOverlappingSelectionTest : testing::Test
+struct findSelectedStatementsInFunctionTest : testing::Test
 {
     std::function<bool(ast::StatementPtr)> selected(std::set<ast::StatementPtr> stmts)
     {
@@ -45,36 +45,36 @@ struct findStatementsInFunctionOverlappingSelectionTest : testing::Test
     }
 };
 
-TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_an_empty_range_for_an_empty_function)
+TEST_F(findSelectedStatementsInFunctionTest, should_return_an_empty_range_for_an_empty_function)
 {
     verifyFindSelectedStmtsInFunctionWithStmtsReturns(nothingSelected(), {}, {});
 }
 
-TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_the_selected_range_of_statements)
+TEST_F(findSelectedStatementsInFunctionTest, should_return_the_selected_range_of_statements)
 {
     ast::Statements stmts = {stmt(), stmt(), stmt(), stmt()};
     verifyFindSelectedStmtsInFunctionWithStmtsReturns(selected({ stmts[1], stmts[2] }), stmts, { stmts[1], stmts[2] });
 }
 
-TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_an_empty_range_when_no_statement_are_selected)
+TEST_F(findSelectedStatementsInFunctionTest, should_return_an_empty_range_when_no_statement_are_selected)
 {
     verifyFindSelectedStmtsInFunctionWithStmtsReturns(nothingSelected(), {stmt(), stmt()}, {});
 }
 
-TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_selected_children_if_the_only_selected_statement_has_children)
+TEST_F(findSelectedStatementsInFunctionTest, should_return_selected_children_if_the_only_selected_statement_has_children)
 {
     ast::Statements children = { stmt(), stmt(), stmt(), stmt() };
     ast::Statements stmts = { stmt(), stmt({ children }), stmt() };
     verifyFindSelectedStmtsInFunctionWithStmtsReturnsStmtsInScope(selected({ stmts[1], children[1], children[2] }), stmts, { children[1], children[2] }, children);
 }
 
-TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_return_the_only_selected_statement_if_it_has_no_children)
+TEST_F(findSelectedStatementsInFunctionTest, should_return_the_only_selected_statement_if_it_has_no_children)
 {
     ast::Statements stmts = { stmt(), stmt(), stmt() };
     verifyFindSelectedStmtsInFunctionWithStmtsReturns(selected({ stmts[1] }), stmts, { stmts[1] });
 }
 
-TEST_F(findStatementsInFunctionOverlappingSelectionTest, should_traverse_each_child_group)
+TEST_F(findSelectedStatementsInFunctionTest, should_traverse_each_child_group)
 {
     std::vector<ast::Statements> children = { { stmt() }, { stmt() } };
     ast::Statements stmts = { stmt(children) };
