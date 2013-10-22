@@ -191,7 +191,7 @@ Feature: As a developer I want to extract code into functions to make my code mo
 
         """
         And there should be a replacement from "int b = a;" to "c = b;" with "extracted(a);"
-    @wip
+    @done
     Scenario: should extract statements from a catch block
         Given source code:
         """
@@ -218,7 +218,7 @@ Feature: As a developer I want to extract code into functions to make my code mo
         }
 
         """
-    @wip
+    @done
     Scenario: should extract whole try statement if statements from both try and catch blocks are selected
         Given source code:
         """
@@ -239,7 +239,7 @@ Feature: As a developer I want to extract code into functions to make my code mo
         When I run function extraction from "int b = 3;" to "y = 5;" with name "extracted"
         Then there should be an insertion:
         """
-        void extracted(int x)
+        void extracted()
         {
             try
             {
@@ -249,7 +249,7 @@ Feature: As a developer I want to extract code into functions to make my code mo
             catch (...)
             {
                 int x = 4;
-                int y = 5
+                int y = 5;
             }
         }
 
