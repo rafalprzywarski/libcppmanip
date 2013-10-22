@@ -24,13 +24,16 @@ bool shouldVisitChildren(ast::ScopedStatementRange parent)
 
 boost::optional<ast::ScopedStatementRange> findSelectedChildren(ast::StatementGroups groups, IsStatementSelected isSelected)
 {
-    for (auto stmts : groups)
+    std::vector<ast::ScopedStatementRange> selectedInGroups;
+    for (auto children : groups)
     {
-        auto found = findSelectedStatements(*stmts, isSelected);
-        if (!found.getRange().empty())
-            return found;
+        auto selected = findSelectedStatements(*children, isSelected);
+        if (!selected.getRange().empty())
+            selectedInGroups.push_back(selected);
     }
-    return boost::none;
+    if (selectedInGroups.size() != 1)
+        return boost::none;
+    return selectedInGroups.front();
 }
 
 }

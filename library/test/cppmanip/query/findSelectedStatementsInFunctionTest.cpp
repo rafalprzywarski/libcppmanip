@@ -24,11 +24,11 @@ struct findSelectedStatementsInFunctionTest : testing::Test
         return selected({});
     }
 
-    void expectRangeIs(ast::StatementRange range, ast::Statements stmts)
+    void expectRangeIs(ast::StatementRange range, ast::Statements stmts, std::string name)
     {
-        ASSERT_EQ(int(stmts.size()), boost::size(range));
+        ASSERT_EQ(int(stmts.size()), boost::size(range)) << name;
         for (decltype(stmts.size()) i = 0; i != stmts.size(); ++i, range.pop_front())
-            ASSERT_TRUE(stmts[i] == range.front()) << "stmts[" << i << "]";
+            ASSERT_TRUE(stmts[i] == range.front()) << name << " stmts[" << i << "]";
     }
 
     void verifyFindSelectedStmtsInFunctionWithStmtsReturns(IsStatementSelected isSelected, ast::Statements stmts, ast::Statements expected)
@@ -40,8 +40,8 @@ struct findSelectedStatementsInFunctionTest : testing::Test
     {
         ast::Function f{0, { stmts }}; // TODO: move to factory
         auto found = findSelectedStatementsInFunction(f, isSelected);
-        expectRangeIs(found.getRange(), expected);
-        expectRangeIs(found.getScope(), scope);
+        expectRangeIs(found.getRange(), expected, "range");
+        expectRangeIs(found.getScope(), scope, "scope");
     }
 };
 
@@ -86,6 +86,13 @@ TEST_F(findSelectedStatementsInFunctionTest, should_return_parent_statement_if_i
     std::vector<ast::Statements> children = { { stmt() }, { stmt() } };
     ast::Statements stmts = { stmt(children) };
     verifyFindSelectedStmtsInFunctionWithStmtsReturns(selected({ stmts[0] }), stmts, { stmts[0] });
+}
+
+TEST_F(findSelectedStatementsInFunctionTest, should_return_parent_statement_if_both_its_children_groups_are_partially_selected)
+{
+    std::vector<ast::Statements> children = { { stmt(), stmt() }, { stmt(), stmt() } };
+    ast::Statements stmts = { stmt(children) };
+    verifyFindSelectedStmtsInFunctionWithStmtsReturns(selected({ stmts[0], children[0][1], children[1][0] }), stmts, { stmts[0] });
 }
 
 }
