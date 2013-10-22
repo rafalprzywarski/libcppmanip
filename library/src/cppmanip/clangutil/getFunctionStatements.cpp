@@ -44,15 +44,15 @@ public:
     StatementTranslator(GetStatementRange getStmtRange, clang::SourceManager& sourceManager)
         : getStmtRange(getStmtRange), sourceManager(sourceManager) { }
 
-    ast::Statements translateStmts(clang::StmtRange range)
+    ast::StatementsPtr translateStmts(clang::StmtRange range)
     {
         ast::Statements stmts;
         for (auto stmt = range; stmt; ++stmt)
         {
             auto nextStmt = boost::next(stmt);
-            stmts.push_back(translateStmt(**stmt, !nextStmt.empty() ? *nextStmt : nullptr));
+            stmts.emplace_back(translateStmt(**stmt, !nextStmt.empty() ? *nextStmt : nullptr));
         }
-        return stmts;
+        return std::make_shared<ast::Statements>(std::move(stmts));
     }
 
 private:
@@ -79,7 +79,11 @@ private:
         auto tryStmt = clang::dyn_cast<clang::CXXTryStmt>(&stmt);
         if (!tryStmt)
             return {};
-        return { std::make_shared<ast::Statements>(translateStmts(tryStmt->getTryBlock()->children())) };
+        ast::StatementGroups groups;
+        groups.emplace_back(translateStmts(tryStmt->getTryBlock()->children()));
+        for (unsigned i = 0; i < tryStmt->getNumHandlers(); ++i)
+            groups.emplace_back(translateStmts(tryStmt->getHandler(i)->getHandlerBlock()->children()));
+        return groups;
     }
 
     std::string getSourceCode(ast::SourceOffsetRange range)
@@ -143,7 +147,7 @@ private:
 ast::Statements getFunctionStatements(clang::FunctionDecl& f, GetStatementRange getStmtRange)
 {
     StatementTranslator translator(getStmtRange, f.getASTContext().getSourceManager());
-    return translator.translateStmts(f.getBody()->children());
+    return *translator.translateStmts(f.getBody()->children());
 }
 
 }

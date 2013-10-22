@@ -141,13 +141,30 @@ TEST_F(getFunctionStatementsTest, should_store_source_code_between_statements)
     EXPECT_EQ("", stmts[2]->getSourceCodeAfter());
 }
 
-TEST_F(getFunctionStatementsTest, should_build_ast_for_try_statement_children)
+TEST_F(getFunctionStatementsTest, should_build_ast_for_try_statement)
+{
+    parse("void f() {\n try { int a; int b; int c; } catch (int) { } catch (...) { } }");
+
+    auto stmts = getFunctionStatements(*func->getDecl(), getStmtRange);
+    ASSERT_EQ(3u, stmts[0]->getChildGroups().size());
+}
+
+TEST_F(getFunctionStatementsTest, should_build_ast_for_try_block_children)
 {
     parse("void f() {\n try { int a; int b; int c; } catch (...) { } }");
 
     auto stmts = getFunctionStatements(*func->getDecl(), getStmtRange);
     ASSERT_EQ(3u, stmts[0]->getChildGroups().at(0)->size());
     ASSERT_EQ(1u, stmts[0]->getChildGroups().at(0)->at(1)->getDeclaredVariables().size());
+}
+
+TEST_F(getFunctionStatementsTest, should_build_ast_for_catch_block_children)
+{
+    parse("void f() {\n try { } catch (int) { } catch (...) { int a; int b; int c; } }");
+
+    auto stmts = getFunctionStatements(*func->getDecl(), getStmtRange);
+    ASSERT_EQ(3u, stmts[0]->getChildGroups().at(2)->size());
+    ASSERT_EQ(1u, stmts[0]->getChildGroups().at(2)->at(1)->getDeclaredVariables().size());
 }
 
 }
