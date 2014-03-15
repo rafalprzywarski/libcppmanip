@@ -29,6 +29,14 @@ struct findSelectedStatementsInFunctionTest : testing::Test
         return implicitlySelected({});
     }
 
+    std::pair<ast::StatementPtr, StatementSelected> implicitly(ast::StatementPtr stmt) { return { stmt, StatementSelected::IMPLICITLY }; }
+    std::pair<ast::StatementPtr, StatementSelected> explicitly(ast::StatementPtr stmt) { return { stmt, StatementSelected::EXPLICITLY }; }
+
+    IsStatementSelected selected(std::map<ast::StatementPtr, StatementSelected> stmts)
+    {
+        return [stmts](ast::StatementPtr s) { return stmts.count(s) != 0 ? stmts.find(s)->second : StatementSelected::NO; };
+    }
+
     void expectRangeIs(ast::StatementRange range, ast::Statements stmts, std::string name)
     {
         ASSERT_EQ(int(stmts.size()), boost::size(range)) << name;
@@ -100,10 +108,17 @@ TEST_F(findSelectedStatementsInFunctionTest, should_return_parent_statement_if_b
     verifyFindSelectedStmtsInFunctionWithStmtsReturns(implicitlySelected({ stmts[0], children[0][1], children[1][0] }), stmts, { stmts[0] });
 }
 
-TEST_F(findSelectedStatementsInFunctionTest, should_return_explicitly_selected_parent)
+TEST_F(findSelectedStatementsInFunctionTest, should_return_an_explicitly_selected_statement)
 {
     ast::Statements stmts = { stmt() };
     verifyFindSelectedStmtsInFunctionWithStmtsReturns(explicitlySelected(stmts[0]), stmts, { stmts[0] });
+}
+
+TEST_F(findSelectedStatementsInFunctionTest, should_return_an_explicitly_selected_parent_even_if_a_child_is_selected)
+{
+    ast::Statements children = { stmt(), stmt(), stmt(), stmt() };
+    ast::Statements stmts = { stmt(), stmt({ children }), stmt() };
+    verifyFindSelectedStmtsInFunctionWithStmtsReturnsStmtsInScope(selected({ explicitly(stmts[1]), implicitly(children[1]), implicitly(children[2]) }), stmts, { stmts[1] }, stmts);
 }
 
 }

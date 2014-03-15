@@ -18,9 +18,12 @@ ast::ScopedStatementRange findSelectedStatements(ast::StatementRange stmts, IsSt
         [&](const ast::StatementPtr& s) { return isSelected(s) == StatementSelected::NO; }) };
 }
 
-bool shouldVisitChildren(ast::ScopedStatementRange parent)
+bool shouldVisitChildren(ast::ScopedStatementRange parent, IsStatementSelected isSelected)
 {
-    return parent.getRange().size() == 1 && !parent.getRange().front()->getChildGroups().empty();
+    if (parent.getRange().size() != 1)
+        return false;
+    auto onlyParent = parent.getRange().front();
+    return !onlyParent->getChildGroups().empty() && isSelected(onlyParent) != StatementSelected::EXPLICITLY;
 }
 
 boost::optional<ast::ScopedStatementRange> findSelectedChildren(ast::StatementGroups groups, IsStatementSelected isSelected)
@@ -43,7 +46,7 @@ ast::ScopedStatementRange findSelectedStatementsInFunction(
     const ast::Function& decl, IsStatementSelected isSelected)
 {
     auto parent = findSelectedStatements(*decl.getStatements(), isSelected);
-    if (!shouldVisitChildren(parent))
+    if (!shouldVisitChildren(parent, isSelected))
         return parent;
     if (auto children = findSelectedChildren(parent.getRange().front()->getChildGroups(), isSelected))
         return *children;
