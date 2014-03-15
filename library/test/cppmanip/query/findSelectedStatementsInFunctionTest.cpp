@@ -38,8 +38,8 @@ struct findSelectedStatementsInFunctionTest : testing::Test
 
     void verifyFindSelectedStmtsInFunctionWithStmtsReturnsStmtsInScope(IsStatementSelected isSelected, ast::Statements stmts, ast::Statements expected, ast::Statements scope)
     {
-        ast::Function f{0, { stmts }}; // TODO: move to factory
-        auto found = findSelectedStatementsInFunction(f, isSelected);
+        auto f = functionWithStmts(stmts);
+        auto found = findSelectedStatementsInFunction(*f, isSelected);
         expectRangeIs(found.getRange(), expected, "range");
         expectRangeIs(found.getScope(), scope, "scope");
     }

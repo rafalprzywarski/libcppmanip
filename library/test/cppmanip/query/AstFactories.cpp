@@ -45,6 +45,11 @@ ast::StatementPtr stmtWithSourceCode(const std::string& sourceCode)
     return std::make_shared<ast::Statement>(ast::SourceOffsetRange(0, 0), ast::LocalVariables(), ast::LocalVariables(), sourceCode, "", ast::StatementGroups());
 }
 
+ast::FunctionPtr functionWithStmts(ast::Statements stmts)
+{
+    return std::make_shared<ast::Function>(0, stmts);
+}
+
 }
 }
 }
