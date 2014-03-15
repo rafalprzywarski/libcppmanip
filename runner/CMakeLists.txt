@@ -7,10 +7,10 @@ set(LIBCPPMANIP_INSTALLATION_LIB "" CACHE FILEPATH "Path to libcppmanip installa
 
 add_definitions("-std=c++11")
 
-include_directories(${LIBCPPMANIP_INSTALLATION_INCLUDE} "src" "../gmock-1.6.0/fused-src")
+include_directories(${LIBCPPMANIP_INSTALLATION_INCLUDE} "src" "../gmock-1.7.0/fused-src")
 link_directories(${LIBCPPMANIP_INSTALLATION_LIB})
-link_directories("${PROJECT_SOURCE_DIR}/../gmock-1.6.0/build/gtest")
-link_directories("${PROJECT_SOURCE_DIR}/../gmock-1.6.0/build")
+link_directories("${PROJECT_SOURCE_DIR}/../gmock-1.7.0/build/gtest")
+link_directories("${PROJECT_SOURCE_DIR}/../gmock-1.7.0/build")
 
 add_library(cppmaniprunnercore STATIC
     src/cppmanip/runner/CommandLineParser.cpp

@@ -12,9 +12,9 @@ add_definitions("${LLVM_CXX_FLAGS} -fexceptions -Wall -Werror=return-type -Wno-u
 set(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${LLVM_LINKER_FLAGS}")
 set(CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS "${CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS} ${LLVM_LINKER_FLAGS}")
 
-include_directories("include" "src" "../gmock-1.6.0/fused-src")
-link_directories("${PROJECT_SOURCE_DIR}/../gmock-1.6.0/build/gtest")
-link_directories("${PROJECT_SOURCE_DIR}/../gmock-1.6.0/build")
+include_directories("include" "src" "../gmock-1.7.0/fused-src")
+link_directories("${PROJECT_SOURCE_DIR}/../gmock-1.7.0/build/gtest")
+link_directories("${PROJECT_SOURCE_DIR}/../gmock-1.7.0/build")
 
 add_library(cppmanip SHARED
     src/cppmanip/io/TextFileOps.cpp
