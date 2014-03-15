@@ -10,7 +10,7 @@ namespace boundary
 SourceReplacements extractFunctionInFile(const std::string& functionName, SourceSelection selection, const std::string& filename)
 {
     auto extractor = DefaultFunctionExtractorFactory().createForFile(filename);
-    return extractor->extractFunctionFromSelectionInFile(functionName, selection, filename);
+    return extractor->extractFunctionFromSelection(functionName, selection);
 }
 
 }

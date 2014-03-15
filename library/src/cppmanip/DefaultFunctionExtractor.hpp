@@ -18,8 +18,8 @@ public:
         StatementLocatorPtr stmtLocator, FunctionExtractionValidatorPtr validator,
         format::ReplacementFunctionPrinterPtr printer, FunctionReplacerPtr replacer)
         : stmtLocator(stmtLocator), validator(validator), printer(printer), replacer(replacer) { }
-    virtual boundary::SourceReplacements extractFunctionFromSelectionInFile(
-        const std::string& functionName, boundary::SourceSelection selection, const std::string& filename);
+    virtual boundary::SourceReplacements extractFunctionFromSelection(
+        const std::string& functionName, boundary::SourceSelection selection);
 private:
     StatementLocatorPtr stmtLocator;
     FunctionExtractionValidatorPtr validator;

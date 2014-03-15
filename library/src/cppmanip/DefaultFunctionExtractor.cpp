@@ -29,8 +29,8 @@ ast::SourceOffsetRange getRange(ast::StatementRange stmts)
 
 }
 
-boundary::SourceReplacements DefaultFunctionExtractor::extractFunctionFromSelectionInFile(
-    const std::string& functionName, boundary::SourceSelection selection, const std::string& filename)
+boundary::SourceReplacements DefaultFunctionExtractor::extractFunctionFromSelection(
+    const std::string& functionName, boundary::SourceSelection selection)
 {
     auto selected = stmtLocator->getSelectedFunctionAndStmts(selection);
     validator->validateStatements(functionName, selected.stmts);
