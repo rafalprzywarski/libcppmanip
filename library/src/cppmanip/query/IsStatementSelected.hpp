@@ -7,7 +7,14 @@ namespace cppmanip {
 
 namespace query {
 
-typedef std::function<bool(ast::StatementPtr)> IsStatementSelected;
+enum class StatementSelected
+{
+    NO,
+    IMPLICITLY,
+    EXPLICITLY
+};
+
+typedef std::function<StatementSelected(ast::StatementPtr)> IsStatementSelected;
 
 }
 }

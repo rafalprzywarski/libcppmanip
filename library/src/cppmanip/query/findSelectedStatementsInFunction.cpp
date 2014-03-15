@@ -14,7 +14,8 @@ ast::ScopedStatementRange findSelectedStatements(ast::StatementRange stmts, IsSt
 {
     using namespace boost;
     return { stmts, find_if<return_begin_found>(
-        find_if<return_found_end>(stmts, isSelected), [&](const ast::StatementPtr& s) { return !isSelected(s); }) };
+        find_if<return_found_end>(stmts, [&](const ast::StatementPtr& s) { return isSelected(s) != StatementSelected::NO; }),
+        [&](const ast::StatementPtr& s) { return isSelected(s) == StatementSelected::NO; }) };
 }
 
 bool shouldVisitChildren(ast::ScopedStatementRange parent)

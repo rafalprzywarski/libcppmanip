@@ -14,14 +14,14 @@ namespace test
 
 struct findSelectedStatementsInFunctionTest : testing::Test
 {
-    std::function<bool(ast::StatementPtr)> selected(std::set<ast::StatementPtr> stmts)
+    IsStatementSelected implicitlySelected(std::set<ast::StatementPtr> stmts)
     {
-        return [stmts](ast::StatementPtr s) { return stmts.count(s) != 0; };
+        return [stmts](ast::StatementPtr s) { return stmts.count(s) != 0 ? StatementSelected::IMPLICITLY : StatementSelected::NO; };
     }
 
-    std::function<bool(ast::StatementPtr)> nothingSelected()
+    IsStatementSelected nothingSelected()
     {
-        return selected({});
+        return implicitlySelected({});
     }
 
     void expectRangeIs(ast::StatementRange range, ast::Statements stmts, std::string name)
@@ -53,7 +53,7 @@ TEST_F(findSelectedStatementsInFunctionTest, should_return_an_empty_range_for_an
 TEST_F(findSelectedStatementsInFunctionTest, should_return_the_selected_range_of_statements)
 {
     ast::Statements stmts = {stmt(), stmt(), stmt(), stmt()};
-    verifyFindSelectedStmtsInFunctionWithStmtsReturns(selected({ stmts[1], stmts[2] }), stmts, { stmts[1], stmts[2] });
+    verifyFindSelectedStmtsInFunctionWithStmtsReturns(implicitlySelected({ stmts[1], stmts[2] }), stmts, { stmts[1], stmts[2] });
 }
 
 TEST_F(findSelectedStatementsInFunctionTest, should_return_an_empty_range_when_no_statement_are_selected)
@@ -65,34 +65,34 @@ TEST_F(findSelectedStatementsInFunctionTest, should_return_selected_children_if_
 {
     ast::Statements children = { stmt(), stmt(), stmt(), stmt() };
     ast::Statements stmts = { stmt(), stmt({ children }), stmt() };
-    verifyFindSelectedStmtsInFunctionWithStmtsReturnsStmtsInScope(selected({ stmts[1], children[1], children[2] }), stmts, { children[1], children[2] }, children);
+    verifyFindSelectedStmtsInFunctionWithStmtsReturnsStmtsInScope(implicitlySelected({ stmts[1], children[1], children[2] }), stmts, { children[1], children[2] }, children);
 }
 
 TEST_F(findSelectedStatementsInFunctionTest, should_return_the_only_selected_statement_if_it_has_no_children)
 {
     ast::Statements stmts = { stmt(), stmt(), stmt() };
-    verifyFindSelectedStmtsInFunctionWithStmtsReturns(selected({ stmts[1] }), stmts, { stmts[1] });
+    verifyFindSelectedStmtsInFunctionWithStmtsReturns(implicitlySelected({ stmts[1] }), stmts, { stmts[1] });
 }
 
 TEST_F(findSelectedStatementsInFunctionTest, should_traverse_each_child_group)
 {
     std::vector<ast::Statements> children = { { stmt() }, { stmt() } };
     ast::Statements stmts = { stmt(children) };
-    verifyFindSelectedStmtsInFunctionWithStmtsReturnsStmtsInScope(selected({ stmts[0], children[1][0] }), stmts, { children[1][0] }, children[1]);
+    verifyFindSelectedStmtsInFunctionWithStmtsReturnsStmtsInScope(implicitlySelected({ stmts[0], children[1][0] }), stmts, { children[1][0] }, children[1]);
 }
 
 TEST_F(findSelectedStatementsInFunctionTest, should_return_parent_statement_if_its_children_are_not_selected)
 {
     std::vector<ast::Statements> children = { { stmt() }, { stmt() } };
     ast::Statements stmts = { stmt(children) };
-    verifyFindSelectedStmtsInFunctionWithStmtsReturns(selected({ stmts[0] }), stmts, { stmts[0] });
+    verifyFindSelectedStmtsInFunctionWithStmtsReturns(implicitlySelected({ stmts[0] }), stmts, { stmts[0] });
 }
 
 TEST_F(findSelectedStatementsInFunctionTest, should_return_parent_statement_if_both_its_children_groups_are_partially_selected)
 {
     std::vector<ast::Statements> children = { { stmt(), stmt() }, { stmt(), stmt() } };
     ast::Statements stmts = { stmt(children) };
-    verifyFindSelectedStmtsInFunctionWithStmtsReturns(selected({ stmts[0], children[0][1], children[1][0] }), stmts, { stmts[0] });
+    verifyFindSelectedStmtsInFunctionWithStmtsReturns(implicitlySelected({ stmts[0], children[0][1], children[1][0] }), stmts, { stmts[0] });
 }
 
 }
