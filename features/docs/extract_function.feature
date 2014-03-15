@@ -281,6 +281,25 @@ Feature: As a developer I want to extract code into functions to make my code mo
         
         """
     @done
+    Scenario: should extract only statements from a try block when whitespace before the first statement is selected
+        Given source code:
+        """
+        void f()
+        {
+            try {  int x = 7; }
+            catch (...) { }
+        }
+        """
+        When I run function extraction for "  int x" with name "extracted"
+        Then there should be an insertion:
+        """
+        void extracted()
+        {
+            int x = 7;
+        }
+
+        """
+    @done
     Scenario: should extract if statements
         Given source code:
         """
