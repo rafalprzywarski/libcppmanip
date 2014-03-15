@@ -19,6 +19,11 @@ struct findSelectedStatementsInFunctionTest : testing::Test
         return [stmts](ast::StatementPtr s) { return stmts.count(s) != 0 ? StatementSelected::IMPLICITLY : StatementSelected::NO; };
     }
 
+    IsStatementSelected explicitlySelected(ast::StatementPtr stmt)
+    {
+        return [stmt](ast::StatementPtr s) { return stmt == s ? StatementSelected::EXPLICITLY : StatementSelected::NO; };
+    }
+
     IsStatementSelected nothingSelected()
     {
         return implicitlySelected({});
@@ -93,6 +98,12 @@ TEST_F(findSelectedStatementsInFunctionTest, should_return_parent_statement_if_b
     std::vector<ast::Statements> children = { { stmt(), stmt() }, { stmt(), stmt() } };
     ast::Statements stmts = { stmt(children) };
     verifyFindSelectedStmtsInFunctionWithStmtsReturns(implicitlySelected({ stmts[0], children[0][1], children[1][0] }), stmts, { stmts[0] });
+}
+
+TEST_F(findSelectedStatementsInFunctionTest, should_return_explicitly_selected_parent)
+{
+    ast::Statements stmts = { stmt() };
+    verifyFindSelectedStmtsInFunctionWithStmtsReturns(explicitlySelected(stmts[0]), stmts, { stmts[0] });
 }
 
 }
