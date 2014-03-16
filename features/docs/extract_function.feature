@@ -254,7 +254,7 @@ Feature: As a developer I want to extract code into functions to make my code mo
         }
 
         """
-    @wip
+    @done
     Scenario: should extract try statements
         Given source code:
         """
