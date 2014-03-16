@@ -280,6 +280,7 @@ Feature: As a developer I want to extract code into functions to make my code mo
         }
         
         """
+    @done
     Scenario: should extract a whole try statement if the opening brace is selected
         Given source code:
         """
