@@ -67,7 +67,7 @@ private:
         auto declared = getDeclaredVars(stmt);
         auto used = getUsedLocalVars(stmt);
         auto range = getStmtRange(sourceManager, stmt);
-        ast::SourceOffsetRanges specific{};
+        auto specific = getSpecificRanges(stmt);
         auto sourceCode = getSourceCode(range);
         auto nextFrom = nextStmt ? getStmtRange(sourceManager, *nextStmt).getFrom() : range.getTo();
         auto sourceCodeAfter = getSourceCode({ range.getTo(), nextFrom });
@@ -140,6 +140,13 @@ private:
         for (auto d = decl->decl_begin(); d != decl->decl_end(); ++d)
             vars.push_back(clang::dyn_cast<clang::VarDecl>(*d));
         return vars;
+    }
+    ast::SourceOffsetRanges getSpecificRanges(clang::Stmt& stmt)
+    {
+        auto tryStmt = clang::dyn_cast<clang::CXXTryStmt>(&stmt);
+        if (!tryStmt)
+            return {};
+        return {{sourceManager.getFileOffset(tryStmt->getTryLoc()), sourceManager.getFileOffset(tryStmt->getTryBlock()->getLBracLoc()) + 1}};
     }
 };
 
