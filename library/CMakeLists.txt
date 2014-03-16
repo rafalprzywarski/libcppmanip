@@ -28,6 +28,7 @@ add_library(cppmanip SHARED
     src/cppmanip/clangutil/getStmtOffsetRange.cpp
     src/cppmanip/query/findLocalVariablesRequiredForStmts.cpp
     src/cppmanip/query/findVariablesDeclaredByAndUsedAfterStmts.cpp
+    src/cppmanip/query/isStatementSelected.cpp
     src/cppmanip/format/printFunction.cpp
     src/cppmanip/clangutil/getFunctionStatements.cpp
     src/cppmanip/clangutil/AstGateway.cpp
@@ -82,6 +83,7 @@ add_executable(cppmaniptest
     test/cppmanip/text/convertReplacementsTest.cpp
     test/cppmanip/format/formatStatementsTest.cpp
     test/cppmanip/format/DefaultReplacementFunctionPrinterTest.cpp
+    test/cppmanip/query/isStatementSelectedTest.cpp
 ) 
 
 target_link_libraries(cppmaniptest cppmanip gtest gmock boost_thread boost_system pthread)
