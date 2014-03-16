@@ -9,6 +9,7 @@
 #include "query/findSelectedStatementsInFunction.hpp"
 #include "query/findVariablesDeclaredByAndUsedAfterStmts.hpp"
 #include "query/findLocalVariablesRequiredForStmts.hpp"
+#include "query/isStatementSelected.hpp"
 #include "NoReturnFunctionExtractionValidator.hpp"
 #include "format/DefaultReplacementFunctionPrinter.hpp"
 #include "format/printFunction.hpp"
@@ -25,7 +26,8 @@ DefaultFunctionExtractorPtr DefaultFunctionExtractorFactory::createForFile(const
     auto offsetConverter = std::make_shared<text::OffsetConverter>(sourceCode);
     auto getOffsetFromLocation = [=](const boundary::SourceLocation& loc) { return sourceLocationConverter->getOffsetFromLocation(loc); };
     auto astGateway = std::make_shared<clangutil::AstGateway>();
-    auto stmtLocator = std::make_shared<FileBasedStatementLocator>(filename, astGateway, getOffsetFromLocation, query::findSelectedStatementsInFunction);
+    auto stmtLocator = std::make_shared<FileBasedStatementLocator>(
+        filename, astGateway, getOffsetFromLocation, query::findSelectedStatementsInFunction, query::isStatementSelected);
     auto validator = std::make_shared<NoReturnFunctionExtractionValidator>(query::findVariablesDeclaredByAndUsedAfterStmts);
     auto formatStatements = [](ast::StatementRange stmts) { return format::formatStatements(stmts, 4); };
     auto printer = std::make_shared<format::DefaultReplacementFunctionPrinter>(
