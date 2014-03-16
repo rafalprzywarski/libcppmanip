@@ -27,7 +27,8 @@ DefaultFunctionExtractorPtr DefaultFunctionExtractorFactory::createForFile(const
     auto getOffsetFromLocation = [=](const boundary::SourceLocation& loc) { return sourceLocationConverter->getOffsetFromLocation(loc); };
     auto astGateway = std::make_shared<clangutil::AstGateway>();
     auto stmtLocator = std::make_shared<FileBasedStatementLocator>(
-        filename, astGateway, getOffsetFromLocation, query::findSelectedStatementsInFunction, query::isStatementSelected);
+        filename, astGateway, getOffsetFromLocation,
+        [](ast::SourceOffsetRange sel, const ast::Function& f) { return query::findSelectedStatementsInFunction(f, [=](ast::StatementPtr s) { return query::isStatementSelected(s, sel); });}); //TODO: turn those functions into objects
     auto validator = std::make_shared<NoReturnFunctionExtractionValidator>(query::findVariablesDeclaredByAndUsedAfterStmts);
     auto formatStatements = [](ast::StatementRange stmts) { return format::formatStatements(stmts, 4); };
     auto printer = std::make_shared<format::DefaultReplacementFunctionPrinter>(

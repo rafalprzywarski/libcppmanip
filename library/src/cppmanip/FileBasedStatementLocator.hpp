@@ -10,20 +10,18 @@ class FileBasedStatementLocator : public StatementLocator
 {
 public:
     typedef std::function<ast::SourceOffset(boundary::SourceLocation)> GetOffsetFromLocation;
-    typedef std::function<ast::ScopedStatementRange(const ast::Function&, query::IsStatementSelected)> FindSelectedStatementsInFunction;
-    typedef std::function<query::StatementSelected(ast::StatementPtr, ast::SourceOffsetRange)> IsStatementSelected;
+    typedef std::function<ast::ScopedStatementRange(ast::SourceOffsetRange, const ast::Function&)> FindSelectedStatementsInFunction;
     FileBasedStatementLocator(
         const std::string& filename, ast::GatewayPtr astGateway, GetOffsetFromLocation getOffsetFromLocation,
-        FindSelectedStatementsInFunction findSelectedStatementsInFunction, IsStatementSelected isStatementSelected)
+        FindSelectedStatementsInFunction findSelectedStatementsInFunction)
         : filename(filename), astGateway(astGateway), getOffsetFromLocation(getOffsetFromLocation),
-        findSelectedStatementsInFunction(findSelectedStatementsInFunction), isStatementSelected(isStatementSelected) { }
+        findSelectedStatementsInFunction(findSelectedStatementsInFunction) { }
     FunctionAndStmts getSelectedFunctionAndStmts(boundary::SourceSelection selection);
 private:
     std::string filename;
     ast::GatewayPtr astGateway;
     GetOffsetFromLocation getOffsetFromLocation;
     FindSelectedStatementsInFunction findSelectedStatementsInFunction;
-    IsStatementSelected isStatementSelected;
 };
 
 }
