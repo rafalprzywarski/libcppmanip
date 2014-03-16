@@ -1,6 +1,7 @@
 #ifndef CPPMANIP_357717E398AA461688871605ED7F697E_HPP
 #define CPPMANIP_357717E398AA461688871605ED7F697E_HPP
 #include <ostream>
+#include <vector>
 
 namespace cppmanip
 {
@@ -19,6 +20,8 @@ public:
 private:
     SourceOffset from, to;
 };
+
+typedef std::vector<SourceOffsetRange> SourceOffsetRanges;
 
 inline bool operator==(const SourceOffsetRange& left, const SourceOffsetRange& right)
 {

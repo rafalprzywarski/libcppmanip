@@ -67,11 +67,12 @@ private:
         auto declared = getDeclaredVars(stmt);
         auto used = getUsedLocalVars(stmt);
         auto range = getStmtRange(sourceManager, stmt);
+        ast::SourceOffsetRanges specific{};
         auto sourceCode = getSourceCode(range);
         auto nextFrom = nextStmt ? getStmtRange(sourceManager, *nextStmt).getFrom() : range.getTo();
         auto sourceCodeAfter = getSourceCode({ range.getTo(), nextFrom });
         auto children = getChildren(stmt);
-        return std::make_shared<ast::Statement>(range, declared, used, sourceCode, sourceCodeAfter, children);
+        return std::make_shared<ast::Statement>(range, specific, declared, used, sourceCode, sourceCodeAfter, children);
     }
 
     ast::StatementGroups getChildren(clang::Stmt& stmt)

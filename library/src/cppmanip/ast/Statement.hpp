@@ -34,12 +34,13 @@ class Statement
 public:
     Statement(const Statement& ) = delete;
     Statement(
-        const SourceOffsetRange& range, const LocalVariables& declaredVariables,
+        const SourceOffsetRange& range, const SourceOffsetRanges& specificRanges, const LocalVariables& declaredVariables,
         const LocalVariables& usedLocalVariables, const std::string& sourceCode, const std::string& sourceCodeAfter,
         const StatementGroups& children)
-        : range(range), declaredVariables(declaredVariables), usedLocalVariables(usedLocalVariables),
+        : range(range), specificRanges(specificRanges), declaredVariables(declaredVariables), usedLocalVariables(usedLocalVariables),
         sourceCode(sourceCode), sourceCodeAfter(sourceCodeAfter), children(children) { }
     SourceOffsetRange getRange() const { return range; }
+    SourceOffsetRanges getSpecificRanges() const { return specificRanges; }
     const LocalVariables& getDeclaredVariables() const { return declaredVariables; }
     const LocalVariables& getUsedLocalVariables() const { return usedLocalVariables; }
     std::string getSourceCode() const { return sourceCode; }
@@ -47,6 +48,7 @@ public:
     const StatementGroups getChildGroups() const { return children; }
 private:
     const SourceOffsetRange range;
+    const SourceOffsetRanges specificRanges;
     const LocalVariables declaredVariables;
     const LocalVariables usedLocalVariables;
     const std::string sourceCode, sourceCodeAfter;

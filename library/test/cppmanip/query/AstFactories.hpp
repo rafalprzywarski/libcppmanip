@@ -18,6 +18,7 @@ ast::StatementPtr stmtWithUsedVars(ast::LocalVariables vars);
 ast::StatementPtr stmtWithDeclaredVars(ast::LocalVariables declared);
 ast::StatementPtr stmtWithSourceCode(const std::string& sourceCode);
 ast::StatementPtr stmtWithRange(ast::SourceOffsetRange range);
+ast::StatementPtr stmtWithRangeAndSpecificRanges(ast::SourceOffsetRange range, ast::SourceOffsetRanges specific);
 ast::FunctionPtr functionWithStmts(ast::Statements stmts);
 
 }
