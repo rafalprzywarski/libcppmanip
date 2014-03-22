@@ -169,7 +169,7 @@ TEST_F(getFunctionStatementsTest, should_build_ast_for_catch_block_children)
 
 TEST_F(getFunctionStatementsTest, should_return_try_as_statement_specific_range)
 {
-    parse("void f() {\n /*from*/try {/*to*/ } catch (int) { } catch (...) { int a; int b; int c; } }");
+    parse("void f() {\n /*from*/try {/*to*/ } catch (...) { } }");
 
     auto stmts = getFunctionStatements(*func->getDecl(), getStmtRange);
     auto ranges = stmts[0]->getSpecificRanges();
