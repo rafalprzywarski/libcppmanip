@@ -63,6 +63,11 @@ Then /^there should be an insertion:$/ do |insertionText|
   @replacements.index { |r| r.isInsertion && r.text == insertionText }.should_not be_nil, "insertion with \'#{insertionText}\' not found in #{@replacements}"
 end
 
+Then /^there should be an insertion containing "(.*?)"$/ do |text|
+  expectNoErrors
+  @replacements.index { |r| r.isInsertion && r.text.include?(text) }.should_not be_nil, "insertion containing \'#{text}\' not found in #{@replacements}"
+end
+
 Then /^there should be an insertion before "(.*?)":$/ do |before, insertionText|
   expectNoErrors
   @replacements.index { |r| r.isInsertionBefore(before, @source) && r.text == insertionText }.should_not be_nil
