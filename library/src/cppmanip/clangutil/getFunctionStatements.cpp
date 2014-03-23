@@ -146,7 +146,12 @@ private:
         auto tryStmt = clang::dyn_cast<clang::CXXTryStmt>(&stmt);
         if (!tryStmt)
             return {};
-        return {{sourceManager.getFileOffset(tryStmt->getTryLoc()), sourceManager.getFileOffset(tryStmt->getTryBlock()->getLBracLoc()) + 1}};
+        auto catchStmt = tryStmt->getHandler(0);
+        return {
+            {sourceManager.getFileOffset(tryStmt->getTryLoc()), sourceManager.getFileOffset(tryStmt->getTryBlock()->getLBracLoc()) + 1},
+            {sourceManager.getFileOffset(catchStmt->getCatchLoc()),
+                sourceManager.getFileOffset(catchStmt->getHandlerBlock()->getLocStart()) + 1}
+        };
     }
 };
 

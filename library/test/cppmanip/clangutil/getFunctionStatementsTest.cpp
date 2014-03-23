@@ -4,6 +4,7 @@
 #include <gmock/gmock.h>
 #include "../gtestdef.hpp"
 #include <boost/next_prior.hpp>
+#include <boost/range/algorithm/find.hpp>
 
 using namespace testing;
 
@@ -52,6 +53,11 @@ struct getFunctionStatementsTest : testing::Test
         EXPECT_EQ(name, var->getName());
         EXPECT_EQ(nameWithType, var->getNameWithType());
         EXPECT_EQ(offset, var->getDeclarationOffset());
+    }
+
+    void expectContainsRange(ast::SourceOffsetRanges ranges, ast::SourceOffsetRange expected)
+    {
+        ASSERT_TRUE(boost::find(ranges, expected) != ranges.end()) << expected << " not found";
     }
 
     MOCK_METHOD2(getStmtRangeMocked, ast::SourceOffsetRange(clang::SourceManager&, clang::Stmt& ));
@@ -172,10 +178,17 @@ TEST_F(getFunctionStatementsTest, should_return_try_as_statement_specific_range)
     parse("void f() {\n /*from*/try {/*to*/ } catch (...) { } }");
 
     auto stmts = getFunctionStatements(*func->getDecl(), getStmtRange);
-    auto ranges = stmts[0]->getSpecificRanges();
-    ASSERT_EQ(1u, ranges.size());
-    EXPECT_EQ(20u, ranges[0].getFrom());
-    EXPECT_EQ(25u, ranges[0].getTo());
+
+    expectContainsRange(stmts[0]->getSpecificRanges(), { 20, 25 });
+}
+
+TEST_F(getFunctionStatementsTest, should_return_catch_and_its_opening_brace_as_statement_specific_range)
+{
+    parse("void f() {\n try { } /*from*/catch (...) {/*to*/ } }");
+
+    auto stmts = getFunctionStatements(*func->getDecl(), getStmtRange);
+
+    expectContainsRange(stmts[0]->getSpecificRanges(), { 28, 41 });
 }
 
 }
