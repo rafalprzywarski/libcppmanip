@@ -324,7 +324,7 @@ Feature: As a developer I want to extract code into functions to make my code mo
         """
         When I run function extraction for "catch" with name "extracted"
         Then there should be an insertion containing "try"
-    @wip
+    @done
     Scenario: should extract a whole try statement if catch opening brace is selected
         Given source code:
         """
