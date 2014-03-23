@@ -1,5 +1,4 @@
 #include "getFunctionStatements.hpp"
-#include "getStmtSpecificOffsetRanges.hpp"
 #include <clang/AST/Decl.h>
 #include <clang/AST/Stmt.h>
 #include <clang/AST/ASTContext.h>
@@ -42,8 +41,8 @@ private:
 class StatementTranslator
 {
 public:
-    StatementTranslator(GetStatementRange getStmtRange, clang::SourceManager& sourceManager)
-        : getStmtRange(getStmtRange), sourceManager(sourceManager) { }
+    StatementTranslator(GetStatementRange getStmtRange, GetStatementSpecificRanges getStmtSpecificRanges, clang::SourceManager& sourceManager)
+        : getStmtRange(getStmtRange), getStmtSpecificRanges(getStmtSpecificRanges), sourceManager(sourceManager) { }
 
     ast::StatementsPtr translateStmts(clang::StmtRange range)
     {
@@ -60,6 +59,7 @@ private:
     typedef std::unordered_map<clang::VarDecl *, ast::LocalVariablePtr> LocalSymbols;
 
     GetStatementRange getStmtRange;
+    GetStatementSpecificRanges getStmtSpecificRanges;
     clang::SourceManager& sourceManager;
     LocalSymbols locals;
 
@@ -68,7 +68,7 @@ private:
         auto declared = getDeclaredVars(stmt);
         auto used = getUsedLocalVars(stmt);
         auto range = getStmtRange(sourceManager, stmt);
-        auto specific = getStmtSpecificOffsetRanges(sourceManager, stmt);
+        auto specific = getStmtSpecificRanges(sourceManager, stmt);
         auto sourceCode = getSourceCode(range);
         auto nextFrom = nextStmt ? getStmtRange(sourceManager, *nextStmt).getFrom() : range.getTo();
         auto sourceCodeAfter = getSourceCode({ range.getTo(), nextFrom });
@@ -146,9 +146,9 @@ private:
 
 }
 
-ast::Statements getFunctionStatements(clang::FunctionDecl& f, GetStatementRange getStmtRange)
+ast::Statements getFunctionStatements(clang::FunctionDecl& f, GetStatementRange getStmtRange, GetStatementSpecificRanges getStmtSpecificRanges)
 {
-    StatementTranslator translator(getStmtRange, f.getASTContext().getSourceManager());
+    StatementTranslator translator(getStmtRange, getStmtSpecificRanges, f.getASTContext().getSourceManager());
     return *translator.translateStmts(f.getBody()->children());
 }
 

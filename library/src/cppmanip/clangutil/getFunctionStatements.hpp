@@ -11,7 +11,8 @@ namespace clangutil
 {
 
 typedef std::function<ast::SourceOffsetRange(clang::SourceManager&, clang::Stmt&)> GetStatementRange;
-ast::Statements getFunctionStatements(clang::FunctionDecl& f, GetStatementRange getStmtRange);
+typedef std::function<ast::SourceOffsetRanges(clang::SourceManager&, clang::Stmt&)> GetStatementSpecificRanges;
+ast::Statements getFunctionStatements(clang::FunctionDecl& f, GetStatementRange getStmtRange, GetStatementSpecificRanges getStmtSpecificRanges);
 
 }
 }

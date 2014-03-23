@@ -3,6 +3,7 @@
 #include <cppmanip/clangutil/getFunctionFromAstInSelection.hpp>
 #include <cppmanip/clangutil/getFunctionStatements.hpp>
 #include <cppmanip/clangutil/getStmtOffsetRange.hpp>
+#include "getStmtSpecificOffsetRanges.hpp"
 
 namespace cppmanip
 {
@@ -15,7 +16,7 @@ ast::FunctionPtr AstGateway::getFunctionInSelectionFromFile(ast::SourceOffsetRan
     runTranslationUnitHandlerOnFile([&](clang::ASTContext& ctx)
     {
         using std::placeholders::_1;
-        f = getFunctionFromAstInSelection(ctx, selection, std::bind(getFunctionStatements, _1, getStmtOffsetRange));
+        f = getFunctionFromAstInSelection(ctx, selection, std::bind(getFunctionStatements, _1, getStmtOffsetRange, getStmtSpecificOffsetRanges));
     }, filename);
     return f;
 }
