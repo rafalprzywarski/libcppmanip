@@ -26,6 +26,7 @@ add_library(cppmanip SHARED
     src/cppmanip/clangutil/runTranslationUnitHandlerOnFile.cpp
     src/cppmanip/query/findSelectedStatementsInFunction.cpp
     src/cppmanip/clangutil/getStmtOffsetRange.cpp
+    src/cppmanip/clangutil/getStmtSpecificOffsetRanges.cpp
     src/cppmanip/query/findLocalVariablesRequiredForStmts.cpp
     src/cppmanip/query/findVariablesDeclaredByAndUsedAfterStmts.cpp
     src/cppmanip/query/isStatementSelected.cpp
