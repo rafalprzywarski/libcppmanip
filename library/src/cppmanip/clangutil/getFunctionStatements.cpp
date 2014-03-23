@@ -147,11 +147,16 @@ private:
         if (!tryStmt)
             return {};
         auto catchStmt = tryStmt->getHandler(0);
-        return {
-            {sourceManager.getFileOffset(tryStmt->getTryLoc()), sourceManager.getFileOffset(tryStmt->getTryBlock()->getLBracLoc()) + 1},
-            {sourceManager.getFileOffset(catchStmt->getCatchLoc()),
-                sourceManager.getFileOffset(catchStmt->getHandlerBlock()->getLocStart()) + 1}
-        };
+        std::array<std::array<clang::SourceLocation, 2>, 3> locRanges = { {
+            { tryStmt->getTryLoc(), tryStmt->getTryBlock()->getLBracLoc().getLocWithOffset(1) },
+            { catchStmt->getCatchLoc(), catchStmt->getHandlerBlock()->getLocStart().getLocWithOffset(1) },
+            { catchStmt->getHandlerBlock()->getLocEnd(), catchStmt->getHandlerBlock()->getLocEnd().getLocWithOffset(1) }
+        } };
+        ast::SourceOffsetRanges ranges;
+        ranges.reserve(locRanges.size());
+        for (auto const& r : locRanges)
+            ranges.emplace_back(sourceManager.getFileOffset(r[0]), sourceManager.getFileOffset(r[1]));
+        return ranges;
     }
 };
 

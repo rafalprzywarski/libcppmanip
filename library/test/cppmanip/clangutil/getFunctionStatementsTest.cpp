@@ -191,5 +191,14 @@ TEST_F(getFunctionStatementsTest, should_return_catch_and_its_opening_brace_as_s
     expectContainsRange(stmts[0]->getSpecificRanges(), { 28, 41 });
 }
 
+TEST_F(getFunctionStatementsTest, should_return_catch_closing_brace_as_statement_specific_range)
+{
+    parse("void f() {\n try { } catch (...) { /*from*/}/*to*/ }");
+
+    auto stmts = getFunctionStatements(*func->getDecl(), getStmtRange);
+
+    expectContainsRange(stmts[0]->getSpecificRanges(), { 42, 43 });
+}
+
 }
 }
